@@ -43,9 +43,6 @@ class Cursor {
 
     // レイキャスター
     this.raycaster = new THREE.Raycaster();
-
-    // リンククリックのイベントを追加
-    document.body.addEventListener('click', this.clickLink.bind(this));
   }
 
   update() {
@@ -138,6 +135,7 @@ class Cursor {
 
   setClickEvent(callback) {
     this.pageTransition = callback;
+    vm.$interFace.setClickEvent(this.clickLink.bind(this));
   }
 
   clickLink() {

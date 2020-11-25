@@ -47,9 +47,9 @@ class InterFace {
     window.addEventListener('mouseup', (e) => {
       this.isMousePressed = false;
     });
-    // document.body.addEventListener('click', (e) => {
-    //   this.handleEventList();
-    // });
+    document.body.addEventListener('click', (e) => {
+      this.handleEventList();
+    });
   }
 
   mouseMoved(e) {
@@ -63,20 +63,16 @@ class InterFace {
     // トラックパッド操作時のイベントを登録
     this.trackpad.addEventListener('touchstart', (e) => {
       // マウスダウンでドラッグ開始、現在の座標をprevに格納
-      this.isDrag = true;
       this.trackPos.x = e.touches[0].clientX;
       this.trackPos.y = e.touches[0].clientY;
+      this.isMousePressed = true;
     });
     this.trackpad.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-      if (this.isDrag) {
-        this.trackPadMoved(e);
-      }
+      e.preventDefault(); // スクロールを防止
+      this.trackPadMoved(e);
     });
     this.trackpad.addEventListener('touchend', (e) => {
-      if (this.isDrag) {
-        this.isDrag = false;
-      }
+      this.isMousePressed = false;
     });
     this.trackpad.addEventListener('click', (e) => {
       this.handleEventList();
@@ -123,29 +119,16 @@ class InterFace {
     }
   }
 
-  //   addEvent(callback) {
-  //     // // PCの場合
-  //     // if (window.innerWidth > this.breakPoint) {
-  //     //   document.body.addEventListener('click', (e) => {
-  //     //     callback();
-  //     //   });
-  //     // }
-  //     // // スマホの場合
-  //     // else {
-  //     //   this.trackpad.addEventListener('click', (e) => {
-  //     //     callback();
-  //     //   });
-  //     // }
-  //     this.clickEventList.push(callback);
-  //   }
+  setClickEvent(callback) {
+    this.clickEventList.push(callback);
+  }
 
-  //   handleEventList() {
-  //     console.log(this.clickEventList.length);
-  //     // リスト内のメソッドを実行。これをaddEventListenerで紐付けている
-  //     for (let i = 0; i < this.clickEventList.length; i++) {
-  //       this.clickEventList[i]();
-  //     }
-  //   }
+  handleEventList() {
+    // リスト内のメソッドを実行。これをaddEventListenerで紐付けている
+    for (let i = 0; i < this.clickEventList.length; i++) {
+      this.clickEventList[i]();
+    }
+  }
 }
 
 Vue.prototype.$interFace = new InterFace();
