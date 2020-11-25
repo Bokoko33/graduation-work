@@ -3,12 +3,17 @@ import * as THREE from 'three';
 export default class InteractObject {
   constructor(route, pos) {
     this.position = pos;
-    this.init(route);
     this.defaultColor = 0xdc7bae;
     this.rotateValue = {
       y: Math.random() - 1,
       z: Math.random() - 1,
     };
+
+    this.geometry = null;
+    this.material = null;
+    this.mesh = null;
+
+    this.init(route);
   }
 
   init(route) {
@@ -31,13 +36,17 @@ export default class InteractObject {
     });
 
     // メッシュを作成
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.mesh.position.set(this.position.x, this.position.y, this.position.z);
+    if (this.geometry) {
+      this.mesh = new THREE.Mesh(this.geometry, this.material);
+      this.mesh.position.set(this.position.x, this.position.y, this.position.z);
+    }
   }
 
   update() {
-    this.mesh.rotation.y += this.rotateValue.y * 0.01;
-    this.mesh.rotation.z += this.rotateValue.z * 0.01;
+    if (this.geometry) {
+      this.mesh.rotation.y += this.rotateValue.y * 0.01;
+      this.mesh.rotation.z += this.rotateValue.z * 0.01;
+    }
   }
 
   delete() {

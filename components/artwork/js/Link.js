@@ -6,6 +6,11 @@ export default class Link {
     this.position = new THREE.Vector3(0, 0, z);
     this.defaultColor = new THREE.Color(0xdc7bae);
     this.hoverColor = new THREE.Color(0xff0000);
+
+    this.geometry = null;
+    this.material = null;
+    this.mesh = null;
+
     this.init();
   }
 

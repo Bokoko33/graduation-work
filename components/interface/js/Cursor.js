@@ -29,6 +29,10 @@ class Cursor {
     this.backSpeed = 3;
 
     this.pageTransition = null; // 遷移メソッドを.vueファイルから後から注入
+
+    this.geometry = null;
+    this.material = null;
+    this.mesh = null;
   }
 
   init() {

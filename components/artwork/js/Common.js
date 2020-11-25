@@ -80,6 +80,7 @@ class Common {
   }
 
   initInteractObjects(route) {
+    if (route === 'index' || route === 'ending') return;
     // カーソルとインタラクションするメインオブジェクト生成
     for (let i = 0; i < this.interactObjectsLength; i++) {
       // const c1 = Math.random() * (0.8 - 0.3) + 0.3;
