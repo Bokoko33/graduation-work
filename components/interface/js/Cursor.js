@@ -13,6 +13,8 @@ class Cursor {
     this.rayPosition = new THREE.Vector2(-1, -1);
     // 交差しているオブジェクト
     this.intersected = null;
+    // 交差検知するリンクのメッシュを格納する配列（これをintersectObjectsに渡す）
+    this.rayCastMeshes = [];
 
     // 前後座標の入力値
     this.inputZ = this.glPosition.z;
@@ -43,6 +45,7 @@ class Cursor {
 
     // レイキャスター
     this.raycaster = new THREE.Raycaster();
+    this.rayCastMeshes = Common.links.map((intersect) => intersect.mesh);
   }
 
   update() {
@@ -101,10 +104,8 @@ class Cursor {
   }
 
   rayCast() {
-    // まずリンクオブジェクトの配列をmeshの配列に変換
-    const meshes = Common.links.map((intersect) => intersect.mesh);
     // リンクのメッシュを渡し、リンクのみとの交差を検知する
-    const intersects = this.raycaster.intersectObjects(meshes);
+    const intersects = this.raycaster.intersectObjects(this.rayCastMeshes);
     if (intersects.length > 0) {
       // ある程度近付かないと反応しないように
       if (Math.abs(intersects[0].object.position.z - this.glPosition.z) < 800) {
