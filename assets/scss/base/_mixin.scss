@@ -1,0 +1,5 @@
+@mixin device-pc {
+  @media screen and (min-width: $break-point-tablet) {
+    @content;
+  }
+}
