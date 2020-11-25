@@ -22,7 +22,8 @@ class Cursor {
     // 進むときの慣性（1で無し、小さいほど重い）
     this.force = 0.03;
 
-    this.hoverLink = false;
+    // 「押しながらホバーして、離してクリック」を防ぐためのフラグ（これを基準にクリック判定）
+    this.clickable = false;
 
     this.moveSpeed = 5;
     this.backSpeed = 3;
@@ -45,7 +46,7 @@ class Cursor {
 
     // レイキャスター
     this.raycaster = new THREE.Raycaster();
-    this.rayCastMeshes = Common.links.map((intersect) => intersect.mesh);
+    this.rayCastMeshes = Common.links.map((link) => link.mesh);
   }
 
   update() {
@@ -104,23 +105,32 @@ class Cursor {
   }
 
   rayCast() {
+    // マウスオン状態を取得
+    const isPressed = vm.$interFace.isMousePressed;
     // リンクのメッシュを渡し、リンクのみとの交差を検知する
     const intersects = this.raycaster.intersectObjects(this.rayCastMeshes);
+
     if (intersects.length > 0) {
+      // 交差したオブジェクトがある時
+
       // ある程度近付かないと反応しないように
-      if (Math.abs(intersects[0].object.position.z - this.glPosition.z) < 800) {
-        this.intersected = intersects[0];
-        this.intersected.object.material.emissive.setHex(0xff0000);
-        this.hoverLink = true;
-      }
+      const dist = Math.abs(
+        intersects[0].object.position.z - this.glPosition.z
+      );
+      if (dist > 800) return;
+
+      this.intersected = Common.links.find(
+        (link) => link.mesh === intersects[0].object
+      );
+      this.intersected.mouseOver();
+
+      if (!isPressed) this.clickable = true;
     } else {
       if (this.intersected) {
-        this.intersected.object.material.emissive.setHex(
-          this.intersected.object.currentHex
-        );
+        this.intersected.mouseOut();
       }
       this.intersected = null;
-      this.hoverLink = false;
+      this.clickable = false;
     }
   }
 
@@ -140,7 +150,7 @@ class Cursor {
   }
 
   clickLink() {
-    if (!this.hoverLink) return;
+    if (!this.clickable) return;
     // InterFace.vueの遷移メソッド
     this.pageTransition();
   }

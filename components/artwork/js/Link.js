@@ -4,7 +4,8 @@ export default class Link {
   constructor(z) {
     this.radius = 60;
     this.position = new THREE.Vector3(0, 0, z);
-    this.defaultColor = 0xdc7bae;
+    this.defaultColor = new THREE.Color(0xdc7bae);
+    this.hoverColor = new THREE.Color(0xff0000);
     this.init();
   }
 
@@ -22,5 +23,13 @@ export default class Link {
 
   update() {
     // this.mesh.rotation.y += 0.01;
+  }
+
+  mouseOver() {
+    this.material.color = this.hoverColor;
+  }
+
+  mouseOut() {
+    this.material.color = this.defaultColor;
   }
 }
