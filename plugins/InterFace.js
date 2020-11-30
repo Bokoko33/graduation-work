@@ -19,8 +19,11 @@ class InterFace {
     // マウスダウン中か
     this.isMousePressed = false;
 
-    // 抵抗値（小さいほど強い抵抗)
-    this.force = 0.03;
+    // デフォルトでの抗力
+    this.defaultForce = 0.3;
+
+    // カーソルにかける抵抗値（小さいほど強い抵抗)
+    this.force = this.defaultForce;
 
     // トラックパッド感度（1で完全に同距離）
     this.sensitivity = 3;
@@ -117,6 +120,11 @@ class InterFace {
     if (this.cursorPos.y > window.innerHeight) {
       this.cursorPos.y = window.innerHeight;
     }
+  }
+
+  setForce(f) {
+    if (f > 0) this.force = f;
+    else this.force = this.defaultForce;
   }
 
   setClickEvent(callback) {

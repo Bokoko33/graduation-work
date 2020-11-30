@@ -19,7 +19,13 @@ class Cursor {
     // 前後座標の入力値
     this.inputZ = this.glPosition.z;
 
-    // 進むときの慣性（1で無し、小さいほど重い）
+    // pluginに渡したりする抗力
+    this.normalWaterForce = 0.03;
+    this.heavyWaterForce = 0.01;
+    this.normalWindForce = 0.05;
+    this.normalSpaceForce = 0.07;
+
+    // 前進するときの慣性（1で無し、小さいほど重い）
     this.force = 0.03;
 
     // 「押しながらホバーして、離してクリック」を防ぐためのフラグ（これを基準にクリック判定）
@@ -29,8 +35,6 @@ class Cursor {
     this.backSpeed = 3;
 
     this.pageTransition = null; // 遷移メソッドを.vueファイルから後から注入
-
-    this.hitBox = null;
 
     this.geometry = null;
     this.material = null;
@@ -151,6 +155,7 @@ class Cursor {
       const objRad = objects[i].interactRadius;
       if (this.glPosition.distanceTo(objPos) < objRad) {
         // ここで当たった時の何かを書く
+        break;
       }
     }
   }
@@ -174,6 +179,26 @@ class Cursor {
     if (!this.clickable) return;
     // InterFace.vueの遷移メソッド
     this.pageTransition();
+  }
+
+  resetForce(route) {
+    let force = 0;
+    switch (route) {
+      case 'stage1':
+        force = this.normalWaterForce;
+        break;
+      case 'stage2':
+        force = this.normalWindForce;
+        break;
+      case 'stage3':
+        force = this.normalSpaceForce;
+        break;
+      default:
+        break;
+    }
+
+    // 0のまま渡すとデフォ値が入る設定
+    vm.$interFace.setForce(force);
   }
 
   resetPosition() {

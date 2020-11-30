@@ -37,6 +37,7 @@ export default class ArtworkGL {
 
   transition(route) {
     Common.transition(route);
+    Cursor.resetForce(route);
     Cursor.resetPosition();
   }
 }
