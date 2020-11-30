@@ -15,6 +15,7 @@ class Common {
     // ステージ関連
     this.startZ = 0; // スタート位置
     this.goalZ = -5000; // ゴール位置
+    this.currentRoute = null; // 現在のページ
 
     // レイキャスターでホバー検知するリンク
     this.links = [];
@@ -40,7 +41,8 @@ class Common {
     this.cameraFollowLevel = 0.00002; // カメラの回転のカーソルへの追従度
   }
 
-  init($canvas, $route) {
+  init($canvas, route) {
+    this.currentRoute = route;
     this.setSize();
     // シーン作成
     this.scene = new THREE.Scene();
@@ -76,7 +78,7 @@ class Common {
     this.renderer.setClearColor(0xffffff, 0);
     this.renderer.setSize(this.size.w, this.size.h);
 
-    this.initInteractObjects($route);
+    this.initInteractObjects(route);
   }
 
   initInteractObjects(route) {
@@ -135,6 +137,8 @@ class Common {
     // インタラクションオブジェクトの更新
     this.deleteInteractObjects();
     this.initInteractObjects(route);
+
+    this.currentRoute = route;
   }
 }
 
