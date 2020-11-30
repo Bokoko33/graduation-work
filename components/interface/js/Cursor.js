@@ -30,6 +30,8 @@ class Cursor {
 
     this.pageTransition = null; // 遷移メソッドを.vueファイルから後から注入
 
+    this.hitBox = null;
+
     this.geometry = null;
     this.material = null;
     this.mesh = null;
@@ -82,7 +84,11 @@ class Cursor {
     // カーソル座標からまっすぐに伸びる光線ベクトルを生成
     this.raycaster.setFromCamera(this.rayPosition, Common.camera);
 
+    // リンクとの当たり判定
     this.rayCast();
+
+    // オブジェクトとの当たり判定
+    this.collisionDetection();
   }
 
   setPosition(pos) {
@@ -135,6 +141,17 @@ class Cursor {
       }
       this.intersected = null;
       this.clickable = false;
+    }
+  }
+
+  collisionDetection() {
+    const objects = Common.interactObjects;
+    for (let i = 0; i < objects.length; i++) {
+      const objPos = objects[i].position;
+      const objRad = objects[i].interactRadius;
+      if (this.glPosition.distanceTo(objPos) < objRad) {
+        // ここで当たった時の何かを書く
+      }
     }
   }
 
