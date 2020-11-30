@@ -12,7 +12,7 @@ export default class ArtworkGL {
     Common.init(this.props.$canvas, this.props.$route);
 
     // シーンができている必要があるのでここでinit
-    Cursor.init();
+    Cursor.init(this.props.$route);
 
     // リサイズイベントを登録
     window.addEventListener('resize', this.resize.bind(this));
