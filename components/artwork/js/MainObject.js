@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-export default class InteractObject {
+export default class MainObject {
   constructor(route, pos) {
     this.position = pos;
     this.defaultColor = 0xdc7bae;
@@ -9,9 +9,13 @@ export default class InteractObject {
       z: Math.random() - 1,
     };
 
+    // カーソルへの影響範囲
+    this.interactRadius = 150;
+
     this.geometry = null;
     this.material = null;
     this.mesh = null;
+    this.hitBox = null;
 
     this.init(route);
   }
@@ -19,13 +23,26 @@ export default class InteractObject {
   init(route) {
     switch (route) {
       case 'stage1':
-        this.geometry = new THREE.SphereBufferGeometry(150, 30, 30);
+        this.geometry = new THREE.SphereBufferGeometry(
+          this.interactRadius,
+          30,
+          30
+        );
         break;
       case 'stage2':
-        this.geometry = new THREE.BoxBufferGeometry(300, 300, 300);
+        this.geometry = new THREE.BoxBufferGeometry(
+          this.interactRadius * 2,
+          this.interactRadius * 2,
+          300
+        );
         break;
       case 'stage3':
-        this.geometry = new THREE.TorusBufferGeometry(150, 10, 30, 100);
+        this.geometry = new THREE.TorusBufferGeometry(
+          this.interactRadius,
+          10,
+          30,
+          100
+        );
         break;
       default:
         break;
@@ -40,6 +57,13 @@ export default class InteractObject {
       this.mesh = new THREE.Mesh(this.geometry, this.material);
       this.mesh.position.set(this.position.x, this.position.y, this.position.z);
     }
+
+    if (this.geometry.boundingSphere === null) {
+      this.geometry.computeBoundingSphere();
+      this.geometry.boundingSphere.radius *= 0.1;
+    }
+
+    this.hitBox = new THREE.Box3().setFromObject(this.mesh);
   }
 
   update() {

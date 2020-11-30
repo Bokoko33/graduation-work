@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import Link from './Link';
-import InteractObject from './InteractObject';
+import MainObject from './MainObject';
 
 class Common {
   constructor() {
@@ -89,7 +89,7 @@ class Common {
       const y = (this.size.h / 2) * this.iObjPositionCoefficient[i].y;
       const z = i * (this.goalZ / this.interactObjectsLength);
       const pos = new THREE.Vector3(x, y, z);
-      const obj = new InteractObject(route, pos);
+      const obj = new MainObject(route, pos);
       this.interactObjects.push(obj);
       this.scene.add(this.interactObjects[i].mesh);
     }
