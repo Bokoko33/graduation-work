@@ -25,6 +25,8 @@ class Cursor {
     this.normalWindForce = 0.05;
     this.normalSpaceForce = 0.07;
 
+    this.isInteracting = false;
+
     // 前進するときの慣性（1で無し、小さいほど重い）
     this.force = 0.03;
 
@@ -41,12 +43,10 @@ class Cursor {
     this.mesh = null;
   }
 
-  init() {
+  init(route) {
     // 球体
     this.geometry = new THREE.CircleBufferGeometry(20, 30);
     this.material = new THREE.MeshLambertMaterial({ color: 0x20eca3 });
-
-    // this.geometry.translate(0, 0, -2000);
 
     // メッシュを作成
     this.mesh = new THREE.Mesh(this.geometry, this.material);
@@ -57,6 +57,9 @@ class Cursor {
     // レイキャスター
     this.raycaster = new THREE.Raycaster();
     this.rayCastMeshes = Common.links.map((link) => link.mesh);
+
+    // 抵抗値を初期化
+    this.resetForce(route);
   }
 
   update() {
@@ -93,6 +96,9 @@ class Cursor {
 
     // オブジェクトとの当たり判定
     this.collisionDetection();
+
+    // カーソルに対する効果
+    this.effectCursor();
   }
 
   setPosition(pos) {
@@ -154,9 +160,24 @@ class Cursor {
       const objPos = objects[i].position;
       const objRad = objects[i].interactRadius;
       if (this.glPosition.distanceTo(objPos) < objRad) {
-        // ここで当たった時の何かを書く
-        break;
+        // 当たった場合はフラグをonにし関数を抜ける
+        this.isInteracting = true;
+        return;
       }
+    }
+    // 引っかからなければfalse
+    this.isInteracting = false;
+  }
+
+  effectCursor() {
+    // インタラクション中なら
+    if (this.isInteracting) {
+      if (Common.currentRoute === 'stage1') {
+        vm.$interFace.setForce(this.heavyWaterForce);
+      }
+    } else {
+      // インタラクションしていなければ、そのシーンの抵抗値に戻す
+      this.resetForce(Common.currentRoute);
     }
   }
 
