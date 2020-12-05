@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import Link from './Link';
 import MainObject from './MainObject';
+import Background from './Background';
 
 class Common {
   constructor() {
@@ -16,6 +17,7 @@ class Common {
     this.startZ = 0; // スタート位置
     this.goalZ = -5000; // ゴール位置
     this.currentRoute = null; // 現在のページ
+    this.backgroundPlane = null; // 背景のplane
 
     // レイキャスターでホバー検知するリンク
     this.links = [];
@@ -46,6 +48,12 @@ class Common {
     this.setSize();
     // シーン作成
     this.scene = new THREE.Scene();
+    // fogを設定
+    this.scene.fog = new THREE.Fog(0x008b8b, 100, -this.goalZ);
+    // 背景を設定
+    this.backgroundPlane = new Background();
+    this.backgroundPlane.init(route);
+    this.scene.add(this.backgroundPlane.mesh);
 
     // カメラを作成 (視野角, 画面のアスペクト比, カメラに映る最短距離, カメラに映る最遠距離)
     this.fovRad = (this.fov / 2) * (Math.PI / 180); // 視野角をラジアンに変換
@@ -54,15 +62,14 @@ class Common {
       this.fov,
       this.size.w / this.size.h,
       0.1,
-      3000
+      5000
     );
     this.camera.position.z = this.dist; // カメラを遠ざける
 
-    // 平行光源
-    const directionalLight = new THREE.DirectionalLight(0xffffff);
-    directionalLight.position.set(100, 100, 100);
-    // シーンに追加
-    this.scene.add(directionalLight);
+    // 光源
+    const light = new THREE.HemisphereLight(0xffffff, 0x008b8b, 1);
+    light.position.set(0.5, 1, 0.75);
+    this.scene.add(light);
 
     // 交差検知できるオブジェクトを作成、追加（ゴール地点に設置)
     const link = new Link(this.goalZ - 500);
@@ -78,26 +85,26 @@ class Common {
     // this.renderer.setClearColor(0x000000);
     this.renderer.setSize(this.size.w, this.size.h);
 
-    this.setupStage(route);
+    // this.setupStage(route);
 
     this.initInteractObjects(route);
   }
 
   setupStage(route) {
-    // ページごとのステージ初期化
-    let renderColor = 0xffffff;
-    switch (route) {
-      case 'stage1':
-        renderColor = 0x008b8b;
-        break;
-      case 'stage2':
-        break;
-      case 'stage3':
-        break;
-      default:
-        break;
-    }
-    this.renderer.setClearColor(renderColor);
+    // ページごとのステージの装飾を初期化
+    // let renderColor = 0xffffff;
+    // switch (route) {
+    //   case 'stage1':
+    //     renderColor = 0x008b8b;
+    //     break;
+    //   case 'stage2':
+    //     break;
+    //   case 'stage3':
+    //     break;
+    //   default:
+    //     break;
+    // }
+    // this.renderer.setClearColor(renderColor);
   }
 
   initInteractObjects(route) {
@@ -161,6 +168,17 @@ class Common {
     this.initInteractObjects(route);
 
     this.currentRoute = route;
+  }
+
+  cameraFollow(cursorPosition) {
+    // カーソルへのカメラ追従
+    this.camera.position.z = cursorPosition.z + this.dist;
+    this.camera.rotation.y = -cursorPosition.x * this.cameraFollowLevel;
+    this.camera.rotation.x = cursorPosition.y * this.cameraFollowLevel;
+  }
+
+  backgroundFollow(cursorZ) {
+    this.backgroundPlane.setPosition(cursorZ);
   }
 }
 
