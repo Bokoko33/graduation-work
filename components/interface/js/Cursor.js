@@ -83,6 +83,7 @@ class Cursor {
 
     // カメラと背景をカーソルに追従
     Common.cameraFollow(this.glPosition);
+    Common.backgroundFollow(this.glPosition.z);
 
     // レイキャスト
     // 専用の座標に変換
