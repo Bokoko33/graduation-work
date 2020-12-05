@@ -71,19 +71,18 @@ class Cursor {
       if (this.glPosition.z > Common.goalZ) {
         this.inputZ -= this.moveSpeed;
       }
+      // } else if (this.glPosition.z < Common.startZ) {
+      //   // 離している時、原点より進んでいれば、常に少し後ろに下がり続ける
+      //   this.inputZ += this.backSpeed;
     }
-    // else if (this.glPosition.z < Common.startZ) {
-    //   // 離している時、原点より進んでいれば、常に少し後ろに下がり続ける
-    //   this.glPosition.z += this.backSpeed;
-    // }
 
     this.setPosition(vm.$interFace.cursorPos);
 
     // 慣性を効かせたカーソルの前進
     this.goStraight();
 
-    // カメラをカーソルに追従
-    this.cameraFollow();
+    // カメラと背景をカーソルに追従
+    Common.cameraFollow(this.glPosition);
 
     // レイキャスト
     // 専用の座標に変換
@@ -183,12 +182,6 @@ class Cursor {
 
   goStraight() {
     this.glPosition.z += (this.inputZ - this.glPosition.z) * this.force;
-  }
-
-  cameraFollow() {
-    Common.camera.position.z = this.glPosition.z + Common.dist;
-    Common.camera.rotation.y = -this.glPosition.x * Common.cameraFollowLevel;
-    Common.camera.rotation.x = this.glPosition.y * Common.cameraFollowLevel;
   }
 
   setClickEvent(callback) {
