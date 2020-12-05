@@ -15,7 +15,6 @@ export default class MainObject {
     this.geometry = null;
     this.material = null;
     this.mesh = null;
-    this.hitBox = null;
 
     this.init(route);
   }
@@ -57,13 +56,6 @@ export default class MainObject {
       this.mesh = new THREE.Mesh(this.geometry, this.material);
       this.mesh.position.set(this.position.x, this.position.y, this.position.z);
     }
-
-    if (this.geometry.boundingSphere === null) {
-      this.geometry.computeBoundingSphere();
-      this.geometry.boundingSphere.radius *= 0.1;
-    }
-
-    this.hitBox = new THREE.Box3().setFromObject(this.mesh);
   }
 
   update() {
