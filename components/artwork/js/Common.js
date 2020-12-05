@@ -75,10 +75,29 @@ class Common {
       alpha: true,
     });
     this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.setClearColor(0xffffff, 0);
+    // this.renderer.setClearColor(0x000000);
     this.renderer.setSize(this.size.w, this.size.h);
 
+    this.setupStage(route);
+
     this.initInteractObjects(route);
+  }
+
+  setupStage(route) {
+    // ページごとのステージ初期化
+    let renderColor = 0xffffff;
+    switch (route) {
+      case 'stage1':
+        renderColor = 0x008b8b;
+        break;
+      case 'stage2':
+        break;
+      case 'stage3':
+        break;
+      default:
+        break;
+    }
+    this.renderer.setClearColor(renderColor);
   }
 
   initInteractObjects(route) {
@@ -134,6 +153,9 @@ class Common {
   }
 
   transition(route) {
+    // ステージの更新
+    this.setupStage(route);
+
     // インタラクションオブジェクトの更新
     this.deleteInteractObjects();
     this.initInteractObjects(route);
