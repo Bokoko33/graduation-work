@@ -47,7 +47,9 @@ class Cursor {
   init(route) {
     // 球体
     this.geometry = new THREE.CircleBufferGeometry(20, 30);
-    this.material = new THREE.MeshLambertMaterial({ color: 0x20eca3 });
+    this.material = new THREE.MeshLambertMaterial({
+      color: 0x20eca3,
+    });
 
     // メッシュを作成
     this.mesh = new THREE.Mesh(this.geometry, this.material);
@@ -82,7 +84,7 @@ class Cursor {
     // 慣性を効かせたカーソルの前進
     this.goStraight();
 
-    // カメラと背景をカーソルに追従
+    // カメラ、背景をカーソルに追従
     Common.cameraFollow(this.glPosition);
     Stage.backgroundFollow(this.glPosition.z);
 
@@ -138,8 +140,9 @@ class Cursor {
       const dist = Math.abs(
         intersects[0].object.position.z - this.glPosition.z
       );
-      if (dist > 800) return;
+      if (dist > Common.clickableDistance) return;
 
+      // 交差検知したメッシュから、インスタンスを逆探知
       this.intersected = Common.links.find(
         (link) => link.mesh === intersects[0].object
       );
@@ -186,6 +189,7 @@ class Cursor {
     this.glPosition.z += (this.inputZ - this.glPosition.z) * this.force;
   }
 
+  // vueから呼ばれる
   setClickEvent(callback) {
     this.pageTransition = callback;
     vm.$interFace.setClickEvent(this.clickLink.bind(this));
@@ -194,7 +198,8 @@ class Cursor {
   clickLink() {
     if (!this.clickable) return;
     // InterFace.vueの遷移メソッド
-    this.pageTransition();
+    // 現在交差中のオブジェクト(Linkクラス)のパス名を渡す
+    this.pageTransition(this.intersected.nextPathName);
   }
 
   resetForce(route) {

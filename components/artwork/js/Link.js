@@ -1,25 +1,41 @@
 import * as THREE from 'three';
 
-export default class Link {
-  constructor(z) {
+export default class GoalLink {
+  constructor(pos, path) {
     this.radius = 60;
-    this.position = new THREE.Vector3(0, 0, z);
+    this.position = pos;
     this.defaultColor = new THREE.Color(0xdc7bae);
     this.hoverColor = new THREE.Color(0xff0000);
+
+    // このリンクをクリックしたときの遷移先
+    // nextならゴール地点のリンクなので次のステージを指す
+    this.nextPathName = path;
 
     this.geometry = null;
     this.material = null;
     this.mesh = null;
 
-    this.init();
+    this.init(path);
   }
 
-  init() {
-    this.geometry = new THREE.CircleBufferGeometry(this.radius, 50);
-    this.material = new THREE.MeshLambertMaterial({
-      color: this.defaultColor,
-      side: THREE.DoubleSide,
-    });
+  init(path) {
+    if (path === 'next') {
+      this.geometry = new THREE.CircleBufferGeometry(this.radius, 50);
+      this.material = new THREE.MeshLambertMaterial({
+        color: this.defaultColor,
+        side: THREE.DoubleSide,
+      });
+    } else {
+      this.geometry = new THREE.PlaneBufferGeometry(
+        this.radius,
+        this.radius,
+        50
+      );
+      this.material = new THREE.MeshLambertMaterial({
+        color: this.defaultColor,
+        side: THREE.DoubleSide,
+      });
+    }
 
     // メッシュを作成
     this.mesh = new THREE.Mesh(this.geometry, this.material);
