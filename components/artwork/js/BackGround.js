@@ -1,9 +1,13 @@
 import * as THREE from 'three';
+import vertexShader from '../glsl/background.vert';
+import defaultFragmentShader from '../glsl/bgDefault.frag';
+import waterFragmentShader from '../glsl/bgWater.frag';
+import stormFragmentShader from '../glsl/bgStorm.frag';
+import spaceFragmentShader from '../glsl/bgSpace.frag';
+import { colors } from './variable';
 
 export default class Background {
-  constructor(z) {
-    this.positionZ = 0;
-
+  constructor() {
     this.geometry = null;
     this.material = null;
     this.mesh = null;
@@ -11,22 +15,30 @@ export default class Background {
 
   init(route) {
     this.geometry = new THREE.PlaneBufferGeometry(2, 2);
+    let bgColor = colors.pink; // デフォルト色はピンク
+    let frag = defaultFragmentShader; // デフォルトの背景シェーダー
+    switch (route) {
+      case 'stage1':
+        bgColor = colors.blue;
+        frag = waterFragmentShader;
+        break;
+      case 'stage2':
+        bgColor = colors.green;
+        frag = stormFragmentShader;
+        break;
+      case 'stage3':
+        bgColor = colors.black;
+        frag = spaceFragmentShader;
+        break;
+      default:
+        break;
+    }
     this.material = new THREE.ShaderMaterial({
-      vertexShader: `
-          varying vec2 vUv;
-          
-          void main() {
-              vUv = uv;
-              gl_Position = vec4( position, 1.0 );    
-          }
-        `,
-      fragmentShader: `
-          varying vec2 vUv;
-           
-          void main() {
-              gl_FragColor = vec4( 0.0, vUv.x, vUv.y, 1.0 );
-          }
-        `,
+      uniforms: {
+        uColor: { type: 'c', value: new THREE.Color(bgColor) },
+      },
+      vertexShader,
+      fragmentShader: frag,
       depthTest: false,
     });
 
@@ -36,6 +48,7 @@ export default class Background {
   }
 
   setPosition(z) {
+    // カーソルに追従させる
     this.mesh.position.z = z;
   }
 
