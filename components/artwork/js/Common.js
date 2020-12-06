@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import Link from './Link';
 import MainObject from './MainObject';
 import Background from './Background';
-
+import { colors } from './variable';
 class Common {
   constructor() {
     this.size = {
@@ -17,7 +17,14 @@ class Common {
     this.startZ = 0; // スタート位置
     this.goalZ = -5000; // ゴール位置
     this.currentRoute = null; // 現在のページ
-    this.backgroundPlane = null; // 背景のplane
+
+    // シーンごとに変えるFog
+    this.fogNear = 100;
+    this.fogFar = Math.abs(this.goalZ);
+    this.fogList = [];
+
+    // 背景
+    this.backgroundPlane = null;
 
     // レイキャスターでホバー検知するリンク
     this.links = [];
@@ -48,12 +55,16 @@ class Common {
     this.setSize();
     // シーン作成
     this.scene = new THREE.Scene();
-    // fogを設定
-    this.scene.fog = new THREE.Fog(0x008b8b, 100, -this.goalZ);
-    // 背景を設定
-    this.backgroundPlane = new Background();
-    this.backgroundPlane.init(route);
-    this.scene.add(this.backgroundPlane.mesh);
+    // fogを作成
+    this.fogList = {
+      pink: new THREE.Fog(colors.pink, this.fogNear, this.fogFar),
+      blue: new THREE.Fog(colors.blue, this.fogNear, this.fogFar),
+      green: new THREE.Fog(colors.green, this.fogNear, this.fogFar),
+      black: new THREE.Fog(colors.black, this.fogNear, this.fogFar),
+    };
+
+    // シーンの装飾
+    this.setStageEffects(route);
 
     // カメラを作成 (視野角, 画面のアスペクト比, カメラに映る最短距離, カメラに映る最遠距離)
     this.fovRad = (this.fov / 2) * (Math.PI / 180); // 視野角をラジアンに変換
@@ -85,26 +96,38 @@ class Common {
     // this.renderer.setClearColor(0x000000);
     this.renderer.setSize(this.size.w, this.size.h);
 
-    // this.setupStage(route);
-
+    this.initBackground(route);
     this.initInteractObjects(route);
   }
 
-  setupStage(route) {
-    // ページごとのステージの装飾を初期化
-    // let renderColor = 0xffffff;
-    // switch (route) {
-    //   case 'stage1':
-    //     renderColor = 0x008b8b;
-    //     break;
-    //   case 'stage2':
-    //     break;
-    //   case 'stage3':
-    //     break;
-    //   default:
-    //     break;
-    // }
-    // this.renderer.setClearColor(renderColor);
+  setStageEffects(route) {
+    switch (route) {
+      case 'stage1':
+        this.scene.fog = this.fogList.blue;
+        break;
+      case 'stage2':
+        this.scene.fog = this.fogList.green;
+        break;
+      case 'stage3':
+        this.scene.fog = this.fogList.black;
+        break;
+      default:
+        this.scene.fog = this.fogList.pink;
+        break;
+    }
+  }
+
+  initBackground(route) {
+    // 背景を設定
+    this.backgroundPlane = new Background();
+    this.backgroundPlane.init(route, this.colors);
+    this.scene.add(this.backgroundPlane.mesh);
+  }
+
+  deleteBackground() {
+    // 背景を削除
+    this.scene.remove(this.backgroundPlane.mesh);
+    this.backgroundPlane.delete();
   }
 
   initInteractObjects(route) {
@@ -160,8 +183,12 @@ class Common {
   }
 
   transition(route) {
-    // ステージの更新
-    this.setupStage(route);
+    // 背景の更新
+    this.deleteBackground();
+    this.initBackground(route);
+
+    // ステージの装飾
+    this.setStageEffects(route);
 
     // インタラクションオブジェクトの更新
     this.deleteInteractObjects();
