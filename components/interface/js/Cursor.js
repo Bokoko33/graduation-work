@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import * as THREE from 'three';
 import Common from '../../artwork/js/Common';
+import Stage from '../../artwork/js/Stage';
 
 // InterFace.jsを触るためのvueインスタンス
 const vm = new Vue();
@@ -8,7 +9,7 @@ const vm = new Vue();
 class Cursor {
   constructor() {
     // webGL座標に置き換えたもの
-    this.glPosition = new THREE.Vector3(0, 0, Common.startZ);
+    this.glPosition = new THREE.Vector3(0, 0, Stage.startZ);
     // レイキャスト用の-1~1の座標（初期値を-1にし、画面中央付近のオブジェクトと初期値で交差してしまうのを防ぐ)
     this.rayPosition = new THREE.Vector2(-1, -1);
     // 交差しているオブジェクト
@@ -68,10 +69,10 @@ class Cursor {
 
     // マウス押しっぱなしで進む
     if (vm.$interFace.isMousePressed) {
-      if (this.glPosition.z > Common.goalZ) {
+      if (this.glPosition.z > Stage.goalZ) {
         this.inputZ -= this.moveSpeed;
       }
-      // } else if (this.glPosition.z < Common.startZ) {
+      // } else if (this.glPosition.z < Stage.startZ) {
       //   // 離している時、原点より進んでいれば、常に少し後ろに下がり続ける
       //   this.inputZ += this.backSpeed;
     }
@@ -83,7 +84,7 @@ class Cursor {
 
     // カメラと背景をカーソルに追従
     Common.cameraFollow(this.glPosition);
-    Common.backgroundFollow(this.glPosition.z);
+    Stage.backgroundFollow(this.glPosition.z);
 
     // レイキャスト
     // 専用の座標に変換
@@ -155,7 +156,7 @@ class Cursor {
   }
 
   collisionDetection() {
-    const objects = Common.interactObjects;
+    const objects = Stage.interactObjects;
     for (let i = 0; i < objects.length; i++) {
       const objPos = objects[i].position;
       const objRad = objects[i].interactRadius;
@@ -218,8 +219,8 @@ class Cursor {
 
   resetPosition() {
     // 位置をスタートに戻す
-    this.inputZ = Common.startZ;
-    this.glPosition.z = Common.startZ;
+    this.inputZ = Stage.startZ;
+    this.glPosition.z = Stage.startZ;
   }
 }
 
