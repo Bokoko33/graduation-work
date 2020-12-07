@@ -13,6 +13,9 @@ class Common {
     this.renderer = null;
     this.cameraGroup = null;
 
+    // グローバルメニューのパス名（画面右端から順に）
+    this.globalNavNames = ['stage3', 'stage2', 'stage1'];
+
     this.currentRoute = null; // 現在のページ
 
     // レイキャスターでホバー検知するリンク（グローバルもステージ内リンクも含む）
@@ -42,6 +45,11 @@ class Common {
       0.1,
       5000
     );
+    // カメラとグローバルメニューをまとめるグループ（カメラの回転に追従させるため）
+    this.cameraGroup = new THREE.Group();
+    this.cameraGroup.position.z = this.dist; // カメラ（グループ）を遠ざける
+    this.cameraGroup.add(this.camera);
+    this.scene.add(this.cameraGroup);
 
     // レンダラー設定
     this.renderer = new THREE.WebGLRenderer({
@@ -49,37 +57,18 @@ class Common {
       alpha: true,
     });
     this.renderer.setPixelRatio(window.devicePixelRatio);
-    // this.renderer.setClearColor(0x000000);
     this.renderer.setSize(this.size.w, this.size.h);
 
     // ステージ関連の初期化
     Stage.init();
     Stage.setLight(this.scene);
-    // Stage.setGoalLink(this.scene, this.links);
     Stage.setFog(route, this.scene);
+    Stage.setGoalLinks(this.scene, this.links, this.currentRoute);
     Stage.initBackground(route, this.scene);
     Stage.initInteractObjects(route, this.scene, this.size);
 
-    const menu = new Link(
-      new THREE.Vector3(
-        this.size.w / 2 - 100,
-        this.size.h / 2 - 100,
-        -this.clickableDistance
-      ),
-      'stage1'
-    );
-    this.scene.add(menu.mesh);
-    this.links.push(menu);
-
-    const goal = new Link(new THREE.Vector3(0, 0, Stage.goalZ - 500), 'next');
-    this.scene.add(goal.mesh);
-    this.links.push(goal);
-
-    this.cameraGroup = new THREE.Group();
-    this.cameraGroup.position.z = this.dist; // カメラを遠ざける
-    this.cameraGroup.add(this.camera);
-    this.cameraGroup.add(menu.mesh);
-    this.scene.add(this.cameraGroup);
+    // グローバルナビゲーションを作成
+    this.createGlobalNav();
   }
 
   setSize() {
@@ -107,21 +96,49 @@ class Common {
     this.renderer.render(this.scene, this.camera);
   }
 
+  createGlobalNav() {
+    const headerMarginSide = this.size.w * 0.08;
+    const headerMarginTop = 40;
+    const headerMarginBetween = 180;
+    for (let i = 0; i < this.globalNavNames.length; i++) {
+      const menu = new Link(
+        new THREE.Vector3(
+          this.size.w / 2 - headerMarginSide - headerMarginBetween * i,
+          this.size.h / 2 - headerMarginTop,
+          -this.clickableDistance
+        ),
+        this.globalNavNames[i],
+        'global'
+      );
+      menu.mesh.renderOrder = 999;
+      this.scene.add(menu.mesh);
+      this.links.push(menu);
+      // カメラの回転に追従させるためグループへ追加
+      this.cameraGroup.add(menu.mesh);
+    }
+
+    // ロゴを作成
+    const logo = new Link(
+      new THREE.Vector3(
+        -this.size.w / 2 + headerMarginSide,
+        this.size.h / 2 - headerMarginTop,
+        -this.clickableDistance
+      ),
+      '/',
+      'global'
+    );
+    logo.mesh.renderOrder = 999;
+    this.scene.add(logo.mesh);
+    this.links.push(logo);
+    // カメラの回転に追従させるためグループへ追加
+    this.cameraGroup.add(logo.mesh);
+  }
+
   cameraFollow(cursorPosition) {
     // カーソルへのカメラ追従
     this.cameraGroup.position.z = cursorPosition.z + this.dist;
     this.cameraGroup.rotation.y = -cursorPosition.x * this.cameraFollowLevel;
     this.cameraGroup.rotation.x = cursorPosition.y * this.cameraFollowLevel;
-  }
-
-  globalLinksFollow(cursorPosition) {
-    // カーソルへのグローバルメニュー追従
-    // for (let i = 0; i < this.globalLinks.length; i++) {
-    //   const x = -cursorPosition.x * this.cameraFollowLevel;
-    //   const y = cursorPosition.y * this.cameraFollowLevel;
-    //   const z = cursorPosition.z - 10;
-    //   this.globalLinks[i].updatePosition(new THREE.Vector3(x, y, z));
-    // }
   }
 
   transition(route) {
@@ -131,6 +148,7 @@ class Common {
     Stage.setFog(route, this.scene);
     Stage.deleteInteractObjects(this.scene);
     Stage.initInteractObjects(route, this.scene, this.size);
+    Stage.resetGoalVisible(route);
 
     this.currentRoute = route;
   }
