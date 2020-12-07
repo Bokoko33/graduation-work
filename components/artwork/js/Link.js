@@ -2,34 +2,58 @@ import * as THREE from 'three';
 import { colors } from './variable';
 
 export default class GoalLink {
-  constructor(pos, path) {
+  constructor(pos, path, type) {
     this.position = pos;
-    this.defaultColor = new THREE.Color(colors.gray);
-    this.hoverColor = new THREE.Color(colors.white);
+
+    // global or goal
+    this.type = type;
 
     // このリンクをクリックしたときの遷移先
     // nextならゴール地点のリンクなので次のステージを指す
+    // Cursor.jsから参照される
     this.nextPathName = path;
+
+    this.defaultColor = new THREE.Color(colors.gray);
+    this.hoverColor = new THREE.Color(colors.white);
 
     this.geometry = null;
     this.material = null;
     this.mesh = null;
 
-    this.init(path);
+    this.init();
   }
 
-  init(path) {
-    if (path === 'next') {
-      this.geometry = new THREE.CircleBufferGeometry(60, 50);
-      this.material = new THREE.MeshLambertMaterial({
-        color: this.defaultColor,
-        side: THREE.DoubleSide,
-      });
-    } else {
-      this.geometry = new THREE.PlaneBufferGeometry(100, 40, 2);
+  init() {
+    if (this.type === 'global') {
+      // テクスチャわけ
+      // let texture = null;
+      // switch (this.nextPathName) {
+      //   case 'stage1':
+      //     break;
+      //   case 'stage2':
+      //     break;
+      //   case 'stage3':
+      //     break;
+      // }
+      this.geometry = new THREE.PlaneBufferGeometry(100, 40, 2); // サイズはいずれ画像から取る
       this.material = new THREE.MeshLambertMaterial({
         color: this.defaultColor,
         depthTest: false,
+      });
+    } else if (this.type === 'goal') {
+      // テクスチャわけ
+      // let texture = null;
+      // switch (this.nextPathName) {
+      //   case 'stage1':
+      //     break;
+      //   case 'stage2':
+      //     break;
+      //   case 'stage3':
+      //     break;
+      // }
+      this.geometry = new THREE.CircleBufferGeometry(60, 50);
+      this.material = new THREE.MeshLambertMaterial({
+        color: this.defaultColor,
       });
     }
 
