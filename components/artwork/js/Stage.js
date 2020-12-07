@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import MainObject from './MainObject';
 import Background from './Background';
+import Link from './Link';
 import { colors } from './variable';
 class Stage {
   constructor() {
@@ -31,9 +32,12 @@ class Stage {
       { x: 0.3, y: 0.7 },
       { x: -0.5, y: -0.3 },
     ];
+
+    // ゴール地点に置くリンク
+    this.goalLink = null;
   }
 
-  init(route) {
+  init() {
     // fogを作成
     this.fogList = {
       pink: new THREE.Fog(colors.pink, this.fogNear, this.fogFar),
@@ -66,6 +70,12 @@ class Stage {
         scene.fog = this.fogList.pink;
         break;
     }
+  }
+
+  setGoalLink(scene, linkList) {
+    this.goalLink = new Link(new THREE.Vector3(0, 0, this.goalZ - 500), 'next');
+    scene.add(this.goalLink.mesh);
+    linkList.push(this.goalLink);
   }
 
   initBackground(route, scene) {
