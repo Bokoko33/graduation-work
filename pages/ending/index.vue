@@ -1,5 +1,5 @@
 <template>
-  <div class="stage1">終わり</div>
+  <div class="ending">終わり</div>
 </template>
 
 <script>
