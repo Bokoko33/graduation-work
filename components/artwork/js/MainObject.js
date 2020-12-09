@@ -9,8 +9,8 @@ export default class MainObject {
       z: Math.random() - 1,
     };
 
-    // カーソルへの影響範囲
-    this.interactRadius = 150;
+    // カーソルへの影響範囲（オブジェクトの半径ではなく、カーソルがインタラクションし始める範囲）
+    this.interactRadius = 0;
 
     this.geometry = null;
     this.material = null;
@@ -22,6 +22,7 @@ export default class MainObject {
   init(route) {
     switch (route) {
       case 'stage1':
+        this.interactRadius = 150;
         this.geometry = new THREE.SphereBufferGeometry(
           this.interactRadius,
           30,
@@ -29,18 +30,19 @@ export default class MainObject {
         );
         break;
       case 'stage2':
+        this.interactRadius = 300;
         this.geometry = new THREE.BoxBufferGeometry(
-          this.interactRadius * 2,
-          this.interactRadius * 2,
-          300
+          this.interactRadius * 0.2,
+          this.interactRadius * 0.2,
+          this.interactRadius * 0.2
         );
         break;
       case 'stage3':
-        this.geometry = new THREE.TorusBufferGeometry(
-          this.interactRadius,
-          10,
+        this.interactRadius = 200;
+        this.geometry = new THREE.SphereBufferGeometry(
+          this.interactRadius * 0.5,
           30,
-          100
+          30
         );
         break;
       default:
