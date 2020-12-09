@@ -56,6 +56,9 @@ export default class PanelObject {
       this.geometry = new THREE.PlaneBufferGeometry(600, 400, 2);
       this.material = new THREE.MeshLambertMaterial({
         color: this.defaultColor,
+        opacity: 0.6,
+        // depthWrite: false,
+        transparent: true,
       });
     }
 
