@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { colors } from './variable';
 
-export default class GoalLink {
+export default class Link {
   constructor(pos, path, type) {
     this.position = pos;
 
@@ -13,7 +13,7 @@ export default class GoalLink {
     // Cursor.jsから参照される
     this.nextPathName = path;
 
-    this.defaultColor = new THREE.Color(colors.gray);
+    this.defaultColor = null;
     this.hoverColor = new THREE.Color(colors.white);
 
     this.geometry = null;
@@ -25,14 +25,17 @@ export default class GoalLink {
 
   init() {
     if (this.type === 'global') {
+      this.defaultColor = new THREE.Color(colors.gray);
       // テクスチャわけ
-      // let texture = null;
       // switch (this.nextPathName) {
       //   case 'stage1':
+      //     this.defaultColor = new THREE.Color(colors.blue);
       //     break;
       //   case 'stage2':
+      //     this.defaultColor = new THREE.Color(colors.green);
       //     break;
       //   case 'stage3':
+      //     this.defaultColor = new THREE.Color(colors.black);
       //     break;
       // }
       this.geometry = new THREE.PlaneBufferGeometry(100, 40, 2); // サイズはいずれ画像から取る
@@ -42,16 +45,21 @@ export default class GoalLink {
       });
     } else if (this.type === 'goal') {
       // テクスチャわけ
-      // let texture = null;
-      // switch (this.nextPathName) {
-      //   case 'stage1':
-      //     break;
-      //   case 'stage2':
-      //     break;
-      //   case 'stage3':
-      //     break;
-      // }
-      this.geometry = new THREE.CircleBufferGeometry(60, 50);
+      switch (this.nextPathName) {
+        case '/':
+          this.defaultColor = new THREE.Color(colors.pink);
+          break;
+        case 'stage1':
+          this.defaultColor = new THREE.Color(colors.blue);
+          break;
+        case 'stage2':
+          this.defaultColor = new THREE.Color(colors.green);
+          break;
+        case 'stage3':
+          this.defaultColor = new THREE.Color(colors.black);
+          break;
+      }
+      this.geometry = new THREE.CircleBufferGeometry(40, 50);
       this.material = new THREE.MeshLambertMaterial({
         color: this.defaultColor,
       });
