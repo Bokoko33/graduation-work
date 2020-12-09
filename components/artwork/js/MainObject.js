@@ -38,9 +38,9 @@ export default class MainObject {
         );
         break;
       case 'stage3':
-        this.interactRadius = 200;
+        this.interactRadius = 240;
         this.geometry = new THREE.SphereBufferGeometry(
-          this.interactRadius * 0.5,
+          this.interactRadius * 0.1,
           30,
           30
         );

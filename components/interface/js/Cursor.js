@@ -22,8 +22,9 @@ class Cursor {
       default: 0.3,
       normalWater: 0.03,
       heavyWater: 0.01,
-      normalWind: 0.05,
+      normalStorm: 0.05,
       normalSpace: 0.07,
+      attractedSpace: 0.1,
     };
     this.currentForce = this.forceList.default;
 
@@ -89,11 +90,12 @@ class Cursor {
       //   this.inputZ += this.backSpeed;
     }
 
-    // カーソルの座標を適用適用
-    this.setCursorPosition(
-      this.convertedPosition(vm.$interFace.cursorPos),
-      this.currentForce
-    );
+    // カーソルの座標を変換
+    const glPosition = this.convertedPosition(vm.$interFace.cursorPos);
+    // カーソルの速度を決定
+    this.calcVelocity(glPosition);
+    // カーソルの座標を適用
+    this.setCursorPosition();
 
     // 慣性を効かせたカーソルの前進
     this.goStraight();
@@ -113,9 +115,6 @@ class Cursor {
 
     // オブジェクトとの当たり判定
     this.collisionDetection();
-
-    // カーソルに対する効果
-    this.effectCursor();
   }
 
   convertedPosition(pos) {
@@ -126,15 +125,73 @@ class Cursor {
     return { x: cx, y: cy };
   }
 
-  setCursorPosition(targetPos, force) {
-    // カーソルの向かうターゲット,慣性力。通常時はカーソル座標を第一引数に取る
-    const vx = (targetPos.x - this.cursorPosition.x) * force;
-    const vy = (targetPos.y - this.cursorPosition.y) * force;
-    this.velocity.set(vx, vy, 0);
-    this.velocity.add(this.acceleration);
+  calcVelocity(targetPos) {
+    // 次の座標までの移動距離
+    let vx = targetPos.x - this.cursorPosition.x;
+    let vy = targetPos.y - this.cursorPosition.y;
+    if (!this.isInteracting) {
+      // 通常時は慣性をかけて"set"する
+      vx *= this.currentForce;
+      vy *= this.currentForce;
+      this.velocity.set(vx, vy, 0);
+    } else {
+      // インタラクション時
+
+      switch (Common.currentRoute) {
+        case 'stage1': {
+          // より重い抵抗をかける
+          vx *= this.forceList.heavyWater;
+          vy *= this.forceList.heavyWater;
+          this.velocity.set(vx, vy, 0);
+          break;
+        }
+        case 'stage2': {
+          // 抵抗をかけて"add"する
+          vx *= this.forceList.normalStorm;
+          vy *= this.forceList.normalStorm;
+          const vec = new THREE.Vector3(vx, vy, 0);
+          this.velocity.add(vec);
+
+          // 引力を定義
+          const attractX =
+            (this.interactingObject.position.x - this.cursorPosition.x) *
+            this.forceList.attractedSpace;
+          const attractY =
+            (this.interactingObject.position.y - this.cursorPosition.y) *
+            this.forceList.attractedSpace;
+
+          // 加速度を設定してさらに速度に加算
+          this.acceleration.set(attractX, attractY, 0);
+          this.velocity.add(this.acceleration);
+          break;
+        }
+        case 'stage3': {
+          // 抵抗をかけて"add"する
+          vx *= this.forceList.normalSpace;
+          vy *= this.forceList.normalSpace;
+          const vec = new THREE.Vector3(vx, vy, 0);
+          this.velocity.add(vec);
+
+          // 引力を定義
+          const attractX =
+            (this.interactingObject.position.x - this.cursorPosition.x) *
+            this.forceList.attractedSpace;
+          const attractY =
+            (this.interactingObject.position.y - this.cursorPosition.y) *
+            this.forceList.attractedSpace;
+
+          // 加速度を設定してさらに速度に加算
+          this.acceleration.set(attractX, attractY, 0);
+          this.velocity.add(this.acceleration);
+          break;
+        }
+      }
+    }
+  }
+
+  setCursorPosition() {
     this.cursorPosition.add(this.velocity);
     this.cursorPosition.setZ(this.cursorPosition.z);
-
     this.mesh.position.set(
       this.cursorPosition.x,
       this.cursorPosition.y,
@@ -200,25 +257,6 @@ class Cursor {
     this.isInteracting = false;
   }
 
-  effectCursor() {
-    // インタラクション中なら
-    if (this.isInteracting) {
-      if (Common.currentRoute === 'stage1') {
-        vm.$interFace.setForce(this.heavyWaterForce);
-      } else if (Common.currentRoute === 'stage3') {
-        // 引き込まれる
-        const cx = this.interactingObject.position.x - this.mesh.position.x;
-        const cy = this.interactingObject.position.y - this.mesh.position.y;
-        this.acceleration.set(cx, cy, 0);
-        this.acceleration.multiplyScalar(0.1);
-        this.setCursorPosition(this.interactingObject.position, 0.1);
-      }
-    } else {
-      // インタラクションしていなければ、そのシーンの抵抗値に戻す
-      this.resetForce(Common.currentRoute);
-    }
-  }
-
   goStraight() {
     const z = (this.inputZ - this.cursorPosition.z) * this.straightInertia;
     this.cursorPosition.z += z;
@@ -244,7 +282,7 @@ class Cursor {
         force = this.forceList.normalWater;
         break;
       case 'stage2':
-        force = this.forceList.normalWind;
+        force = this.forceList.normalStorm;
         break;
       case 'stage3':
         force = this.forceList.normalSpace;
