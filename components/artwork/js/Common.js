@@ -14,7 +14,7 @@ class Common {
     this.cameraGroup = null;
 
     // グローバルメニューのパス名（画面右端から順に）
-    this.globalNavNames = ['stage3', 'stage2', 'stage1'];
+    this.globalNavNames = ['about', 'stage3', 'stage2', 'stage1'];
 
     this.currentRoute = null; // 現在のページ
 
@@ -115,7 +115,7 @@ class Common {
   createGlobalNav() {
     const headerMarginSide = this.size.w * 0.08;
     const headerMarginTop = 40;
-    const headerMarginBetween = 180;
+    const headerMarginBetween = 120;
     for (let i = 0; i < this.globalNavNames.length; i++) {
       const menu = new Link(
         new THREE.Vector3(
