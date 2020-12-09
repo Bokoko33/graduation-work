@@ -36,13 +36,14 @@ class Common {
     // シーン作成
     this.scene = new THREE.Scene();
 
-    // カメラを作成 (視野角, 画面のアスペクト比, カメラに映る最短距離, カメラに映る最遠距離)
+    // カメラを作成
     this.fovRad = (this.fov / 2) * (Math.PI / 180); // 視野角をラジアンに変換
     this.dist = this.size.h / 2 / Math.tan(this.fovRad); // ウィンドウぴったりのカメラ距離
+    // (視野角, 画面のアスペクト比, カメラに映る最短距離, カメラに映る最遠距離)
     this.camera = new THREE.PerspectiveCamera(
       this.fov,
       this.size.w / this.size.h,
-      0.1,
+      1,
       5000
     );
     // カメラとグローバルメニューをまとめるグループ（カメラの回転に追従させるため）
@@ -64,7 +65,9 @@ class Common {
     Stage.setLight(this.scene);
     Stage.setFog(route, this.scene);
     Stage.setGoalLinks(this.scene, this.links, this.currentRoute);
+
     Stage.initBackground(route, this.scene);
+    Stage.initPanels(route, this.scene);
     Stage.initInteractObjects(route, this.scene, this.size);
 
     // グローバルナビゲーションを作成
@@ -85,15 +88,28 @@ class Common {
     this.renderer.setSize(this.size.w, this.size.h);
   }
 
-  render() {
+  update() {
     // リンクらの更新
     for (let i = 0; i < this.links.length; i++) {
       this.links[i].update();
     }
+
+    // 通り過ぎたパネルを非表示にする処理
+    this.hideObjectOutOfCamera(Stage.topPanel.mesh);
+    for (let i = 0; i < Stage.descriptionPanels.length; i++) {
+      this.hideObjectOutOfCamera(Stage.descriptionPanels[i].mesh);
+    }
+
     // ステージのループ
     Stage.update();
 
     this.renderer.render(this.scene, this.camera);
+  }
+
+  hideObjectOutOfCamera(mesh) {
+    if (Math.abs(this.cameraGroup.position.z - mesh.position.z) < 600) {
+      mesh.visible = false;
+    }
   }
 
   createGlobalNav() {
@@ -105,12 +121,12 @@ class Common {
         new THREE.Vector3(
           this.size.w / 2 - headerMarginSide - headerMarginBetween * i,
           this.size.h / 2 - headerMarginTop,
-          -this.clickableDistance
+          -this.dist
         ),
         this.globalNavNames[i],
         'global'
       );
-      menu.mesh.renderOrder = 999;
+      menu.mesh.renderOrder = 999; // 一番手前にレンダリングしたい
       this.scene.add(menu.mesh);
       this.links.push(menu);
       // カメラの回転に追従させるためグループへ追加
@@ -122,7 +138,7 @@ class Common {
       new THREE.Vector3(
         -this.size.w / 2 + headerMarginSide,
         this.size.h / 2 - headerMarginTop,
-        -this.clickableDistance
+        -this.dist
       ),
       '/',
       'global'
@@ -143,12 +159,15 @@ class Common {
 
   transition(route) {
     // ステージの更新
+    Stage.setFog(route, this.scene);
+    Stage.resetGoalVisible(route);
+
     Stage.deleteBackground(this.scene);
     Stage.initBackground(route, this.scene);
-    Stage.setFog(route, this.scene);
     Stage.deleteInteractObjects(this.scene);
     Stage.initInteractObjects(route, this.scene, this.size);
-    Stage.resetGoalVisible(route);
+    Stage.deletePanels(this.scene);
+    Stage.initPanels(route, this.scene);
 
     this.currentRoute = route;
   }
