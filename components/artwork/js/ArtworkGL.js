@@ -26,13 +26,9 @@ export default class ArtworkGL {
   }
 
   loop() {
-    this.render();
-    requestAnimationFrame(this.loop.bind(this));
-  }
-
-  render() {
     Cursor.update();
-    Common.render();
+    Common.update();
+    requestAnimationFrame(this.loop.bind(this));
   }
 
   transition(route) {
