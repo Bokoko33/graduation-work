@@ -177,7 +177,7 @@ class Stage {
       // const c2 = Math.random() * (0.8 - 0.3) + 0.3;
       const x = (windowSize.w / 2) * this.iObjPositionCoefficient[i].x;
       const y = (windowSize.h / 2) * this.iObjPositionCoefficient[i].y;
-      const z = i * (this.goalZ / this.interactObjectsLength);
+      const z = (i + 1) * ((this.goalZ * 0.8) / this.interactObjectsLength);
       const pos = new THREE.Vector3(x, y, z);
       const obj = new MainObject(route, pos);
       this.interactObjects.push(obj);
