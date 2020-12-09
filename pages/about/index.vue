@@ -1,5 +1,5 @@
 <template>
-  <div class="ending">終わり</div>
+  <div class="about">About me</div>
 </template>
 
 <script>
