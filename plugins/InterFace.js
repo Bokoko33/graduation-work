@@ -3,12 +3,10 @@ import style from '~/assets/scss/base/_variable.scss';
 
 class InterFace {
   constructor() {
-    this.trackpad = document.getElementById('trackpad');
-    // 入力座標
-    this.inputPos = { x: 0, y: 0 };
+    this.trackpad = null;
 
-    // カーソルの描画座標
-    this.cursorPos = { x: 0, y: 0 };
+    // カーソル座標
+    this.cursorPos = { x: innerWidth * 0.4, y: innerHeight * 0.2 }; // 0,0だと最初に大きく動いてしまう
 
     // トラックパッド内の座標
     this.trackPos = { x: 0, y: 0 };
@@ -19,17 +17,8 @@ class InterFace {
     // マウスダウン中か
     this.isMousePressed = false;
 
-    // デフォルトでの抗力
-    this.defaultForce = 0.3;
-
-    // カーソルにかける抵抗値（小さいほど強い抵抗)
-    this.force = this.defaultForce;
-
     // トラックパッド感度（1で完全に同距離）
     this.sensitivity = 3;
-
-    // これより小さい変化量は無視して計算を終える
-    this.accept = 0.0001;
 
     this.breakPoint = Number(style.breakPointTablet.replace('px', ''));
 
@@ -58,11 +47,12 @@ class InterFace {
   mouseMoved(e) {
     // スマホ時は実行しない
     if (window.innerWidth < this.breakPoint) return;
-    this.inputPos.x = e.clientX;
-    this.inputPos.y = e.clientY;
+    this.cursorPos.x = e.clientX;
+    this.cursorPos.y = e.clientY;
   }
 
   trackPadInit() {
+    this.trackpad = document.getElementById('trackpad');
     // トラックパッド操作時のイベントを登録
     this.trackpad.addEventListener('touchstart', (e) => {
       // マウスダウンでドラッグ開始、現在の座標をprevに格納
@@ -90,9 +80,9 @@ class InterFace {
     const moveX = e.touches[0].clientX - this.trackPos.x;
     const moveY = e.touches[0].clientY - this.trackPos.y;
 
-    // 入力座標に移動量を加える
-    this.inputPos.x += moveX * this.sensitivity;
-    this.inputPos.y += moveY * this.sensitivity;
+    // カーソル座標に移動量を加える
+    this.cursorPos.x += moveX * this.sensitivity;
+    this.cursorPos.y += moveY * this.sensitivity;
 
     // 現在のトラックパッド座標をセット
     this.trackPos.x = e.touches[0].clientX;
@@ -100,13 +90,6 @@ class InterFace {
   }
 
   update() {
-    // 慣性の処理
-    const cx = (this.inputPos.x - this.cursorPos.x) * this.force;
-    const cy = (this.inputPos.y - this.cursorPos.y) * this.force;
-
-    this.cursorPos.x += cx;
-    this.cursorPos.y += cy;
-
     // 画面端から見切れない処理
     if (this.cursorPos.x < 0) {
       this.cursorPos.x = 0;
@@ -120,11 +103,6 @@ class InterFace {
     if (this.cursorPos.y > window.innerHeight) {
       this.cursorPos.y = window.innerHeight;
     }
-  }
-
-  setForce(f) {
-    if (f > 0) this.force = f;
-    else this.force = this.defaultForce;
   }
 
   setClickEvent(callback) {

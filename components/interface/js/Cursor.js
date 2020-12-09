@@ -9,7 +9,7 @@ const vm = new Vue();
 class Cursor {
   constructor() {
     // webGL座標に置き換えたもの
-    this.glPosition = new THREE.Vector3(0, 0, Stage.startZ);
+    this.cursorPosition = new THREE.Vector3(0, 0, Stage.startZ);
     // レイキャスト用の-1~1の座標（初期値を-1にし、画面中央付近のオブジェクトと初期値で交差してしまうのを防ぐ)
     this.rayPosition = new THREE.Vector2(-1, -1);
     // 交差しているオブジェクト
@@ -17,25 +17,35 @@ class Cursor {
     // 交差検知するリンクのメッシュを格納する配列（これをintersectObjectsに渡す）
     this.rayCastMeshes = [];
 
-    // 前後座標の入力値
-    this.inputZ = this.glPosition.z;
+    // カーソルにかける抗力
+    this.forceList = {
+      default: 0.3,
+      normalWater: 0.03,
+      heavyWater: 0.01,
+      normalWind: 0.05,
+      normalSpace: 0.07,
+    };
+    this.currentForce = this.forceList.default;
 
-    // pluginに渡したりする抗力
-    this.normalWaterForce = 0.03;
-    this.heavyWaterForce = 0.01;
-    this.normalWindForce = 0.05;
-    this.normalSpaceForce = 0.07;
-
+    // インタラクション中か
     this.isInteracting = false;
+    // インタラクション中のオブジェクト
+    this.interactingObject = null;
 
+    // 前後座標の入力値
+    this.inputZ = this.cursorPosition.z;
     // 前進するときの慣性（1で無し、小さいほど重い）
-    this.force = 0.03;
+    this.straightInertia = 0.03;
 
     // 「押しながらホバーして、離してクリック」を防ぐためのフラグ（これを基準にクリック判定）
     this.clickable = false;
 
     this.moveSpeed = 5;
     this.backSpeed = 3;
+
+    // カーソルメッシュの平面上での動きを操作する
+    this.acceleration = new THREE.Vector3(0, 0, 0);
+    this.velocity = new THREE.Vector3(0, 0, 0);
 
     this.pageTransition = null; // 遷移メソッドを.vueファイルから後から注入
 
@@ -71,22 +81,26 @@ class Cursor {
 
     // マウス押しっぱなしで進む
     if (vm.$interFace.isMousePressed) {
-      if (this.glPosition.z > Stage.goalZ) {
+      if (this.cursorPosition.z > Stage.goalZ) {
         this.inputZ -= this.moveSpeed;
       }
-      // } else if (this.glPosition.z < Stage.startZ) {
+      // } else if (this.cursorPosition.z < Stage.startZ) {
       //   // 離している時、原点より進んでいれば、常に少し後ろに下がり続ける
       //   this.inputZ += this.backSpeed;
     }
 
-    this.setPosition(vm.$interFace.cursorPos);
+    // カーソルの座標を適用適用
+    this.setCursorPosition(
+      this.convertedPosition(vm.$interFace.cursorPos),
+      this.currentForce
+    );
 
     // 慣性を効かせたカーソルの前進
     this.goStraight();
 
     // カメラ、背景をカーソルに追従
-    Common.cameraFollow(this.glPosition);
-    Stage.backgroundFollow(this.glPosition.z);
+    Common.cameraFollow(this.cursorPosition);
+    Stage.backgroundFollow(this.cursorPosition.z);
 
     // レイキャスト
     // 専用の座標に変換
@@ -104,27 +118,36 @@ class Cursor {
     this.effectCursor();
   }
 
-  setPosition(pos) {
+  convertedPosition(pos) {
     // window座標をwebGL座標に変換
     const cx = pos.x - Common.size.w / 2; // 原点を中心に持ってくる
     const cy = -pos.y + Common.size.h / 2; // 軸を反転して原点を中心に持ってくる
 
-    // カーソル用の座標をセット
-    this.glPosition.set(cx, cy, this.glPosition.z);
+    return { x: cx, y: cy };
+  }
 
-    // メッシュの座標に適用
+  setCursorPosition(targetPos, force) {
+    // カーソルの向かうターゲット,慣性力。通常時はカーソル座標を第一引数に取る
+    const vx = (targetPos.x - this.cursorPosition.x) * force;
+    const vy = (targetPos.y - this.cursorPosition.y) * force;
+    this.velocity.set(vx, vy, 0);
+    this.velocity.add(this.acceleration);
+    this.cursorPosition.add(this.velocity);
+    this.cursorPosition.setZ(this.cursorPosition.z);
+
     this.mesh.position.set(
-      this.glPosition.x,
-      this.glPosition.y,
-      this.glPosition.z
+      this.cursorPosition.x,
+      this.cursorPosition.y,
+      this.cursorPosition.z
     );
+    this.acceleration.set(0, 0, 0);
   }
 
   setRayCastPosition(size) {
     // レイキャスト用
     // -1〜+1の範囲で現在のマウス座標を登録する
-    this.rayPosition.x = this.glPosition.x / (size.w / 2);
-    this.rayPosition.y = this.glPosition.y / (size.h / 2);
+    this.rayPosition.x = this.cursorPosition.x / (size.w / 2);
+    this.rayPosition.y = this.cursorPosition.y / (size.h / 2);
   }
 
   rayCast() {
@@ -142,7 +165,7 @@ class Cursor {
         intersects[0].object.parent.type !== 'Scene'
           ? intersects[0].object.parent.position.z
           : intersects[0].object.position.z;
-      const dist = Math.abs(targetPos - this.glPosition.z);
+      const dist = Math.abs(targetPos - this.cursorPosition.z);
       if (dist > Common.clickableDistance) return;
 
       // 交差検知したメッシュから、インスタンスを逆探知
@@ -166,9 +189,10 @@ class Cursor {
     for (let i = 0; i < objects.length; i++) {
       const objPos = objects[i].position;
       const objRad = objects[i].interactRadius;
-      if (this.glPosition.distanceTo(objPos) < objRad) {
+      if (this.cursorPosition.distanceTo(objPos) < objRad) {
         // 当たった場合はフラグをonにし関数を抜ける
         this.isInteracting = true;
+        this.interactingObject = objects[i];
         return;
       }
     }
@@ -181,6 +205,13 @@ class Cursor {
     if (this.isInteracting) {
       if (Common.currentRoute === 'stage1') {
         vm.$interFace.setForce(this.heavyWaterForce);
+      } else if (Common.currentRoute === 'stage3') {
+        // 引き込まれる
+        const cx = this.interactingObject.position.x - this.mesh.position.x;
+        const cy = this.interactingObject.position.y - this.mesh.position.y;
+        this.acceleration.set(cx, cy, 0);
+        this.acceleration.multiplyScalar(0.1);
+        this.setCursorPosition(this.interactingObject.position, 0.1);
       }
     } else {
       // インタラクションしていなければ、そのシーンの抵抗値に戻す
@@ -189,7 +220,8 @@ class Cursor {
   }
 
   goStraight() {
-    this.glPosition.z += (this.inputZ - this.glPosition.z) * this.force;
+    const z = (this.inputZ - this.cursorPosition.z) * this.straightInertia;
+    this.cursorPosition.z += z;
   }
 
   // vueから呼ばれる
@@ -209,26 +241,25 @@ class Cursor {
     let force = 0;
     switch (route) {
       case 'stage1':
-        force = this.normalWaterForce;
+        force = this.forceList.normalWater;
         break;
       case 'stage2':
-        force = this.normalWindForce;
+        force = this.forceList.normalWind;
         break;
       case 'stage3':
-        force = this.normalSpaceForce;
+        force = this.forceList.normalSpace;
         break;
       default:
+        force = this.forceList.default;
         break;
     }
-
-    // 0のまま渡すとデフォ値が入る設定
-    vm.$interFace.setForce(force);
+    this.currentForce = force;
   }
 
   resetPosition() {
     // 位置をスタートに戻す
     this.inputZ = Stage.startZ;
-    this.glPosition.z = Stage.startZ;
+    this.cursorPosition.z = Stage.startZ;
   }
 }
 
