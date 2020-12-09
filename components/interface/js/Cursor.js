@@ -137,9 +137,12 @@ class Cursor {
       // 交差したオブジェクトがある時
 
       // ある程度近付かないと反応しないように
-      const dist = Math.abs(
-        intersects[0].object.position.z - this.glPosition.z
-      );
+      // 親オブジェクトを持つ場合（グローバルメニュー）はそちらの座標を参照する
+      const targetPos =
+        intersects[0].object.parent.type !== 'Scene'
+          ? intersects[0].object.parent.position.z
+          : intersects[0].object.position.z;
+      const dist = Math.abs(targetPos - this.glPosition.z);
       if (dist > Common.clickableDistance) return;
 
       // 交差検知したメッシュから、インスタンスを逆探知
