@@ -20,11 +20,13 @@ class Cursor {
     // カーソルにかける抗力
     this.forceList = {
       default: 0.3,
-      normalWater: 0.03,
+      waterNormal: 0.03,
       heavyWater: 0.01,
-      normalStorm: 0.05,
-      normalSpace: 0.07,
-      attractedSpace: 0.1,
+      stormNormal: 0.05,
+      spaceNormal: 0.2,
+      spaceAttractMove: 0.05,
+      spaceAttractStop: 0.05,
+      spaceEscape: 0.6, // normalにできるだけ近い値で、大きく
     };
     this.currentForce = this.forceList.default;
 
@@ -138,6 +140,7 @@ class Cursor {
       // インタラクション時
 
       switch (Common.currentRoute) {
+        // 水中
         case 'stage1': {
           // より重い抵抗をかける
           vx *= this.forceList.heavyWater;
@@ -145,44 +148,58 @@ class Cursor {
           this.velocity.set(vx, vy, 0);
           break;
         }
+        // 竜巻
         case 'stage2': {
           // 抵抗をかけて"add"する
-          vx *= this.forceList.normalStorm;
-          vy *= this.forceList.normalStorm;
+          vx *= this.forceList.stormNormal;
+          vy *= this.forceList.stormNormal;
           const vec = new THREE.Vector3(vx, vy, 0);
           this.velocity.add(vec);
 
           // 引力を定義
           const attractX =
             (this.interactingObject.position.x - this.cursorPosition.x) *
-            this.forceList.attractedSpace;
+            this.forceList.stormNormal;
           const attractY =
             (this.interactingObject.position.y - this.cursorPosition.y) *
-            this.forceList.attractedSpace;
+            this.forceList.stormNormal;
 
           // 加速度を設定してさらに速度に加算
           this.acceleration.set(attractX, attractY, 0);
           this.velocity.add(this.acceleration);
           break;
         }
+        // 吸い込み
         case 'stage3': {
-          // 抵抗をかけて"add"する
-          vx *= this.forceList.normalSpace;
-          vy *= this.forceList.normalSpace;
-          const vec = new THREE.Vector3(vx, vy, 0);
-          this.velocity.add(vec);
+          // 動いているかどうか
+          if (vm.$interFace.isMouseMoving) {
+            // 動いている時は抜け出せるよう吸い込みを弱く
+            // 引力を定義
+            const attractX =
+              (this.interactingObject.position.x - this.cursorPosition.x) *
+              this.forceList.spaceAttractMove;
+            const attractY =
+              (this.interactingObject.position.y - this.cursorPosition.y) *
+              this.forceList.spaceAttractMove;
+            this.velocity.set(attractX, attractY, 0);
 
-          // 引力を定義
-          const attractX =
-            (this.interactingObject.position.x - this.cursorPosition.x) *
-            this.forceList.attractedSpace;
-          const attractY =
-            (this.interactingObject.position.y - this.cursorPosition.y) *
-            this.forceList.attractedSpace;
+            // pluginから前後フレームの移動方向を参照し、移動ベクトルをadd
+            const moveX = vm.$interFace.moveVec.x * this.forceList.spaceEscape;
+            const moveY = -vm.$interFace.moveVec.y * this.forceList.spaceEscape; // y方向は反転
+            const vec = new THREE.Vector3(moveX, moveY, 0);
+            this.velocity.add(vec);
+          } else {
+            // 止まっている時は吸い込まれる力のみ
+            // 引力を定義
+            const attractX =
+              (this.interactingObject.position.x - this.cursorPosition.x) *
+              this.forceList.spaceAttractStop;
+            const attractY =
+              (this.interactingObject.position.y - this.cursorPosition.y) *
+              this.forceList.spaceAttractStop;
 
-          // 加速度を設定してさらに速度に加算
-          this.acceleration.set(attractX, attractY, 0);
-          this.velocity.add(this.acceleration);
+            this.velocity.set(attractX, attractY, 0);
+          }
           break;
         }
       }
@@ -279,13 +296,13 @@ class Cursor {
     let force = 0;
     switch (route) {
       case 'stage1':
-        force = this.forceList.normalWater;
+        force = this.forceList.waterNormal;
         break;
       case 'stage2':
-        force = this.forceList.normalStorm;
+        force = this.forceList.stormNormal;
         break;
       case 'stage3':
-        force = this.forceList.normalSpace;
+        force = this.forceList.spaceNormal;
         break;
       default:
         force = this.forceList.default;
