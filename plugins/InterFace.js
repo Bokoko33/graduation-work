@@ -7,6 +7,10 @@ class InterFace {
 
     // カーソル座標
     this.cursorPos = { x: innerWidth * 0.4, y: innerHeight * 0.2 }; // 0,0だと最初に大きく動いてしまう
+    // 前フレームの座標
+    this.prevPos = { x: this.cursorPos.x, y: this.cursorPos.y };
+    // フレーム間の移動ベクトル
+    this.moveVec = { x: 0, y: 0 };
 
     // トラックパッド内の座標
     this.trackPos = { x: 0, y: 0 };
@@ -16,6 +20,8 @@ class InterFace {
 
     // マウスダウン中か
     this.isMousePressed = false;
+    // マウスムーブ中か
+    this.isMouseMoving = false;
 
     // トラックパッド感度（1で完全に同距離）
     this.sensitivity = 3;
@@ -103,6 +109,20 @@ class InterFace {
     if (this.cursorPos.y > window.innerHeight) {
       this.cursorPos.y = window.innerHeight;
     }
+
+    // 動いているか、止まっているか
+    // 移動ベクトルを計算
+    this.moveVec.x = this.cursorPos.x - this.prevPos.x;
+    this.moveVec.y = this.cursorPos.y - this.prevPos.y;
+    // 絶対ちから移動量を取得
+    if (Math.abs(this.moveVec.x) < 0.01 && Math.abs(this.moveVec.y)) {
+      this.isMouseMoving = false;
+    } else {
+      this.isMouseMoving = true;
+    }
+
+    this.prevPos.x = this.cursorPos.x;
+    this.prevPos.y = this.cursorPos.y;
   }
 
   setClickEvent(callback) {
