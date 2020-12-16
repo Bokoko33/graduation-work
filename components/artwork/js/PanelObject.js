@@ -24,7 +24,7 @@ export default class PanelObject {
           this.defaultColor = new THREE.Color(colors.pink);
           break;
         case 'stage1':
-          this.defaultColor = new THREE.Color(colors.blue);
+          this.defaultColor = new THREE.Color(colors.white);
           break;
         case 'stage2':
           this.defaultColor = new THREE.Color(colors.green);
@@ -34,8 +34,12 @@ export default class PanelObject {
           break;
       }
       this.geometry = new THREE.PlaneBufferGeometry(800, 500, 2); // サイズはいずれ画像から取る
-      this.material = new THREE.MeshLambertMaterial({
+      this.material = new THREE.MeshPhysicalMaterial({
         color: this.defaultColor,
+        transparent: true,
+        opacity: 0.3,
+        depthWrite: false,
+        // depthTest: false,
       });
     } else if (this.type === 'desc') {
       // テクスチャわけ
@@ -65,6 +69,8 @@ export default class PanelObject {
     // メッシュを作成
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.mesh.position.set(this.position.x, this.position.y, this.position.z);
+
+    this.mesh.layers.enable(1);
   }
 
   delete() {
