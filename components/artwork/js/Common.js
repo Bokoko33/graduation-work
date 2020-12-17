@@ -1,12 +1,6 @@
-import Vue from 'vue';
 import * as THREE from 'three';
 import Stage from './Stage';
 import Link from './Link';
-
-// PostProcessing.jsを触るためのvueインスタンス
-const vm = new Vue();
-const darkMaterial = new THREE.MeshBasicMaterial({ color: 'black' });
-const materials = {};
 
 class Common {
   constructor() {
@@ -81,95 +75,6 @@ class Common {
 
     // グローバルナビゲーションを作成
     this.createGlobalNav();
-
-    // ポストエフェクト
-    // this.composer = new vm.EffectComposer(this.renderer);
-    // this.composer.addPass(new vm.RenderPass(this.scene, this.camera));
-    const bloomPass = new vm.BloomPass(
-      1, // strength
-      25, // kernel size
-      4, // sigma ?
-      128 // blur render target resolution
-    );
-    // this.composer.addPass(bloomPass);
-    // // bloomPassはrenderToScreen = trueできないので、コピーを作ってそれを被せる？
-    // const toScreen = new vm.ShaderPass(vm.CopyShader);
-    // toScreen.renderToScreen = true;
-    // this.composer.addPass(toScreen);
-
-    // this.composer.setSize(this.size.w, this.size.h);
-
-    // ここから
-    this.bloomLayer = new THREE.Layers();
-    this.bloomLayer.set(1);
-
-    const renderScene = new vm.RenderPass(this.scene, this.camera);
-
-    this.bloomComposer = new vm.EffectComposer(this.renderer);
-    // this.bloomComposer.renderToScreen = false;
-    // const bloomPass = new vm.UnrealBloomPass(
-    //   new THREE.Vector2(window.innerWidth, window.innerHeight),
-    //   0.1,
-    //   0.2,
-    //   0.85
-    // );
-    // bloomPass.threshold = 0;
-    // bloomPass.strength = 0.2;
-    // bloomPass.radius = 1;
-    this.bloomComposer.addPass(renderScene);
-    this.bloomComposer.addPass(bloomPass);
-    // bloomPassはrenderToScreen = trueできないので、コピーを作ってそれを被せる？
-    const toScreen = new vm.ShaderPass(vm.CopyShader);
-    toScreen.renderToScreen = true;
-    this.bloomComposer.addPass(toScreen);
-
-    const finalPass = new vm.ShaderPass(
-      new THREE.ShaderMaterial({
-        uniforms: {
-          baseTexture: { value: null },
-          bloomTexture: { value: this.bloomComposer.renderTarget2.texture },
-        },
-        vertexShader: `
-        varying vec2 vUv;
-			  void main() {
-				vUv = uv;
-				gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-			  }
-        `,
-        fragmentShader: `
-        uniform sampler2D baseTexture;
-			  uniform sampler2D bloomTexture;
-			  varying vec2 vUv;
-			  void main() {
-				gl_FragColor = ( texture2D( baseTexture, vUv ) + vec4( 1.0 ) * texture2D( bloomTexture, vUv ) );
-			  }
-        `,
-        defines: {},
-      }),
-      'baseTexture'
-    );
-    finalPass.needsSwap = true;
-
-    this.composer = new vm.EffectComposer(this.renderer);
-    this.composer.addPass(renderScene);
-    this.composer.addPass(finalPass);
-
-    this.composer.setSize(this.size.w, this.size.h);
-    this.bloomComposer.setSize(this.size.w, this.size.h);
-  }
-
-  darkenNonBloomed(obj) {
-    if (obj.isMesh && this.bloomLayer.test(obj.layers) === false) {
-      materials[obj.uuid] = obj.material;
-      obj.material = darkMaterial;
-    }
-  }
-
-  restoreMaterial(obj) {
-    if (materials[obj.uuid]) {
-      obj.material = materials[obj.uuid];
-      delete materials[obj.uuid];
-    }
   }
 
   setSize() {
@@ -201,11 +106,7 @@ class Common {
     // ステージのループ
     Stage.update();
 
-    // this.renderer.render(this.scene, this.camera);
-    this.scene.traverse(this.darkenNonBloomed.bind(this));
-    this.bloomComposer.render();
-    this.scene.traverse(this.restoreMaterial.bind(this));
-    this.composer.render();
+    this.renderer.render(this.scene, this.camera);
   }
 
   hideObjectOutOfCamera(mesh) {
