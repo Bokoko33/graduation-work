@@ -1,5 +1,6 @@
 import Cursor from '../../interface/js/Cursor';
 import Common from './Common';
+import { initTexture } from './textures';
 
 export default class ArtworkGL {
   constructor(props) {
@@ -8,6 +9,9 @@ export default class ArtworkGL {
   }
 
   init() {
+    // 画像読み込み
+    initTexture();
+
     // commonにキャンバスdomを渡してシーン作成
     Common.init(this.props.$canvas, this.props.$route);
 

@@ -118,7 +118,7 @@ class Common {
   createGlobalNav() {
     const headerMarginSide = this.size.w * 0.08;
     const headerMarginTop = 40;
-    const headerMarginBetween = 120;
+    const headerMarginBetween = 160;
     for (let i = 0; i < this.globalNavNames.length; i++) {
       const menu = new Link(
         new THREE.Vector3(

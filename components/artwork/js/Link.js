@@ -1,5 +1,8 @@
 import * as THREE from 'three';
+import vertexShader from '../glsl/globalMenu.vert';
+import fragmentShader from '../glsl/globalMenu.frag';
 import { colors } from './variable';
+import { getTexture } from './textures';
 
 export default class Link {
   constructor(pos, path, type) {
@@ -25,23 +28,33 @@ export default class Link {
 
   init() {
     if (this.type === 'global') {
-      this.defaultColor = new THREE.Color(colors.gray);
+      let texture = null;
       // テクスチャわけ
-      // switch (this.nextPathName) {
-      //   case 'stage1':
-      //     this.defaultColor = new THREE.Color(colors.blue);
-      //     break;
-      //   case 'stage2':
-      //     this.defaultColor = new THREE.Color(colors.green);
-      //     break;
-      //   case 'stage3':
-      //     this.defaultColor = new THREE.Color(colors.black);
-      //     break;
-      // }
-      this.geometry = new THREE.PlaneBufferGeometry(100, 40, 2); // サイズはいずれ画像から取る
-      this.material = new THREE.MeshLambertMaterial({
-        color: this.defaultColor,
-        depthTest: false,
+      switch (this.nextPathName) {
+        case '/':
+          texture = getTexture('globalMenuLogo');
+          break;
+        case 'stage1':
+          texture = getTexture('globalMenuWater');
+          break;
+        case 'stage2':
+          texture = getTexture('globalMenuStorm');
+          break;
+        case 'stage3':
+          texture = getTexture('globalMenuSpace');
+          break;
+        case 'about':
+          texture = getTexture('globalMenuAbout');
+      }
+      this.geometry = new THREE.PlaneBufferGeometry(133, 40, 2); // サイズはいずれ画像から取る
+      this.material = new THREE.RawShaderMaterial({
+        uniforms: {
+          uTex: { type: 't', value: texture },
+          uColor: { type: 'c', value: new THREE.Color(this.defaultColor) },
+        },
+        vertexShader,
+        fragmentShader,
+        transparent: true,
       });
     } else if (this.type === 'goal') {
       // テクスチャわけ
