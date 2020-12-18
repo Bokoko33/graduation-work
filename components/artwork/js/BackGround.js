@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import vertexShader from '../glsl/background.vert';
+import vertexShader from '../glsl/bg.vert';
 import defaultFragmentShader from '../glsl/bgDefault.frag';
 import waterFragmentShader from '../glsl/bgWater.frag';
 import stormFragmentShader from '../glsl/bgStorm.frag';
