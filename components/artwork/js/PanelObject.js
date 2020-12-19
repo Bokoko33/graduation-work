@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { colors } from './variable';
+import { getTexture } from './textures';
 
 export default class PanelObject {
   constructor(pos, type, key) {
@@ -7,6 +8,10 @@ export default class PanelObject {
     // top or desc
     this.type = type;
     // keyはtypeがtopならルート名、descなら何番目のパネルか
+
+    // 画像ごとに決める幅と高さ
+    this.width = 0;
+    this.height = 0;
 
     this.geometry = null;
     this.material = null;
@@ -16,12 +21,14 @@ export default class PanelObject {
   }
 
   init(key) {
+    let texture = null;
     if (this.type === 'top') {
-      this.defaultColor = new THREE.Color(colors.white);
       // テクスチャわけ
       switch (key) {
         case 'index':
-          this.defaultColor = new THREE.Color(colors.pink);
+          texture = getTexture('mainVisualPc');
+          this.width = 2040 * 0.3;
+          this.height = 1224 * 0.3;
           break;
         case 'stage1':
           this.defaultColor = new THREE.Color(colors.white);
@@ -33,13 +40,10 @@ export default class PanelObject {
           this.defaultColor = new THREE.Color(colors.black);
           break;
       }
-      this.geometry = new THREE.PlaneBufferGeometry(800, 500, 2); // サイズはいずれ画像から取る
-      this.material = new THREE.MeshPhysicalMaterial({
-        color: this.defaultColor,
+      this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height, 2);
+      this.material = new THREE.MeshBasicMaterial({
+        map: texture,
         transparent: true,
-        opacity: 0.3,
-        depthWrite: false,
-        // depthTest: false,
       });
     } else if (this.type === 'desc') {
       // テクスチャわけ
