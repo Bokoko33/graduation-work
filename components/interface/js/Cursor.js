@@ -2,6 +2,10 @@ import Vue from 'vue';
 import * as THREE from 'three';
 import Common from '../../artwork/js/Common';
 import Stage from '../../artwork/js/Stage';
+import vertexShader from '../../artwork/glsl/cursor.vert';
+import fragmentShader from '../../artwork/glsl/cursor.frag';
+import { getTexture } from '../../artwork/js/textures';
+import { colors } from '../../artwork/js/variable';
 
 // InterFace.jsを触るためのvueインスタンス
 const vm = new Vue();
@@ -42,29 +46,139 @@ class Cursor {
 
     // 「押しながらホバーして、離してクリック」を防ぐためのフラグ（これを基準にクリック判定）
     this.clickable = false;
+    // カーソル変形アニメーション用の変数。
+    this.hover = false;
 
     this.moveSpeed = 5;
     this.backSpeed = 3;
 
+    this.color = colors.gray;
     // カーソルメッシュの平面上での動きを操作する
     this.acceleration = new THREE.Vector3(0, 0, 0);
     this.velocity = new THREE.Vector3(0, 0, 0);
 
     this.pageTransition = null; // 遷移メソッドを.vueファイルから後から注入
 
+    this.uniforms = {};
     this.geometry = null;
     this.material = null;
     this.mesh = null;
+
+    this.frameCount = 0;
   }
 
   init(route) {
-    // 球体
-    this.geometry = new THREE.CircleBufferGeometry(20, 30);
-    this.material = new THREE.MeshLambertMaterial({
-      color: 0x20eca3,
+    const texture = getTexture('cursor');
+    // this.geometry = new THREE.PlaneBufferGeometry(
+    //   108 * 0.15,
+    //   151 * 0.15,
+    //   30,
+    //   30
+    // );
+    // this.material = new THREE.RawShaderMaterial({
+    //   uniforms: {
+    //     uTex: { type: 't', value: texture },
+    //     uColor: { type: 'c', value: new THREE.Color(this.color) },
+    //   },
+    //   vertexShader,
+    //   fragmentShader,
+    //   transparent: true,
+    // });
+
+    // // メッシュを作成
+    // this.mesh = new THREE.Mesh(this.geometry, this.material);
+
+    // 使用するジオメトリ
+    this.geometry = new THREE.BufferGeometry();
+    // リングのジオメトリ
+    const ringGeo = new THREE.RingBufferGeometry(40, 42, 64, 64);
+    // リングジオメトリのポジション
+    const ringGeoPosition = ringGeo.attributes.position.array;
+
+    // 平面ジオメトリ
+    const planeGeo = new THREE.PlaneBufferGeometry(
+      108 * 0.2,
+      151 * 0.2,
+      64,
+      64
+    );
+    // 平面ジオメトリのポジション
+    const planeGeoPosition = planeGeo.attributes.position.array;
+    // 平面ジオメトリのuv
+    const planeGeoUv = planeGeo.attributes.uv.array;
+    // 平面ジオメトリのインデックス
+    const planeGeoIndex = planeGeo.index.array;
+
+    const count = planeGeoIndex.length * 3;
+
+    // 最終的に代入するポジション
+    const ringPosition = new Float32Array(count);
+    const planePosition = new Float32Array(count);
+    const randomPosition = new Float32Array(count);
+    // uv
+    const planeUv = new Float32Array((count / 3) * 2);
+    const index = new Uint16Array(count / 3);
+    // ランダム生成する座標
+    const r = new THREE.Vector3(0);
+
+    for (let i = 0; i < count / 3; i++) {
+      // 平面ジオメトリのインデックスからリングのポジションを代入
+      ringPosition[i * 3 + 0] = ringGeoPosition[planeGeoIndex[i] * 3 + 0];
+      ringPosition[i * 3 + 1] = ringGeoPosition[planeGeoIndex[i] * 3 + 1];
+      ringPosition[i * 3 + 2] = ringGeoPosition[planeGeoIndex[i] * 3 + 2];
+
+      // 平面ジオメトリのインデックスから平面のポジションを代入
+      planePosition[i * 3 + 0] = planeGeoPosition[planeGeoIndex[i] * 3 + 0];
+      planePosition[i * 3 + 1] = planeGeoPosition[planeGeoIndex[i] * 3 + 1];
+      planePosition[i * 3 + 2] = planeGeoPosition[planeGeoIndex[i] * 3 + 2];
+
+      // 平面ジオメトリのインデックスから平面のuvを代入
+      planeUv[i * 2 + 0] = planeGeoUv[planeGeoIndex[i] * 2 + 0];
+      planeUv[i * 2 + 1] = planeGeoUv[planeGeoIndex[i] * 2 + 1];
+
+      if (i % 3 === 0) {
+        // ランダムポジションの作成
+        r.x = Math.random() * 60 - 30;
+        r.y = Math.random() * 60 - 30;
+      }
+
+      randomPosition[i * 3 + 0] = r.x;
+      randomPosition[i * 3 + 1] = r.y;
+      randomPosition[i * 3 + 2] = r.z;
+
+      index[i] = i;
+    }
+
+    // 使用するジオメトリに各情報を代入
+    this.geometry.setAttribute(
+      'planePosition',
+      new THREE.BufferAttribute(planePosition, 3)
+    );
+    this.geometry.setAttribute(
+      'ringPosition',
+      new THREE.BufferAttribute(ringPosition, 3)
+    );
+    this.geometry.setAttribute(
+      'randomPosition',
+      new THREE.BufferAttribute(randomPosition, 3)
+    );
+    this.geometry.setAttribute('uv', new THREE.BufferAttribute(planeUv, 2));
+
+    this.geometry.setIndex(new THREE.BufferAttribute(index, 1));
+
+    this.uniforms = {
+      variable: { type: 'f', value: 0.0 },
+      uTex: { type: 't', value: texture },
+      uColor: { type: 'c', value: new THREE.Color(colors.gray) },
+    };
+    this.material = new THREE.RawShaderMaterial({
+      uniforms: this.uniforms,
+      vertexShader,
+      fragmentShader,
+      side: THREE.DoubleSide,
+      transparent: true,
     });
 
-    // メッシュを作成
     this.mesh = new THREE.Mesh(this.geometry, this.material);
 
     // 3D空間にメッシュを追加
@@ -117,6 +231,19 @@ class Cursor {
 
     // オブジェクトとの当たり判定
     this.collisionDetection();
+
+    if (this.hover) {
+      if (this.uniforms.variable.value < 1) {
+        const dist = 1 - this.uniforms.variable.value;
+        this.uniforms.variable.value += dist * 0.3;
+      } else {
+        this.uniforms.variable.value = 1;
+      }
+    } else if (this.uniforms.variable.value > 0) {
+      this.uniforms.variable.value -= 0.05;
+    } else {
+      this.uniforms.variable.value = 0;
+    }
   }
 
   convertedPosition(pos) {
@@ -138,7 +265,6 @@ class Cursor {
       this.velocity.set(vx, vy, 0);
     } else {
       // インタラクション時
-
       switch (Common.currentRoute) {
         // 水中
         case 'stage1': {
@@ -242,6 +368,8 @@ class Cursor {
       const dist = Math.abs(targetPos - this.cursorPosition.z);
       if (dist > Common.clickableDistance) return;
 
+      this.hover = true; // カーソル変化を起動
+
       // 交差検知したメッシュから、インスタンスを逆探知
       this.intersected = Common.links.find(
         (link) => link.mesh === intersects[0].object
@@ -254,6 +382,7 @@ class Cursor {
         this.intersected.mouseOut();
       }
       this.intersected = null;
+      this.hover = false;
       this.clickable = false;
     }
   }

@@ -6,8 +6,12 @@ const loader = new THREE.TextureLoader();
 export const initTexture = () => {
   textures = [
     {
+      name: 'cursor',
+      value: loader.load(require('@/assets/images/cursor.png')),
+    },
+    {
       name: 'globalMenuLogo',
-      value: loader.load(require('@/assets/images/menu_about.png')),
+      value: loader.load(require('@/assets/images/logo.png')),
     },
     {
       name: 'globalMenuWater',
@@ -40,6 +44,10 @@ export const initTexture = () => {
     {
       name: 'goalLinkSpace',
       value: loader.load(require('@/assets/images/menu_about.png')),
+    },
+    {
+      name: 'mainVisualPc',
+      value: loader.load(require('@/assets/images/top-mv_pc.png')),
     },
     {
       name: 'startPanelWater',
