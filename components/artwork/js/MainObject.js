@@ -37,7 +37,7 @@ export default class MainObject {
       case 'stage2':
         this.interactRadius = 300;
         this.defaultColor = colors.blue;
-        this.createStormObject(this.interactRadius * 0.2, this.defaultColor);
+        this.createStormObject(this.interactRadius);
         break;
       case 'stage3':
         this.interactRadius = 240;
@@ -73,7 +73,7 @@ export default class MainObject {
     };
   }
 
-  createStormObject(size, colorCode) {
+  createStormObject(radius) {
     const instanceNum = 100;
 
     const offsets = []; // ポジションからのオフセット
@@ -98,12 +98,11 @@ export default class MainObject {
 
     // offsetPosition
     // instanceGeoから離れる = 一つ一つのパーティクルの座標
-    const offsetRange = 300; // どれだけ離れるか
     for (let i = 0; i < instanceNum; i++) {
       offsets.push(
-        Math.random() * offsetRange - offsetRange / 2,
-        Math.random() * (2 * offsetRange) - (2 * offsetRange) / 2,
-        Math.random() * offsetRange - offsetRange / 2
+        Math.random() * radius - radius / 2,
+        Math.random() * (2 * radius) - (2 * radius) / 2,
+        Math.random() * radius - radius / 2
       );
     }
     this.geometry.setAttribute(
