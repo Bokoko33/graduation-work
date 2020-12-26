@@ -1,4 +1,5 @@
 attribute vec3 offsetPosition;
+attribute float initialRotate; // 回転の初期値
 varying vec3 vViewPosition;
 uniform float uTime;
 
@@ -15,14 +16,15 @@ void main() {
     vec3 centerY = vec3(0, offPos.y, 0); // y座標のみoffsetに合わせた原点
     
     // 原点を中心に回転（あとでpositionを中心にする）
-    // y座標を回転角にy座標を足しておくことで開始位置をずらす。不変なので使い続けられる
     float radius = distance(offPos, centerY);
-    offPos.x = radius * cos(offPos.y + uTime * 20.0);
-    offPos.z = radius * sin(offPos.y + uTime * 20.0);
-    // float s = max(0.0,sin(-time * 4.0 + length(offsetPosition)));
-    // pos *= s;
-    // pos.xz *= rotate(s * 4.0);
-    // pos.xy *= rotate(s * 4.0);
+    // 回転角に初期値を足しておくことで開始位置をずらす
+    float angle = initialRotate + uTime * 20.0;
+    
+    offPos.x = radius * cos(angle);
+    offPos.z = radius * sin(angle);
+
+    // y軸を中心に回転
+    pos.xz *= rotate(-angle);
     
     vec4 mvPosition = modelViewMatrix * vec4(pos + offPos, 1.0);
     gl_Position = projectionMatrix * mvPosition;

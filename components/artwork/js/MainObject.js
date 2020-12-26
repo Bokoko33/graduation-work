@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 // import waterVertexShader from '../glsl/objectWater.vert';
 import stormVertexShader from '../glsl/objectStorm.vert';
+import spaceVertexShader from '../glsl/objectSpace.vert';
 // import stormFragmentShader from '../glsl/objectStorm.frag';
 // import fragmentShader from '../glsl/objectCommon.frag';
 import { colors } from './variable';
@@ -48,7 +49,7 @@ export default class MainObject {
       case 'stage3':
         this.interactRadius = 240;
         this.defaultColor = colors.white;
-        this.createSpaceObject(this.interactRadius * 0.1, this.defaultColor);
+        this.createSpaceObject(this.interactRadius);
         break;
       default:
         break;
@@ -81,28 +82,28 @@ export default class MainObject {
 
   createStormObject(radius) {
     const instanceNum = 100;
-
     const offsets = []; // ポジションからのオフセット
+    const initialRotate = []; // 回転の初期角
 
     // 元となるジオメトリ
-    const originBox = new THREE.BoxBufferGeometry(20, 20, 20);
+    const originGeometry = new THREE.BoxBufferGeometry(20, 20, 20);
 
     this.geometry = new THREE.InstancedBufferGeometry();
-    this.geometry.instanceCount = instanceNum; // set so its initalized for dat.GUI, will be set in first draw otherwise
 
-    const positions = originBox.attributes.position.clone();
+    // 各パラメータをoriginからコピーしてセット
+    const positions = originGeometry.attributes.position.clone();
     this.geometry.setAttribute('position', positions);
 
-    const normal = originBox.attributes.normal.clone();
+    const normal = originGeometry.attributes.normal.clone();
     this.geometry.setAttribute('normals', normal);
 
-    const uv = originBox.attributes.uv.clone();
+    const uv = originGeometry.attributes.uv.clone();
     this.geometry.setAttribute('uv', uv);
 
-    const indices = originBox.index.clone();
+    const indices = originGeometry.index.clone();
     this.geometry.setIndex(indices);
 
-    // offsetPosition
+    // offsetPosition、initialRotateを自作
     // instanceGeoから離れる = 一つ一つのパーティクルの座標
     for (let i = 0; i < instanceNum; i++) {
       offsets.push(
@@ -110,10 +111,18 @@ export default class MainObject {
         Math.random() * (2 * radius) - (2 * radius) / 2,
         Math.random() * radius - radius / 2
       );
+
+      // パーティクルごとの回転の初期値
+      initialRotate.push(Math.random() * 360);
     }
+
     this.geometry.setAttribute(
       'offsetPosition',
       new THREE.InstancedBufferAttribute(new Float32Array(offsets), 3)
+    );
+    this.geometry.setAttribute(
+      'initialRotate',
+      new THREE.InstancedBufferAttribute(new Float32Array(initialRotate), 1)
     );
 
     // uniformを追加
@@ -140,10 +149,72 @@ export default class MainObject {
     });
   }
 
-  createSpaceObject(radius, colorCode) {
-    this.geometry = new THREE.SphereBufferGeometry(radius, 30, 30);
-    this.material = new THREE.MeshLambertMaterial({
-      color: colorCode,
+  createSpaceObject(radius) {
+    const instanceNum = 100;
+    const offsets = []; // ポジションからのオフセット
+    const initialRotate = []; // 回転の初期角
+
+    // 元となるジオメトリ
+    const originGeometry = new THREE.SphereBufferGeometry(20, 20, 20);
+
+    this.geometry = new THREE.InstancedBufferGeometry();
+
+    // 各パラメータをoriginからコピーしてセット
+    const positions = originGeometry.attributes.position.clone();
+    this.geometry.setAttribute('position', positions);
+
+    const normal = originGeometry.attributes.normal.clone();
+    this.geometry.setAttribute('normals', normal);
+
+    const uv = originGeometry.attributes.uv.clone();
+    this.geometry.setAttribute('uv', uv);
+
+    const indices = originGeometry.index.clone();
+    this.geometry.setIndex(indices);
+
+    // offsetPosition、initialRotateを自作
+    // instanceGeoから離れる = 一つ一つのパーティクルの座標
+    for (let i = 0; i < instanceNum; i++) {
+      offsets.push(
+        Math.random() * radius - radius / 2,
+        Math.random() * (2 * radius) - (2 * radius) / 2,
+        Math.random() * radius - radius / 2
+      );
+
+      // パーティクルごとの回転の初期値
+      initialRotate.push(Math.random() * 360);
+    }
+
+    this.geometry.setAttribute(
+      'offsetPosition',
+      new THREE.InstancedBufferAttribute(new Float32Array(offsets), 3)
+    );
+    this.geometry.setAttribute(
+      'initialRotate',
+      new THREE.InstancedBufferAttribute(new Float32Array(initialRotate), 1)
+    );
+
+    // uniformをさらに追加
+    this.uniforms.diffuse = {
+      value: new THREE.Vector3(1.0, 1.0, 1.0),
+    };
+    this.uniforms.roughness = {
+      value: 0.5,
+    };
+    this.uniforms = THREE.UniformsUtils.merge([
+      THREE.ShaderLib.standard.uniforms,
+      this.uniforms,
+    ]);
+
+    // this.uni.uColor.value = new THREE.Color(colors.blue);
+
+    this.material = new THREE.ShaderMaterial({
+      uniforms: this.uniforms,
+      vertexShader: spaceVertexShader,
+      fragmentShader: THREE.ShaderLib.standard.fragmentShader,
+      transparent: true,
+      flatShading: true,
+      lights: true,
     });
   }
 
