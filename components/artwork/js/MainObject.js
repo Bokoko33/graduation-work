@@ -20,7 +20,13 @@ export default class MainObject {
     this.geometry = null;
     this.material = null;
     this.mesh = null;
-    this.uniforms = null;
+
+    // uniform timeは共通なので最初に定義
+    this.uniforms = {
+      uTime: {
+        value: 0,
+      },
+    };
 
     this.frameCount = 0;
 
@@ -110,20 +116,16 @@ export default class MainObject {
       new THREE.InstancedBufferAttribute(new Float32Array(offsets), 3)
     );
 
-    const uniform = {
-      uTime: {
-        value: 0,
-      },
-      diffuse: {
-        value: new THREE.Vector3(1.0, 1.0, 1.0),
-      },
-      roughness: {
-        value: 0.5,
-      },
+    // uniformを追加
+    this.uniforms.diffuse = {
+      value: new THREE.Vector3(1.0, 1.0, 1.0),
+    };
+    this.uniforms.roughness = {
+      value: 0.5,
     };
     this.uniforms = THREE.UniformsUtils.merge([
       THREE.ShaderLib.standard.uniforms,
-      uniform,
+      this.uniforms,
     ]);
 
     // this.uni.uColor.value = new THREE.Color(colors.blue);
@@ -146,10 +148,6 @@ export default class MainObject {
   }
 
   update() {
-    // if (this.geometry) {
-    //   this.mesh.rotation.y += this.rotateValue.y * 0.01;
-    //   this.mesh.rotation.z += this.rotateValue.z * 0.01;
-    // }
     this.uniforms.uTime.value += 0.01;
   }
 
