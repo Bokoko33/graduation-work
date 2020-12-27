@@ -47,7 +47,7 @@ export default class MainObject {
         this.createStormObject(this.interactRadius);
         break;
       case 'stage3':
-        this.interactRadius = 240;
+        this.interactRadius = 300;
         this.defaultColor = colors.white;
         this.createSpaceObject(this.interactRadius);
         break;
@@ -150,12 +150,14 @@ export default class MainObject {
   }
 
   createSpaceObject(radius) {
-    const instanceNum = 100;
+    const instanceNum = 2000;
     const offsets = []; // ポジションからのオフセット
     const initialRotate = []; // 回転の初期角
+    const rotateDirections = []; // 回転の方向-1or1
+    const slVariables = []; // 球面補間の補間値
 
     // 元となるジオメトリ
-    const originGeometry = new THREE.SphereBufferGeometry(20, 20, 20);
+    const originGeometry = new THREE.SphereBufferGeometry(2, 2, 10);
 
     this.geometry = new THREE.InstancedBufferGeometry();
 
@@ -172,17 +174,26 @@ export default class MainObject {
     const indices = originGeometry.index.clone();
     this.geometry.setIndex(indices);
 
-    // offsetPosition、initialRotateを自作
+    // offsetPosition、velocitiesを自作
     // instanceGeoから離れる = 一つ一つのパーティクルの座標
     for (let i = 0; i < instanceNum; i++) {
       offsets.push(
         Math.random() * radius - radius / 2,
-        Math.random() * (2 * radius) - (2 * radius) / 2,
+        Math.random() * radius - radius / 2,
         Math.random() * radius - radius / 2
       );
 
       // パーティクルごとの回転の初期値
       initialRotate.push(Math.random() * 360);
+
+      // 回転の方向 -1or1
+      const dir = [-1, 1];
+      rotateDirections.push(
+        dir[Math.floor(Math.random() * 2)],
+        dir[Math.floor(Math.random() * 2)]
+      );
+
+      slVariables.push(Math.random());
     }
 
     this.geometry.setAttribute(
@@ -192,6 +203,14 @@ export default class MainObject {
     this.geometry.setAttribute(
       'initialRotate',
       new THREE.InstancedBufferAttribute(new Float32Array(initialRotate), 1)
+    );
+    this.geometry.setAttribute(
+      'rotateDirections',
+      new THREE.InstancedBufferAttribute(new Float32Array(rotateDirections), 2)
+    );
+    this.geometry.setAttribute(
+      'slVariable',
+      new THREE.InstancedBufferAttribute(new Float32Array(slVariables), 1)
     );
 
     // uniformをさらに追加
@@ -219,7 +238,7 @@ export default class MainObject {
   }
 
   update() {
-    this.uniforms.uTime.value += 0.01;
+    this.uniforms.uTime.value++;
   }
 
   delete() {
