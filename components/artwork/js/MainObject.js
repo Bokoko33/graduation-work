@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import stormVertexShader from '../glsl/objectStorm.vert';
 import spaceVertexShader from '../glsl/objectSpace.vert';
 // import stormFragmentShader from '../glsl/objectStorm.frag';
+// import spaceFragmentShader from '../glsl/objectSpace.frag';
 // import fragmentShader from '../glsl/objectCommon.frag';
 import { colors } from './variable';
 
@@ -11,8 +12,8 @@ export default class MainObject {
     this.position = pos;
     this.defaultColor = null;
     this.rotateValue = {
-      y: Math.random() - 1,
-      z: Math.random() - 1,
+      y: Math.random() - 0.5,
+      z: Math.random() - 0.5,
     };
 
     // カーソルへの影響範囲（オブジェクトの半径ではなく、カーソルがインタラクションし始める範囲）
@@ -25,6 +26,7 @@ export default class MainObject {
     // uniform timeは共通なので最初に定義
     this.uniforms = {
       uTime: {
+        type: 'f',
         value: 0,
       },
     };
@@ -126,18 +128,14 @@ export default class MainObject {
     );
 
     // uniformを追加
-    this.uniforms.diffuse = {
-      value: new THREE.Vector3(1.0, 1.0, 1.0),
-    };
-    this.uniforms.roughness = {
-      value: 0.5,
-    };
+    this.uniforms.diffuse = { value: new THREE.Vector3(1.0, 1.0, 1.0) };
+    this.uniforms.roughness = { value: 0.1 };
+    this.uniforms.color = { value: new THREE.Color(colors.mint) };
     this.uniforms = THREE.UniformsUtils.merge([
-      THREE.ShaderLib.standard.uniforms,
       this.uniforms,
+      THREE.ShaderLib.standard.uniforms,
+      THREE.UniformsLib.fog,
     ]);
-
-    // this.uni.uColor.value = new THREE.Color(colors.blue);
 
     this.material = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
@@ -146,6 +144,7 @@ export default class MainObject {
       transparent: true,
       flatShading: true,
       lights: true,
+      fog: true,
     });
   }
 
@@ -214,18 +213,14 @@ export default class MainObject {
     );
 
     // uniformをさらに追加
-    this.uniforms.diffuse = {
-      value: new THREE.Vector3(1.0, 1.0, 1.0),
-    };
-    this.uniforms.roughness = {
-      value: 0.5,
-    };
+    this.uniforms.diffuse = { value: new THREE.Vector3(1.0, 1.0, 1.0) };
+    this.uniforms.roughness = { value: 0.1 };
+    this.uniforms.color = { value: new THREE.Color(colors.black) };
     this.uniforms = THREE.UniformsUtils.merge([
-      THREE.ShaderLib.standard.uniforms,
       this.uniforms,
+      THREE.ShaderLib.standard.uniforms,
+      THREE.UniformsLib.fog,
     ]);
-
-    // this.uni.uColor.value = new THREE.Color(colors.blue);
 
     this.material = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
@@ -234,6 +229,7 @@ export default class MainObject {
       transparent: true,
       flatShading: true,
       lights: true,
+      fog: true,
     });
   }
 

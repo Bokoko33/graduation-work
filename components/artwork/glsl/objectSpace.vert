@@ -1,7 +1,9 @@
+#include <fog_pars_vertex>
+
 attribute vec3 offsetPosition;
 attribute float initialRotate; // 回転の初期値
 attribute vec2 rotateDirections; // 回転の方向1or-1が二つ
-attribute float slVariable; // 球面補間の補間値0~1
+attribute float slVariable; // 球面線形補間の補間値0~1
 varying vec3 vViewPosition;
 uniform float uTime;
 
@@ -11,7 +13,7 @@ highp mat2 rotate(float rad){
     return mat2(cos(rad),sin(rad),-sin(rad),cos(rad));
 }
 
-// 球面補間の基準とする縦/横回転。流れの向きは1or-1で場合わけ（dir）
+// 球面線形補間の基準とする縦/横回転。流れの向きは1or-1で場合わけ（dir）
 vec3 verticalTrack(float radius, float angle, float dir){
     // sinとcosを逆にしたものをそれぞれ定義
     vec3 vt1 = vec3(radius * cos(angle), radius * sin(angle), 0.0);
@@ -73,6 +75,8 @@ void main() {
     vec4 mvPosition = modelViewMatrix * vec4(originPos + offsetPos, 1.0);
     gl_Position = projectionMatrix * mvPosition;
     vViewPosition = -mvPosition.xyz;
+
+    #include <fog_vertex>
 }
 
 // 線形補間の場合
