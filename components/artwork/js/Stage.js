@@ -14,7 +14,7 @@ class Stage {
 
     // シーンごとに変えるFog
     this.fogNear = 300;
-    this.fogFar = Math.abs(this.goalZ);
+    this.fogFar = Math.abs(this.goalZ) + 1000;
     this.fogList = [];
 
     // 背景オブジェクト
@@ -50,9 +50,9 @@ class Stage {
   init() {
     // fogを作成
     this.fogList = {
-      pink: new THREE.Fog(colors.pink, this.fogNear, this.fogFar),
+      beige: new THREE.Fog(colors.beige, this.fogNear, this.fogFar),
       blue: new THREE.Fog(colors.blue, this.fogNear, this.fogFar),
-      green: new THREE.Fog(colors.green, this.fogNear, this.fogFar),
+      mint: new THREE.Fog(colors.mint, this.fogNear, this.fogFar),
       black: new THREE.Fog(colors.black, this.fogNear, this.fogFar),
     };
 
@@ -71,13 +71,13 @@ class Stage {
         scene.fog = this.fogList.blue;
         break;
       case 'stage2':
-        scene.fog = this.fogList.green;
+        scene.fog = this.fogList.mint;
         break;
       case 'stage3':
         scene.fog = this.fogList.black;
         break;
       default:
-        scene.fog = this.fogList.pink;
+        scene.fog = this.fogList.beige;
         break;
     }
   }
@@ -132,7 +132,7 @@ class Stage {
   }
 
   initPanels(route, scene) {
-    const topPanelPosition = new THREE.Vector3(0, 0, -100);
+    const topPanelPosition = new THREE.Vector3(0, 0, -200);
     this.topPanel = new PanelObject(topPanelPosition, 'top', route);
     scene.add(this.topPanel.mesh);
 
@@ -143,7 +143,7 @@ class Stage {
         const descPanelPosition = new THREE.Vector3(
           0,
           0,
-          (i + 1) * (this.goalZ / 4) - this.goalLinkOffset * 1.2
+          (i + 1) * (this.goalZ / 4) - this.goalLinkOffset * 1.3
         );
         const descPanel = new PanelObject(
           descPanelPosition,

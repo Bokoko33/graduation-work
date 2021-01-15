@@ -4,6 +4,8 @@ import fragmentShader from '../glsl/globalMenu.frag';
 import { colors } from './variable';
 import { getTexture } from './textures';
 
+const rate = 0.3;
+
 export default class Link {
   constructor(pos, path, type) {
     this.position = pos;
@@ -19,6 +21,10 @@ export default class Link {
     this.defaultColor = null;
     this.hoverColor = new THREE.Color(colors.white);
 
+    // 画像ごとに決める幅と高さ
+    this.width = 0;
+    this.height = 0;
+
     this.geometry = null;
     this.material = null;
     this.mesh = null;
@@ -27,26 +33,11 @@ export default class Link {
   }
 
   init() {
-    if (this.type === 'global') {
-      let texture = null;
-      // テクスチャわけ
-      switch (this.nextPathName) {
-        case '/':
-          texture = getTexture('globalMenuLogo');
-          break;
-        case 'stage1':
-          texture = getTexture('globalMenuWater');
-          break;
-        case 'stage2':
-          texture = getTexture('globalMenuStorm');
-          break;
-        case 'stage3':
-          texture = getTexture('globalMenuSpace');
-          break;
-        case 'about':
-          texture = getTexture('globalMenuAbout');
-      }
-      this.geometry = new THREE.PlaneBufferGeometry(133, 40, 2); // サイズはいずれ画像から取る
+    if (this.type === 'logo') {
+      const texture = getTexture('globalMenuLogo');
+      this.width = 244 * rate;
+      this.height = 171 * rate;
+      this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height, 2);
       this.material = new THREE.RawShaderMaterial({
         uniforms: {
           uTex: { type: 't', value: texture },
@@ -55,7 +46,42 @@ export default class Link {
         vertexShader,
         fragmentShader,
         transparent: true,
+        depthTest: false,
       });
+      this.position.x -= this.width / 2;
+    } else if (this.type === 'menu') {
+      let texture = null;
+      this.height = 85 * rate; // 高さは共通
+      // テクスチャわけ
+      switch (this.nextPathName) {
+        case 'stage1':
+          texture = getTexture('globalMenuWater');
+          this.width = 373 * rate;
+          break;
+        case 'stage2':
+          texture = getTexture('globalMenuStorm');
+          this.width = 372 * rate;
+          break;
+        case 'stage3':
+          texture = getTexture('globalMenuSpace');
+          this.width = 367 * rate;
+          break;
+        case 'about':
+          texture = getTexture('globalMenuAbout');
+          this.width = 178 * rate;
+      }
+      this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height, 2);
+      this.material = new THREE.RawShaderMaterial({
+        uniforms: {
+          uTex: { type: 't', value: texture },
+          uColor: { type: 'c', value: new THREE.Color(this.defaultColor) },
+        },
+        vertexShader,
+        fragmentShader,
+        transparent: true,
+        depthTest: false,
+      });
+      this.position.x += this.width / 2; // 等間隔配置するために幅の半分だけ位置をずらす
     } else if (this.type === 'goal') {
       // テクスチャわけ
       switch (this.nextPathName) {

@@ -50,6 +50,10 @@ export const initTexture = () => {
       value: loader.load(require('@/assets/images/top-mv_pc.png')),
     },
     {
+      name: 'frostedPanel',
+      value: loader.load(require('@/assets/images/frosted-panel.png')),
+    },
+    {
       name: 'startPanelWater',
       value: loader.load(require('@/assets/images/menu_about.png')),
     },

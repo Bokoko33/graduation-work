@@ -1,10 +1,7 @@
 import * as THREE from 'three';
-// import waterVertexShader from '../glsl/objectWater.vert';
+import waterVertexShader from '../glsl/objectWater.vert';
 import stormVertexShader from '../glsl/objectStorm.vert';
 import spaceVertexShader from '../glsl/objectSpace.vert';
-// import stormFragmentShader from '../glsl/objectStorm.frag';
-// import spaceFragmentShader from '../glsl/objectSpace.frag';
-// import fragmentShader from '../glsl/objectCommon.frag';
 import { colors } from './variable';
 
 export default class MainObject {
@@ -25,13 +22,8 @@ export default class MainObject {
 
     // uniform timeは共通なので最初に定義
     this.uniforms = {
-      uTime: {
-        type: 'f',
-        value: 0,
-      },
+      uTime: { value: 0 },
     };
-
-    this.frameCount = 0;
 
     this.init(route);
   }
@@ -64,22 +56,58 @@ export default class MainObject {
     }
   }
 
-  createWaterObject(radius, colorCode) {
-    this.geometry = new THREE.SphereBufferGeometry(radius, 128, 128);
-    this.material = new THREE.MeshLambertMaterial({
-      color: colorCode,
+  createWaterObject(radius) {
+    const vertexNum = 128;
+    const offsets = [];
+    this.geometry = new THREE.SphereBufferGeometry(
+      radius,
+      vertexNum,
+      vertexNum
+    );
+
+    for (let i = 0; i < vertexNum; i++) {
+      offsets.push(Math.random());
+    }
+    this.geometry.setAttribute(
+      'offset',
+      new THREE.InstancedBufferAttribute(new Float32Array(offsets), 1)
+    );
+    // this.material = new THREE.MeshLambertMaterial({
+    //   color: colorCode,
+    // });
+    // this.material.onBeforeCompile = (shader) => {
+    //   shader.uniforms.time = { value: this.uniforms.uTime.value };
+    //   shader.vertexShader = 'uniform float time;\n' + shader.vertexShader;
+    //   const token = '#include <begin_vertex>';
+    //   const customTransform = `
+    //       vec3 transformed = position;
+    //       transformed.x = position.x
+    //            + sin(position.y*0.5 + time*5.0)*2.0;
+    //   `;
+    //   shader.vertexShader = shader.vertexShader.replace(token, customTransform);
+    // };
+
+    // uniformを追加
+    this.uniforms.diffuse = { value: new THREE.Vector3(1.0, 1.0, 1.0) };
+    this.uniforms.roughness = { value: 0.1 };
+    this.uniforms.color = { value: new THREE.Color(colors.mint) };
+    this.uniforms = THREE.UniformsUtils.merge([
+      this.uniforms,
+      THREE.ShaderLib.standard.uniforms,
+      THREE.UniformsLib.fog,
+    ]);
+    this.uniforms.opacity = { value: 0.5 }; // libraryを上書きするために後に書く
+
+    this.material = new THREE.ShaderMaterial({
+      uniforms: this.uniforms,
+      vertexShader: waterVertexShader,
+      fragmentShader: THREE.ShaderLib.standard.fragmentShader,
+      transparent: true,
+      flatShading: true,
+      lights: true,
+      fog: true,
+      depthWrite: false,
     });
-    this.material.onBeforeCompile = (shader) => {
-      shader.uniforms.time = { value: this.frameCount };
-      shader.vertexShader = 'uniform float time;\n' + shader.vertexShader;
-      const token = '#include <begin_vertex>';
-      const customTransform = `
-          vec3 transformed = vec3(position);
-          transformed.x = position.x
-               + sin(position.y*0.5 + time*5.0)*2.0;
-      `;
-      shader.vertexShader = shader.vertexShader.replace(token, customTransform);
-    };
   }
 
   createStormObject(radius) {

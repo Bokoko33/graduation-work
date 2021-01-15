@@ -15,7 +15,7 @@ export default class Background {
 
   init(route) {
     this.geometry = new THREE.PlaneBufferGeometry(2, 2);
-    let bgColor = colors.pink; // デフォルト色はピンク
+    let bgColor = colors.beige; // デフォルト色はピンク
     let frag = defaultFragmentShader; // デフォルトの背景シェーダー
     switch (route) {
       case 'stage1':
@@ -23,7 +23,7 @@ export default class Background {
         frag = waterFragmentShader;
         break;
       case 'stage2':
-        bgColor = colors.green;
+        bgColor = colors.mint;
         frag = stormFragmentShader;
         break;
       case 'stage3':

@@ -127,7 +127,7 @@ class Common {
           -this.dist
         ),
         this.globalNavNames[i],
-        'global'
+        'menu'
       );
       menu.mesh.renderOrder = 999; // 一番手前にレンダリングしたい
       this.scene.add(menu.mesh);
@@ -144,7 +144,7 @@ class Common {
         -this.dist
       ),
       '/',
-      'global'
+      'logo'
     );
     logo.mesh.renderOrder = 999;
     this.scene.add(logo.mesh);
