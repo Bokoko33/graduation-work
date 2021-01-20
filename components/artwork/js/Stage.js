@@ -38,8 +38,8 @@ class Stage {
     this.goalLinkObjects = [];
     // ゴールメニューになりうるパス名（ステージによってここから非表示に）
     this.goalLinkNames = ['/', 'stage1', 'stage2', 'stage3'];
-    // ゴールよりも奥にリンクを設置
-    this.goalLinkOffset = 200;
+    // ゴールよりも奥にリンクを設置（initでcommonからクリックできる距離を受け取る）
+    this.goalLinkOffset = 0;
 
     // ページ最初のパネル（indexページではサイトタイトル）
     this.topPanel = null;
@@ -47,7 +47,9 @@ class Stage {
     this.descriptionPanels = [];
   }
 
-  init() {
+  init(clickableDist) {
+    this.goalLinkOffset = clickableDist * 0.7;
+
     // fogを作成
     this.fogList = {
       beige: new THREE.Fog(colors.beige, this.fogNear, this.fogFar),
@@ -143,7 +145,7 @@ class Stage {
         const descPanelPosition = new THREE.Vector3(
           0,
           0,
-          (i + 1) * (this.goalZ / 4) - this.goalLinkOffset * 1.3
+          (i + 1) * ((this.goalZ - this.goalLinkOffset) / 4)
         );
         const descPanel = new PanelObject(
           descPanelPosition,

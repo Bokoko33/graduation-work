@@ -30,7 +30,7 @@ class Common {
     this.dist = 0; // ウィンドウぴったりのカメラ距離
     this.cameraFollowLevel = 0.00002; // カメラの回転のカーソルへの追従度
 
-    this.clickableDistance = 900; // 対象をクリックできるようになる距離
+    this.clickableDistance = 950; // 対象をクリックできるようになる距離
   }
 
   init($canvas, route) {
@@ -64,7 +64,7 @@ class Common {
     this.renderer.setSize(this.size.w, this.size.h);
 
     // ステージ関連の初期化
-    Stage.init();
+    Stage.init(this.clickableDistance);
     Stage.setLight(this.scene);
     Stage.setFog(route, this.scene);
     Stage.setGoalLinks(this.scene, this.links, this.currentRoute);
