@@ -11,13 +11,12 @@ class Common {
     this.scene = null;
     this.camera = null;
     this.renderer = null;
-    this.bloomComposer = null;
-    this.composer = null;
-    this.bloomLayer = null;
     this.cameraGroup = null;
 
     // グローバルメニューのパス名（画面右端から順に）
     this.globalNavNames = ['about', 'stage3', 'stage2', 'stage1'];
+    // グローバルメニューのマージン（size確定後代入）
+    this.globalNavMargin = {};
 
     this.currentRoute = null; // 現在のページ
 
@@ -30,7 +29,7 @@ class Common {
     this.dist = 0; // ウィンドウぴったりのカメラ距離
     this.cameraFollowLevel = 0.00002; // カメラの回転のカーソルへの追従度
 
-    this.clickableDistance = 950; // 対象をクリックできるようになる距離
+    this.clickableDistance = 1000; // 対象をクリックできるようになる距離
   }
 
   init($canvas, route) {
@@ -63,6 +62,14 @@ class Common {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.size.w, this.size.h);
 
+    // グローバルナビゲーションを作成
+    this.globalNavMargin = {
+      side: this.size.w * 0.08,
+      top: 40,
+      between: 160,
+    };
+    this.createGlobalNav();
+
     // ステージ関連の初期化
     Stage.init(this.clickableDistance);
     Stage.setLight(this.scene);
@@ -72,9 +79,6 @@ class Common {
     Stage.initBackground(route, this.scene);
     Stage.initPanels(route, this.scene);
     Stage.initInteractObjects(route, this.scene, this.size);
-
-    // グローバルナビゲーションを作成
-    this.createGlobalNav();
   }
 
   setSize() {
@@ -89,6 +93,16 @@ class Common {
     this.camera.aspect = this.size.w / this.size.h;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.size.w, this.size.h);
+
+    // グローバルナビの位置修正
+    this.globalNavMargin.side = this.size.w * 0.08;
+    // グローバルナビをthis.linksに最初に登録しているので、
+    // ループ回数はグローバルナビ+ロゴ分で良い
+    const length = this.globalNavNames.length;
+    for (let i = 0; i < length + 1; i++) {
+      // 位置調整のためにインデックスと最大数も渡す
+      this.links[i].resize(this.size, this.globalNavMargin, i, length);
+    }
   }
 
   update() {
@@ -110,24 +124,25 @@ class Common {
   }
 
   hideObjectOutOfCamera(mesh) {
+    // ある程度手前に来たオブジェクトは非表示に
     if (Math.abs(this.cameraGroup.position.z - mesh.position.z) < 600) {
       mesh.visible = false;
     }
   }
 
   createGlobalNav() {
-    const headerMarginSide = this.size.w * 0.08;
-    const headerMarginTop = 40;
-    const headerMarginBetween = 160;
+    const marginSide = this.globalNavMargin.side;
+    const marginBetween = this.globalNavMargin.between;
+    const marginTop = this.globalNavMargin.top;
     for (let i = 0; i < this.globalNavNames.length; i++) {
       const menu = new Link(
         new THREE.Vector3(
-          this.size.w / 2 - headerMarginSide - headerMarginBetween * i,
-          this.size.h / 2 - headerMarginTop,
+          this.size.w / 2 - marginSide - marginBetween * i,
+          this.size.h / 2 - marginTop,
           -this.dist
         ),
         this.globalNavNames[i],
-        'menu'
+        'global'
       );
       menu.mesh.renderOrder = 999; // 一番手前にレンダリングしたい
       this.scene.add(menu.mesh);
@@ -139,12 +154,12 @@ class Common {
     // ロゴを作成
     const logo = new Link(
       new THREE.Vector3(
-        -this.size.w / 2 + headerMarginSide,
-        this.size.h / 2 - headerMarginTop,
+        -this.size.w / 2 + marginSide,
+        this.size.h / 2 - marginTop,
         -this.dist
       ),
       '/',
-      'logo'
+      'global'
     );
     logo.mesh.renderOrder = 999;
     this.scene.add(logo.mesh);

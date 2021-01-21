@@ -366,6 +366,7 @@ class Cursor {
           ? intersects[0].object.parent.position.z
           : intersects[0].object.position.z;
       const dist = Math.abs(targetPos - this.cursorPosition.z);
+      // console.log(dist);
       if (dist > Common.clickableDistance) return;
 
       this.hover = true; // カーソル変化を起動
