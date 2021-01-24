@@ -1,10 +1,7 @@
 import * as THREE from 'three';
-import vertexShader from '../glsl/bg.vert';
-import defaultFragmentShader from '../glsl/bgDefault.frag';
-import waterFragmentShader from '../glsl/bgWater.frag';
-import stormFragmentShader from '../glsl/bgStorm.frag';
-import spaceFragmentShader from '../glsl/bgSpace.frag';
-import { colors } from './variable';
+import vertexShader from '../glsl/background.vert';
+import fragmentShader from '../glsl/background.frag';
+import { getTexture } from './textures';
 
 export default class Background {
   constructor() {
@@ -15,30 +12,27 @@ export default class Background {
 
   init(route) {
     this.geometry = new THREE.PlaneBufferGeometry(2, 2);
-    let bgColor = colors.beige; // デフォルト色はピンク
-    let frag = defaultFragmentShader; // デフォルトの背景シェーダー
+    let texture = null; // デフォルト色はピンク
     switch (route) {
       case 'stage1':
-        bgColor = colors.blue;
-        frag = waterFragmentShader;
+        texture = getTexture('bg_water_pc');
         break;
       case 'stage2':
-        bgColor = colors.mint;
-        frag = stormFragmentShader;
+        texture = getTexture('bg_storm_pc');
         break;
       case 'stage3':
-        bgColor = colors.black;
-        frag = spaceFragmentShader;
+        texture = getTexture('bg_space_pc');
         break;
       default:
+        texture = getTexture('bg_main_pc');
         break;
     }
     this.material = new THREE.ShaderMaterial({
       uniforms: {
-        uColor: { type: 'c', value: new THREE.Color(bgColor) },
+        uTex: { value: texture },
       },
       vertexShader,
-      fragmentShader: frag,
+      fragmentShader,
       depthTest: false,
     });
 
