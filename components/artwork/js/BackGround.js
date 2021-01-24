@@ -41,7 +41,7 @@ export default class Background {
     this.mesh.renderOrder = -1; // 背景を一番先にレンダリングする
   }
 
-  setPosition(z) {
+  followCursor(z) {
     // カーソルに追従させる
     this.mesh.position.z = z;
   }
