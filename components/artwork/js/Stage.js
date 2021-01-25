@@ -4,6 +4,7 @@ import Link from './Link';
 import MainObject from './MainObject';
 import PanelObject from './PanelObject';
 import { colors } from './variable';
+import { getTexture } from './textures';
 
 class Stage {
   constructor() {
@@ -102,11 +103,12 @@ class Stage {
     }
   }
 
-  setGoalLinks(scene, linkList, currentRoute) {
-    // ゴールリンクを作成
+  initGoalLinks(scene, linkList, currentRoute) {
+    // ゴールリンクを初期化
+    // パスとデフォルトのテクスチャを設定し、ステージごとに位置とテクスチャを修正
     for (let i = 0; i < this.goalLinkNames.length; i++) {
       const link = new Link(
-        new THREE.Vector3(i * 150, 0, this.goalZ - this.goalLinkOffset),
+        new THREE.Vector3(0, 0, this.goalZ - this.goalLinkOffset),
         this.goalLinkNames[i],
         'goal'
       );
@@ -116,24 +118,24 @@ class Stage {
       scene.add(link.mesh);
     }
 
-    this.resetGoalVisible(currentRoute);
+    this.adjustGoal(currentRoute);
   }
 
-  resetGoalVisible(route) {
+  adjustGoal(route) {
     // indexページならパス名に修正し、格納
     const pathname = route === 'index' ? '/' : route;
-
-    // 表示/非表示を切り替え、配置を中央よりに修正
-    let putCount = 0; // 非表示にするものを除いて、いくつ配置したか（配列の添字に使う）
-    const posList = [-120, 0, 120]; // 3個の場合のとりあえずの座標
-    for (let i = 0; i < this.goalLinkObjects.length; i++) {
-      if (this.goalLinkObjects[i].nextPathName === pathname) {
-        this.goalLinkObjects[i].mesh.visible = false;
-        this.goalLinkObjects[i].mesh.position.x = 99999; // とりあえず画面外に行ってもらう
+    // ゴールリンクを置く座標
+    const positions = [-450, -150, 150, 450];
+    let posIndex = 0; // backをのぞいて左から順に配置するためのindex
+    for (const obj of this.goalLinkObjects) {
+      // 自身と同ステージであれば、テクスチャをbackに変更し、位置を右端に
+      if (obj.nextPathName === pathname) {
+        obj.mesh.material.map = getTexture('goal_back');
+        obj.mesh.position.x = positions[3];
       } else {
-        this.goalLinkObjects[i].mesh.visible = true;
-        this.goalLinkObjects[i].mesh.position.x = posList[putCount];
-        putCount++;
+        obj.mesh.material.map = obj.texture;
+        obj.mesh.position.x = positions[posIndex];
+        posIndex++;
       }
     }
   }

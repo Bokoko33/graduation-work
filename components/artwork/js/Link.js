@@ -25,6 +25,9 @@ export default class Link {
     this.width = 0;
     this.height = 0;
 
+    // テクスチャは保存しておく
+    this.texture = null;
+
     this.geometry = null;
     this.material = null;
     this.mesh = null;
@@ -35,35 +38,34 @@ export default class Link {
   init() {
     // widthはテクスチャ画像を参照
     if (this.type === 'global') {
-      let texture = null;
       // テクスチャわけ
       switch (this.nextPathName) {
         case '/':
-          texture = getTexture('globalMenuLogo');
+          this.texture = getTexture('logo');
           this.width = 244 * rate;
           this.height = 171 * rate;
           this.position.x -= this.width / 2; // 幅の半分だけ位置をずらす
           break;
         case 'stage1':
-          texture = getTexture('globalMenuWater');
+          this.texture = getTexture('menu_water');
           this.width = 373 * rate;
           this.height = 85 * rate;
           this.position.x += this.width / 2; // 幅の半分だけ位置をずらす
           break;
         case 'stage2':
-          texture = getTexture('globalMenuStorm');
+          this.texture = getTexture('menu_storm');
           this.width = 372 * rate;
           this.height = 85 * rate;
           this.position.x += this.width / 2; // 幅の半分だけ位置をずらす
           break;
         case 'stage3':
-          texture = getTexture('globalMenuSpace');
+          this.texture = getTexture('menu_space');
           this.width = 367 * rate;
           this.height = 85 * rate;
           this.position.x += this.width / 2; // 幅の半分だけ位置をずらす
           break;
         case 'about':
-          texture = getTexture('globalMenuAbout');
+          this.texture = getTexture('menu_about');
           this.width = 178 * rate;
           this.height = 85 * rate;
           this.position.x += this.width / 2; // 幅の半分だけ位置をずらす
@@ -71,7 +73,7 @@ export default class Link {
       this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height, 2);
       this.material = new THREE.RawShaderMaterial({
         uniforms: {
-          uTex: { type: 't', value: texture },
+          uTex: { type: 't', value: this.texture },
           uColor: { type: 'c', value: new THREE.Color(this.defaultColor) },
         },
         vertexShader,
@@ -80,24 +82,28 @@ export default class Link {
         depthTest: false,
       });
     } else if (this.type === 'goal') {
+      // サイズは統一
+      this.width = 917 * rate;
+      this.height = 1197 * rate;
       // テクスチャわけ
       switch (this.nextPathName) {
         case '/':
-          this.defaultColor = new THREE.Color(colors.pink);
+          this.texture = getTexture('goal_top');
           break;
         case 'stage1':
-          this.defaultColor = new THREE.Color(colors.blue);
+          this.texture = getTexture('goal_water');
           break;
         case 'stage2':
-          this.defaultColor = new THREE.Color(colors.green);
+          this.texture = getTexture('goal_water');
           break;
         case 'stage3':
-          this.defaultColor = new THREE.Color(colors.black);
+          this.texture = getTexture('goal_water');
           break;
       }
-      this.geometry = new THREE.CircleBufferGeometry(40, 50);
-      this.material = new THREE.MeshLambertMaterial({
-        color: this.defaultColor,
+      this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height, 2);
+      this.material = new THREE.MeshPhongMaterial({
+        map: this.texture,
+        transparent: true,
       });
     }
 
@@ -106,18 +112,13 @@ export default class Link {
     this.mesh.position.set(this.position.x, this.position.y, this.position.z);
   }
 
-  update() {
-    // this.mesh.rotation.y += 0.01;
-  }
+  update() {}
 
-  mouseOver() {
-    this.material.color = this.hoverColor;
-  }
+  mouseOver() {}
 
-  mouseOut() {
-    this.material.color = this.defaultColor;
-  }
+  mouseOut() {}
 
+  // グローバルメニューのみ
   resize(windowSize, margin, index, maxIndex) {
     // 呼び出し側で制御されているが一応
     if (this.type !== 'global') return;

@@ -74,8 +74,8 @@ class Common {
     Stage.init(this.clickableDistance);
     Stage.setLight(this.scene);
     Stage.setFog(route, this.scene);
-    Stage.setGoalLinks(this.scene, this.links, this.currentRoute);
 
+    Stage.initGoalLinks(this.scene, this.links, this.currentRoute);
     Stage.initBackground(route, this.scene);
     Stage.initPanels(route, this.scene);
     Stage.initInteractObjects(route, this.scene, this.size);
@@ -178,7 +178,7 @@ class Common {
   transition(route) {
     // ステージの更新
     Stage.setFog(route, this.scene);
-    Stage.resetGoalVisible(route);
+    Stage.adjustGoal(route);
 
     Stage.deleteBackground(this.scene);
     Stage.initBackground(route, this.scene);
