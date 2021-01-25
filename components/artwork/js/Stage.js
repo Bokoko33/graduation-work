@@ -4,6 +4,7 @@ import Link from './Link';
 import MainObject from './MainObject';
 import PanelObject from './PanelObject';
 import { colors } from './variable';
+
 class Stage {
   constructor() {
     this.startZ = 0; // スタート位置
@@ -23,7 +24,7 @@ class Stage {
     // カーソルとインタラクションするメインオブジェクト
     this.interactObjects = [];
     this.interactObjectsLength = 8;
-    this.iObjPositionCoefficient = [
+    this.ixObjPosCoefficient = [
       { x: 0.5, y: 0.5 },
       { x: -0.6, y: -0.6 },
       { x: 0.2, y: -0.5 },
@@ -34,32 +35,49 @@ class Stage {
       { x: -0.5, y: -0.3 },
     ];
 
+    // インタラクションしないメインオブジェクト
+    this.noInteractObjects = [];
+    this.noInteractObjectsLength = 8;
+    this.noIxObjPosCoefficient = [
+      { x: 0.5, y: 0.5 },
+      { x: -0.6, y: -0.6 },
+      { x: 0.2, y: -0.5 },
+      { x: -0.7, y: 0.3 },
+      { x: -0.1, y: -0.8 },
+      { x: 0.7, y: -0.1 },
+      { x: 0.3, y: 0.7 },
+      { x: -0.5, y: -0.3 },
+    ];
+
+    // カーソルとの距離に応じてfadeInするオブジェクト
+    this.fadeInObjects = [];
+
     // ゴールに置くリンクのリスト
     this.goalLinkObjects = [];
-    // ゴールメニューになりうるパス名（ステージによってここから非表示に）
+    // ゴールメニューになるパス名（ステージによってここから非表示に）
     this.goalLinkNames = ['/', 'stage1', 'stage2', 'stage3'];
     // ゴールよりも奥にリンクを設置（initでcommonからクリックできる距離を受け取る）
     this.goalLinkOffset = 0;
 
-    // ページ最初のパネル（indexページではサイトタイトル）
+    // ページ最初のパネル（indexページではタイトル）
     this.topPanel = null;
     // indexページの説明パネルリスト
     this.descriptionPanels = [];
   }
 
   init(clickableDist) {
-    this.goalLinkOffset = clickableDist * 0.7;
+    this.goalLinket = clickableDist * 0.7;
 
     // fogを作成
     this.fogList = {
-      beige: new THREE.Fog(colors.beige, this.fogNear, this.fogFar),
-      blue: new THREE.Fog(colors.blue, this.fogNear, this.fogFar),
-      mint: new THREE.Fog(colors.mint, this.fogNear, this.fogFar),
-      black: new THREE.Fog(colors.black, this.fogNear, this.fogFar),
+      main: new THREE.Fog(colors.white, this.fogNear, this.fogFar),
+      water: new THREE.Fog(colors.blue, this.fogNear, this.fogFar),
+      storm: new THREE.Fog(colors.green, this.fogNear, this.fogFar),
+      space: new THREE.Fog(colors.darkPurple, this.fogNear, this.fogFar),
     };
 
     // 光源
-    this.light = new THREE.HemisphereLight(0xffffff, 0x008b8b, 1);
+    this.light = new THREE.HemisphereLight(0xffffff, 0xebeef2, 1);
   }
 
   setLight(scene) {
@@ -70,16 +88,16 @@ class Stage {
   setFog(route, scene) {
     switch (route) {
       case 'stage1':
-        scene.fog = this.fogList.blue;
+        scene.fog = this.fogList.water;
         break;
       case 'stage2':
-        scene.fog = this.fogList.mint;
+        scene.fog = this.fogList.storm;
         break;
       case 'stage3':
-        scene.fog = this.fogList.black;
+        scene.fog = this.fogList.space;
         break;
       default:
-        scene.fog = this.fogList.beige;
+        scene.fog = this.fogList.main;
         break;
     }
   }
@@ -153,6 +171,7 @@ class Stage {
           i.toString()
         );
         this.descriptionPanels.push(descPanel);
+        this.fadeInObjects.push(descPanel);
         scene.add(descPanel.mesh);
       }
     }
@@ -177,8 +196,8 @@ class Stage {
     for (let i = 0; i < this.interactObjectsLength; i++) {
       // const c1 = Math.random() * (0.8 - 0.3) + 0.3;
       // const c2 = Math.random() * (0.8 - 0.3) + 0.3;
-      const x = (windowSize.w / 2) * this.iObjPositionCoefficient[i].x;
-      const y = (windowSize.h / 2) * this.iObjPositionCoefficient[i].y;
+      const x = (windowSize.w / 2) * this.ixObjPosCoefficient[i].x;
+      const y = (windowSize.h / 2) * this.ixObjPosCoefficient[i].y;
       const z = (i + 1) * ((this.goalZ * 0.8) / this.interactObjectsLength);
       const pos = new THREE.Vector3(x, y, z);
       const obj = new MainObject(route, pos);
@@ -198,7 +217,25 @@ class Stage {
   }
 
   backgroundFollow(cursorZ) {
-    this.backgroundPlane.setPosition(cursorZ);
+    this.backgroundPlane.followCursor(cursorZ);
+  }
+
+  handleFade(cursorZ) {
+    // カーソルのz座標を受け取り、fadeInを制御
+    for (let i = 0; i < this.fadeInObjects.length; i++) {
+      const obj = this.fadeInObjects[i];
+      const opacity = obj.mesh.material.opacity;
+      if (opacity >= 1) {
+        // 完全に表示されたらリストから削除
+        this.fadeInObjects.splice(i, 1);
+        continue;
+      }
+
+      const fadeInDist = 400;
+      if (Math.abs(obj.mesh.position.z - cursorZ) < fadeInDist) {
+        obj.mesh.material.opacity = opacity + 0.05;
+      }
+    }
   }
 
   update() {

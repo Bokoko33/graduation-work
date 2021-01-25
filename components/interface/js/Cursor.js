@@ -52,7 +52,7 @@ class Cursor {
     this.moveSpeed = 5;
     this.backSpeed = 3;
 
-    this.color = colors.gray;
+    this.color = colors.white;
     // カーソルメッシュの平面上での動きを操作する
     this.acceleration = new THREE.Vector3(0, 0, 0);
     this.velocity = new THREE.Vector3(0, 0, 0);
@@ -69,25 +69,6 @@ class Cursor {
 
   init(route) {
     const texture = getTexture('cursor');
-    // this.geometry = new THREE.PlaneBufferGeometry(
-    //   108 * 0.15,
-    //   151 * 0.15,
-    //   30,
-    //   30
-    // );
-    // this.material = new THREE.RawShaderMaterial({
-    //   uniforms: {
-    //     uTex: { type: 't', value: texture },
-    //     uColor: { type: 'c', value: new THREE.Color(this.color) },
-    //   },
-    //   vertexShader,
-    //   fragmentShader,
-    //   transparent: true,
-    // });
-
-    // // メッシュを作成
-    // this.mesh = new THREE.Mesh(this.geometry, this.material);
-
     // 使用するジオメトリ
     this.geometry = new THREE.BufferGeometry();
     // リングのジオメトリ
@@ -169,7 +150,7 @@ class Cursor {
     this.uniforms = {
       variable: { type: 'f', value: 0.0 },
       uTex: { type: 't', value: texture },
-      uColor: { type: 'c', value: new THREE.Color(colors.gray) },
+      uColor: { type: 'c', value: new THREE.Color(colors.white) },
     };
     this.material = new THREE.RawShaderMaterial({
       uniforms: this.uniforms,
@@ -231,6 +212,9 @@ class Cursor {
 
     // オブジェクトとの当たり判定
     this.collisionDetection();
+
+    // カーソルの座標がトリガーとなる、オブジェクトのfadeIn
+    Stage.handleFade(this.cursorPosition.z);
 
     if (this.hover) {
       if (this.uniforms.variable.value < 1) {
