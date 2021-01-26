@@ -343,6 +343,9 @@ class Cursor {
     if (intersects.length > 0) {
       // 交差したオブジェクトがある時
 
+      // 対象が透明な場合はreturn
+      if (!intersects[0].object.material.opacity > 0) return;
+
       // ある程度近付かないと反応しないように
       // 親オブジェクトを持つ場合（グローバルメニュー）はそちらの座標を参照する
       const targetPos =
@@ -350,7 +353,6 @@ class Cursor {
           ? intersects[0].object.parent.position.z
           : intersects[0].object.position.z;
       const dist = Math.abs(targetPos - this.cursorPosition.z);
-      // console.log(dist);
       if (dist > Common.clickableDistance) return;
 
       this.hover = true; // カーソル変化を起動
@@ -359,13 +361,13 @@ class Cursor {
       this.intersected = Common.links.find(
         (link) => link.mesh === intersects[0].object
       );
-      this.intersected.mouseOver();
+      // this.intersected.mouseOver();
 
       if (!isPressed) this.clickable = true;
     } else {
-      if (this.intersected) {
-        this.intersected.mouseOut();
-      }
+      // if (this.intersected) {
+      //   this.intersected.mouseOut();
+      // }
       this.intersected = null;
       this.hover = false;
       this.clickable = false;
