@@ -54,21 +54,8 @@ export default class PanelObject {
       opacity = 0; // 説明パネルは徐々に出していく
       this.width = 2882 * sizeRate;
       this.height = 1628 * sizeRate;
-      // テクスチャわけ
-      switch (key) {
-        case '0':
-          texture = getTexture('panel_top_desc_1');
-          break;
-        case '1':
-          texture = getTexture('panel_top_desc_2');
-          break;
-        case '2':
-          texture = getTexture('panel_top_desc_3');
-          break;
-        case '3':
-          texture = getTexture('panel_top_desc_4');
-          break;
-      }
+
+      texture = getTexture(`panel_top_desc_${key}`);
     }
 
     this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height, 2);

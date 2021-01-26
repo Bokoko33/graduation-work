@@ -104,6 +104,7 @@ export default class Link {
       this.material = new THREE.MeshPhongMaterial({
         map: this.texture,
         transparent: true,
+        opacity: 0,
       });
     }
 

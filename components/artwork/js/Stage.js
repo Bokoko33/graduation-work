@@ -3,7 +3,8 @@ import Background from './Background';
 import Link from './Link';
 import MainObject from './MainObject';
 import PanelObject from './PanelObject';
-import { colors } from './variable';
+import TextObject from './TextObject';
+import { colors, imageShrinkRate } from './variable';
 import { getTexture } from './textures';
 
 class Stage {
@@ -57,12 +58,13 @@ class Stage {
     this.goalLinkObjects = [];
     // ゴールメニューになるパス名（ステージによってここから非表示に）
     this.goalLinkNames = ['/', 'stage1', 'stage2', 'stage3'];
-    // ゴールよりも奥にリンクを設置（initでcommonからクリックできる距離を受け取る）
-    this.goalLinkOffset = 0;
+    // ゴールよりも奥にリンクを設置
+    this.goalLinkOffset = 300;
 
     // ページ最初のパネル（indexページではタイトル）
     this.topPanel = null;
     // indexページの説明パネルリスト
+    this.descPanelNum = 5;
     this.descriptionPanels = [];
   }
 
@@ -105,20 +107,44 @@ class Stage {
 
   initGoalLinks(scene, linkList, currentRoute) {
     // ゴールリンクを初期化
-    // パスとデフォルトのテクスチャを設定し、ステージごとに位置とテクスチャを修正
+    // パスとデフォルトのテクスチャを設定し、adjustGoal()でステージごとに位置とテクスチャを修正
+    const goalPositionZ = this.goalZ - this.goalLinkOffset;
     for (let i = 0; i < this.goalLinkNames.length; i++) {
       const link = new Link(
-        new THREE.Vector3(0, 0, this.goalZ - this.goalLinkOffset),
+        new THREE.Vector3(0, 0, goalPositionZ),
         this.goalLinkNames[i],
         'goal'
       );
-      // このクラスのリンクリストに追加（遷移時に消せるように）
-      this.goalLinkObjects.push(link);
+      // raycastのためのリストに追加
       linkList.push(link);
+      // ゴールリンクのリストにも追加（遷移時に修正できるように）
+      this.goalLinkObjects.push(link);
+      // fadeInのリストにも追加
+      this.fadeInObjects.push(link);
+
       scene.add(link.mesh);
     }
-
+    // 初回の調整
     this.adjustGoal(currentRoute);
+
+    // ゴールの周りに表示するテキスト
+    const goalTextEn = new TextObject(
+      new THREE.Vector3(0, 300, goalPositionZ),
+      1880 * imageShrinkRate,
+      189 * imageShrinkRate,
+      getTexture('text_goal_en')
+    );
+    const goalTextJa = new TextObject(
+      new THREE.Vector3(0, -300, goalPositionZ),
+      768 * imageShrinkRate,
+      121 * imageShrinkRate,
+      getTexture('text_goal_ja')
+    );
+    // fadeInのリストに追加
+    this.fadeInObjects.push(goalTextEn);
+    this.fadeInObjects.push(goalTextJa);
+    scene.add(goalTextEn.mesh);
+    scene.add(goalTextJa.mesh);
   }
 
   adjustGoal(route) {
@@ -161,16 +187,17 @@ class Stage {
     // indexページではさらに説明パネルを生成
     if (route === 'index') {
       // いずれテクスチャリストの長さ分
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < this.descPanelNum; i++) {
         const descPanelPosition = new THREE.Vector3(
           0,
           0,
-          (i + 1) * ((this.goalZ - this.goalLinkOffset) / 4)
+          topPanelPosition.z +
+            (i + 1) * ((this.goalZ * 0.8) / this.descPanelNum)
         );
         const descPanel = new PanelObject(
           descPanelPosition,
           'desc',
-          i.toString()
+          (i + 1).toString()
         );
         this.descriptionPanels.push(descPanel);
         this.fadeInObjects.push(descPanel);
