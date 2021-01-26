@@ -79,7 +79,7 @@ class Common {
     Stage.initBackground(route, this.scene);
     Stage.initPanels(route, this.scene);
     Stage.initInteractObjects(route, this.scene, this.size);
-    Stage.initSubObjects(route, this.scene);
+    Stage.initSubObjects(route, this.scene, this.size);
   }
 
   setSize() {
@@ -189,7 +189,7 @@ class Common {
     Stage.deleteInteractObjects(this.scene);
     Stage.initInteractObjects(route, this.scene, this.size);
     Stage.deleteSubObjects(this.scene);
-    Stage.initSubObjects(route, this.scene);
+    Stage.initSubObjects(route, this.scene, this.size);
     Stage.deletePanels(this.scene);
     Stage.initPanels(route, this.scene);
 

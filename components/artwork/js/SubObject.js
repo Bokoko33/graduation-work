@@ -5,7 +5,7 @@ import spaceVertexShader from '../glsl/objectSpace.vert';
 import { colors } from './variable';
 
 export default class SubObject {
-  constructor(route, pos) {
+  constructor(route, pos, windowSize) {
     this.position = pos;
 
     this.geometry = null;
@@ -17,13 +17,13 @@ export default class SubObject {
       uTime: { value: 0 },
     };
 
-    this.init(route);
+    this.init(route, windowSize);
   }
 
-  init(route) {
+  init(route, windowSize) {
     switch (route) {
       case 'index':
-        this.createMainObject();
+        this.createMainObject(windowSize);
         break;
       case 'stage1':
         this.createWaterObject();
@@ -45,19 +45,19 @@ export default class SubObject {
     }
   }
 
-  createMainObject() {
+  createMainObject(windowSize) {
     const transformList = [
       // sはサイズ
-      { x: -340, y: -220, z: 2800, s: 140 },
-      { x: 260, y: 160, z: 2500, s: 120 },
-      { x: -650, y: 800, z: 1200, s: 320 },
-      { x: 100, y: -500, z: 1000, s: 200 },
-      { x: 600, y: -320, z: -500, s: 100 },
-      { x: 860, y: 430, z: -700, s: 100 },
-      { x: -820, y: -200, z: -1800, s: 200 },
-      { x: 540, y: 100, z: -2000, s: 120 },
-      { x: 460, y: -400, z: -3000, s: 200 },
-      { x: -800, y: 600, z: -3300, s: 150 },
+      { x: -0.25, y: -0.2, z: 2800, s: 140 },
+      { x: 0.18, y: 0.1, z: 2500, s: 120 },
+      { x: -0.45, y: 1, z: 1200, s: 320 },
+      { x: 0.07, y: -0.6, z: 1000, s: 200 },
+      { x: 0.4, y: -0.4, z: -500, s: 100 },
+      { x: 0.6, y: 0.6, z: -700, s: 100 },
+      { x: -0.57, y: -0.2, z: -1800, s: 200 },
+      { x: 0.42, y: 0.14, z: -2000, s: 120 },
+      { x: 0.3, y: -0.6, z: -3000, s: 200 },
+      { x: -0.5, y: 0.8, z: -3300, s: 150 },
     ];
 
     // 空のジオメトリを作成
@@ -71,8 +71,8 @@ export default class SubObject {
       );
       // ひとつひとつの座標を設定
       meshTemp.position.set(
-        transformList[i].x,
-        transformList[i].y,
+        windowSize.w * transformList[i].x,
+        windowSize.h * transformList[i].y,
         transformList[i].z
       );
       // メッシュをマージ（結合）

@@ -284,11 +284,11 @@ class Stage {
     this.interactObjects.length = 0;
   }
 
-  initSubObjects(route, scene) {
+  initSubObjects(route, scene, windowSize) {
     if (route === 'about') return;
 
     const position = new THREE.Vector3(0, 0, this.goalZ / 2); // ステージ中央に設置
-    this.subObjects = new SubObject(route, position);
+    this.subObjects = new SubObject(route, position, windowSize);
     scene.add(this.subObjects.mesh);
   }
 
