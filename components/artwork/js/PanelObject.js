@@ -25,7 +25,6 @@ export default class PanelObject {
 
   init(key) {
     let texture = null;
-    let opacity = 1;
     if (this.type === 'top') {
       // テクスチャわけ
       switch (key) {
@@ -51,7 +50,6 @@ export default class PanelObject {
           break;
       }
     } else if (this.type === 'desc') {
-      opacity = 0; // 説明パネルは徐々に出していく
       this.width = 2882 * sizeRate;
       this.height = 1628 * sizeRate;
 
@@ -62,7 +60,7 @@ export default class PanelObject {
     this.material = new THREE.MeshPhongMaterial({
       map: texture,
       transparent: true,
-      opacity,
+      opacity: 0,
     });
 
     // メッシュを作成
