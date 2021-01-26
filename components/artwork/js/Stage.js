@@ -54,9 +54,11 @@ class Stage {
     // カーソルとの距離に応じてfadeInするオブジェクト
     this.fadeInObjects = [];
 
-    // ゴールに置くリンクのリスト
+    // ゴールに置くリンクのリスト（削除せず並べ替えやテクスチャを変える）
     this.goalLinkObjects = [];
-    // ゴールメニューになるパス名（ステージによってここから非表示に）
+    // ゴール地点のテキスト（削除せずopacityを変える）
+    this.goalTextList = [];
+    // ゴールメニューになるパス名
     this.goalLinkNames = ['/', 'stage1', 'stage2', 'stage3'];
     // ゴールよりも奥にリンクを設置
     this.goalLinkOffset = 300;
@@ -68,9 +70,7 @@ class Stage {
     this.descriptionPanels = [];
   }
 
-  init(clickableDist) {
-    this.goalLinket = clickableDist * 0.7;
-
+  init() {
     // fogを作成
     this.fogList = {
       main: new THREE.Fog(colors.white, this.fogNear, this.fogFar),
@@ -105,7 +105,7 @@ class Stage {
     }
   }
 
-  initGoalLinks(scene, linkList, currentRoute) {
+  initGoal(scene, linkList, currentRoute) {
     // ゴールリンクを初期化
     // パスとデフォルトのテクスチャを設定し、adjustGoal()でステージごとに位置とテクスチャを修正
     const goalPositionZ = this.goalZ - this.goalLinkOffset;
@@ -124,8 +124,6 @@ class Stage {
 
       scene.add(link.mesh);
     }
-    // 初回の調整
-    this.adjustGoal(currentRoute);
 
     // ゴールの周りに表示するテキスト
     const goalTextEn = new TextObject(
@@ -140,14 +138,21 @@ class Stage {
       121 * imageShrinkRate,
       getTexture('text_goal_ja')
     );
-    // fadeInのリストに追加
-    this.fadeInObjects.push(goalTextEn);
-    this.fadeInObjects.push(goalTextJa);
+
+    // ゴールテキストのリストに追加
+    this.goalTextList.push(goalTextEn);
+    this.goalTextList.push(goalTextJa);
+
     scene.add(goalTextEn.mesh);
     scene.add(goalTextJa.mesh);
+
+    // 初回の調整
+    this.adjustGoal(currentRoute);
   }
 
   adjustGoal(route) {
+    // ゴールは全ページ共通なので、削除せずテクスチャや並びを変える
+
     // indexページならパス名に修正し、格納
     const pathname = route === 'index' ? '/' : route;
     // ゴールリンクを置く座標
@@ -163,6 +168,18 @@ class Stage {
         obj.mesh.position.x = positions[posIndex];
         posIndex++;
       }
+
+      // opacityを再び0に
+      obj.mesh.material.opacity = 0;
+      // fadeInオブジェクトのリストに再登録
+      this.fadeInObjects.push(obj);
+    }
+
+    for (const text of this.goalTextList) {
+      // opacityを再び0に
+      text.mesh.material.opacity = 0;
+      // fadeInオブジェクトのリストに再登録
+      this.fadeInObjects.push(text);
     }
   }
 
@@ -182,6 +199,7 @@ class Stage {
   initPanels(route, scene) {
     const topPanelPosition = new THREE.Vector3(0, 0, -200);
     this.topPanel = new PanelObject(topPanelPosition, 'top', route);
+    this.fadeInObjects.push(this.topPanel);
     scene.add(this.topPanel.mesh);
 
     // indexページではさらに説明パネルを生成
@@ -192,7 +210,7 @@ class Stage {
           0,
           0,
           topPanelPosition.z +
-            (i + 1) * ((this.goalZ * 0.8) / this.descPanelNum)
+            (i + 1) * ((this.goalZ * 0.85) / this.descPanelNum)
         );
         const descPanel = new PanelObject(
           descPanelPosition,
@@ -250,6 +268,8 @@ class Stage {
   }
 
   handleFade(cursorZ) {
+    const fadeInDist = 400;
+    const fadeSpeed = 0.05;
     // カーソルのz座標を受け取り、fadeInを制御
     for (let i = 0; i < this.fadeInObjects.length; i++) {
       const obj = this.fadeInObjects[i];
@@ -260,11 +280,14 @@ class Stage {
         continue;
       }
 
-      const fadeInDist = 400;
       if (Math.abs(obj.mesh.position.z - cursorZ) < fadeInDist) {
-        obj.mesh.material.opacity = opacity + 0.05;
+        obj.mesh.material.opacity = opacity + fadeSpeed;
       }
     }
+  }
+
+  resetFadeInObjects() {
+    this.fadeInObjects.length = 0;
   }
 
   update() {
