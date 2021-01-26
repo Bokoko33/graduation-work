@@ -8,14 +8,6 @@ export default class SubObject {
   constructor(route, pos) {
     this.position = pos;
 
-    this.rotateValue = {
-      y: Math.random() - 0.5,
-      z: Math.random() - 0.5,
-    };
-
-    // カーソルへの影響範囲（オブジェクトの半径ではなく、カーソルがインタラクションし始める範囲）
-    this.interactRadius = 0;
-
     this.geometry = null;
     this.material = null;
     this.mesh = null;
@@ -30,20 +22,17 @@ export default class SubObject {
 
   init(route) {
     switch (route) {
+      case 'index':
+        this.createMainObject();
+        break;
       case 'stage1':
-        this.interactRadius = 150;
-        this.defaultColor = colors.red;
-        this.createWaterObject(this.interactRadius, this.defaultColor);
+        this.createWaterObject();
         break;
       case 'stage2':
-        this.interactRadius = 300;
-        this.defaultColor = colors.blue;
-        this.createStormObject(this.interactRadius);
+        this.createStormObject();
         break;
       case 'stage3':
-        this.interactRadius = 300;
-        this.defaultColor = colors.white;
-        this.createSpaceObject(this.interactRadius);
+        this.createSpaceObject();
         break;
       default:
         break;
@@ -54,6 +43,46 @@ export default class SubObject {
       this.mesh = new THREE.Mesh(this.geometry, this.material);
       this.mesh.position.set(this.position.x, this.position.y, this.position.z);
     }
+  }
+
+  createMainObject() {
+    const transformList = [
+      // sはサイズ
+      { x: -340, y: -220, z: 2800, s: 140 },
+      { x: 260, y: 160, z: 2500, s: 120 },
+      { x: -650, y: 800, z: 1200, s: 320 },
+      { x: 100, y: -500, z: 1000, s: 200 },
+      { x: 600, y: -320, z: -500, s: 100 },
+      { x: 860, y: 430, z: -700, s: 100 },
+      { x: -820, y: -200, z: -1800, s: 200 },
+      { x: 540, y: 100, z: -2000, s: 120 },
+      { x: 460, y: -400, z: -3000, s: 200 },
+      { x: -800, y: 600, z: -3300, s: 150 },
+    ];
+
+    // 空のジオメトリを作成
+    this.geometry = new THREE.Geometry();
+
+    // 球体
+    for (let i = 0; i < transformList.length; i++) {
+      // 立方体個別の要素を作成
+      const meshTemp = new THREE.Mesh(
+        new THREE.SphereGeometry(transformList[i].s, 64, 64)
+      );
+      // ひとつひとつの座標を設定
+      meshTemp.position.set(
+        transformList[i].x,
+        transformList[i].y,
+        transformList[i].z
+      );
+      // メッシュをマージ（結合）
+      this.geometry.mergeMesh(meshTemp);
+    }
+
+    // マテリアルを作成
+    this.material = new THREE.MeshLambertMaterial({
+      color: colors.lightGray,
+    });
   }
 
   createWaterObject(radius) {
@@ -72,20 +101,6 @@ export default class SubObject {
       'offset',
       new THREE.InstancedBufferAttribute(new Float32Array(offsets), 1)
     );
-    // this.material = new THREE.MeshLambertMaterial({
-    //   color: colorCode,
-    // });
-    // this.material.onBeforeCompile = (shader) => {
-    //   shader.uniforms.time = { value: this.uniforms.uTime.value };
-    //   shader.vertexShader = 'uniform float time;\n' + shader.vertexShader;
-    //   const token = '#include <begin_vertex>';
-    //   const customTransform = `
-    //       vec3 transformed = position;
-    //       transformed.x = position.x
-    //            + sin(position.y*0.5 + time*5.0)*2.0;
-    //   `;
-    //   shader.vertexShader = shader.vertexShader.replace(token, customTransform);
-    // };
 
     // uniformを追加
     this.uniforms.diffuse = { value: new THREE.Vector3(1.0, 1.0, 1.0) };

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import Background from './Background';
 import Link from './Link';
 import MainObject from './MainObject';
+import SubObject from './SubObject';
 import PanelObject from './PanelObject';
 import TextObject from './TextObject';
 import { colors, imageShrinkRate } from './variable';
@@ -51,6 +52,9 @@ class Stage {
       { x: -0.5, y: -0.3 },
     ];
 
+    // 散らばってるサブオブジェクト
+    this.subObjects = null;
+
     // カーソルとの距離に応じてfadeInするオブジェクト
     this.fadeInObjects = [];
 
@@ -63,8 +67,10 @@ class Stage {
     // ゴールよりも奥にリンクを設置
     this.goalLinkOffset = 300;
 
-    // ページ最初のパネル（indexページではタイトル）
+    // ページ最初のパネル
     this.topPanel = null;
+    this.topText = null;
+
     // indexページの説明パネルリスト
     this.descPanelNum = 5;
     this.descriptionPanels = [];
@@ -73,14 +79,14 @@ class Stage {
   init() {
     // fogを作成
     this.fogList = {
-      main: new THREE.Fog(colors.white, this.fogNear, this.fogFar),
+      main: new THREE.Fog(colors.lightPurple, this.fogNear, this.fogFar),
       water: new THREE.Fog(colors.blue, this.fogNear, this.fogFar),
       storm: new THREE.Fog(colors.green, this.fogNear, this.fogFar),
       space: new THREE.Fog(colors.darkPurple, this.fogNear, this.fogFar),
     };
 
     // 光源
-    this.light = new THREE.HemisphereLight(0xffffff, 0xebeef2, 1);
+    this.light = new THREE.HemisphereLight(colors.white, colors.darkPurple, 1);
   }
 
   setLight(scene) {
@@ -197,10 +203,23 @@ class Stage {
   }
 
   initPanels(route, scene) {
-    const topPanelPosition = new THREE.Vector3(0, 0, -200);
+    if (route === 'about') return;
+    // topパネル
+    const topPanelPosition = new THREE.Vector3(0, 60, -200);
     this.topPanel = new PanelObject(topPanelPosition, 'top', route);
     this.fadeInObjects.push(this.topPanel);
     scene.add(this.topPanel.mesh);
+
+    // topパネル下のテキスト
+    const topTextPosition = new THREE.Vector3(0, -320, -200);
+    this.topText = new TextObject(
+      topTextPosition,
+      1776 * imageShrinkRate,
+      447 * imageShrinkRate,
+      getTexture('text_top')
+    );
+    this.fadeInObjects.push(this.topText);
+    scene.add(this.topText.mesh);
 
     // indexページではさらに説明パネルを生成
     if (route === 'index') {
@@ -225,8 +244,10 @@ class Stage {
   }
 
   deletePanels(scene) {
-    scene.remove(this.topPanel.mesh);
-    this.topPanel.delete();
+    if (this.topPanel) {
+      scene.remove(this.topPanel.mesh);
+      this.topPanel.delete();
+    }
     for (let i = 0; i < this.descriptionPanels.length; i++) {
       // メッシュをシーンから削除
       scene.remove(this.descriptionPanels[i].mesh);
@@ -263,6 +284,24 @@ class Stage {
     this.interactObjects.length = 0;
   }
 
+  initSubObjects(route, scene) {
+    if (route === 'about') return;
+
+    const position = new THREE.Vector3(0, 0, this.goalZ / 2); // ステージ中央に設置
+    this.subObjects = new SubObject(route, position);
+    scene.add(this.subObjects.mesh);
+  }
+
+  deleteSubObjects(scene) {
+    // メッシュをシーンから削除
+    if (!this.subObjects) return;
+    scene.remove(this.subObjects.mesh);
+    // キャッシュが残るのでマテリアル等をdispose
+    this.subObjects.delete();
+
+    this.subObjects = null;
+  }
+
   backgroundFollow(cursorZ) {
     this.backgroundPlane.followCursor(cursorZ);
   }
@@ -274,14 +313,14 @@ class Stage {
     for (let i = 0; i < this.fadeInObjects.length; i++) {
       const obj = this.fadeInObjects[i];
       const opacity = obj.mesh.material.opacity;
-      if (opacity >= 1) {
+      if (opacity < 1) {
+        if (Math.abs(obj.mesh.position.z - cursorZ) < fadeInDist) {
+          obj.mesh.material.opacity = opacity + fadeSpeed;
+        }
+      } else {
         // 完全に表示されたらリストから削除
         this.fadeInObjects.splice(i, 1);
         continue;
-      }
-
-      if (Math.abs(obj.mesh.position.z - cursorZ) < fadeInDist) {
-        obj.mesh.material.opacity = opacity + fadeSpeed;
       }
     }
   }

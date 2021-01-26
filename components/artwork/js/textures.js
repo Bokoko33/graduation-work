@@ -6,84 +6,112 @@ const loader = new THREE.TextureLoader();
 export const initTexture = () => {
   textures = [
     {
+      name: 'bg_main_pc',
+      value: loader.load(require('@/assets/images/background_main_pc.jpg')),
+    },
+    {
+      name: 'bg_water_pc',
+      value: loader.load(require('@/assets/images/background_water_pc.jpg')),
+    },
+    {
+      name: 'bg_storm_pc',
+      value: loader.load(require('@/assets/images/background_storm_pc.jpg')),
+    },
+    {
+      name: 'bg_space_pc',
+      value: loader.load(require('@/assets/images/background_space_pc.jpg')),
+    },
+    {
       name: 'cursor',
       value: loader.load(require('@/assets/images/cursor.png')),
     },
     {
-      name: 'globalMenuLogo',
+      name: 'logo',
       value: loader.load(require('@/assets/images/logo.png')),
     },
     {
-      name: 'globalMenuWater',
+      name: 'menu_water',
       value: loader.load(require('@/assets/images/menu_water.png')),
     },
     {
-      name: 'globalMenuStorm',
+      name: 'menu_storm',
       value: loader.load(require('@/assets/images/menu_storm.png')),
     },
     {
-      name: 'globalMenuSpace',
+      name: 'menu_space',
       value: loader.load(require('@/assets/images/menu_space.png')),
     },
     {
-      name: 'globalMenuAbout',
+      name: 'menu_about',
       value: loader.load(require('@/assets/images/menu_about.png')),
     },
     {
-      name: 'goalLinkTop',
-      value: loader.load(require('@/assets/images/menu_about.png')),
+      name: 'goal_top',
+      value: loader.load(require('@/assets/images/panel_goal_water.png')),
     },
     {
-      name: 'goalLinkWater',
-      value: loader.load(require('@/assets/images/menu_about.png')),
+      name: 'goal_water',
+      value: loader.load(require('@/assets/images/panel_goal_water.png')),
     },
     {
-      name: 'goalLinkStorm',
-      value: loader.load(require('@/assets/images/menu_about.png')),
+      name: 'goal_storm',
+      value: loader.load(require('@/assets/images/panel_goal_water.png')),
     },
     {
-      name: 'goalLinkSpace',
-      value: loader.load(require('@/assets/images/menu_about.png')),
+      name: 'goal_space',
+      value: loader.load(require('@/assets/images/panel_goal_water.png')),
     },
     {
-      name: 'mainVisualPc',
-      value: loader.load(require('@/assets/images/top-mv_pc.png')),
+      name: 'goal_back',
+      value: loader.load(require('@/assets/images/panel_goal_back.png')),
     },
     {
-      name: 'frostedPanel',
-      value: loader.load(require('@/assets/images/frosted-panel.png')),
+      name: 'panel_top_mv_pc',
+      value: loader.load(require('@/assets/images/panel_top_mv_pc.png')),
     },
     {
-      name: 'startPanelWater',
-      value: loader.load(require('@/assets/images/menu_about.png')),
+      name: 'panel_top_desc_1',
+      value: loader.load(require('@/assets/images/panel_top_desc_1.png')),
     },
     {
-      name: 'startPanelStorm',
-      value: loader.load(require('@/assets/images/menu_about.png')),
+      name: 'panel_top_desc_2',
+      value: loader.load(require('@/assets/images/panel_top_desc_2.png')),
     },
     {
-      name: 'startPanelSpace',
-      value: loader.load(require('@/assets/images/menu_about.png')),
+      name: 'panel_top_desc_3',
+      value: loader.load(require('@/assets/images/panel_top_desc_3.png')),
     },
     {
-      name: 'descPanelTop1',
-      value: loader.load(require('@/assets/images/menu_about.png')),
+      name: 'panel_top_desc_4',
+      value: loader.load(require('@/assets/images/panel_top_desc_4.png')),
     },
     {
-      name: 'descPanelTop2',
-      value: loader.load(require('@/assets/images/menu_about.png')),
+      name: 'panel_top_desc_5',
+      value: loader.load(require('@/assets/images/panel_top_desc_5.png')),
     },
     {
-      name: 'descPanelTop3',
-      value: loader.load(require('@/assets/images/menu_about.png')),
+      name: 'panel_water',
+      value: loader.load(require('@/assets/images/panel_water.png')),
     },
     {
-      name: 'descPanelTop4',
-      value: loader.load(require('@/assets/images/menu_about.png')),
+      name: 'panel_storm',
+      value: loader.load(require('@/assets/images/panel_storm.png')),
     },
     {
-      name: 'descPanelAbout1',
-      value: loader.load(require('@/assets/images/menu_about.png')),
+      name: 'panel_space',
+      value: loader.load(require('@/assets/images/panel_space.png')),
+    },
+    {
+      name: 'text_top',
+      value: loader.load(require('@/assets/images/text_top.png')),
+    },
+    {
+      name: 'text_goal_en',
+      value: loader.load(require('@/assets/images/text_goal_en.png')),
+    },
+    {
+      name: 'text_goal_ja',
+      value: loader.load(require('@/assets/images/text_goal_ja.png')),
     },
   ];
 };

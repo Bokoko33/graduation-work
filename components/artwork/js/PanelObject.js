@@ -57,7 +57,7 @@ export default class PanelObject {
     }
 
     this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height, 2);
-    this.material = new THREE.MeshPhongMaterial({
+    this.material = new THREE.MeshBasicMaterial({
       map: texture,
       transparent: true,
       opacity: 0,

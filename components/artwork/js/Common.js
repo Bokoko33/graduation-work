@@ -79,6 +79,7 @@ class Common {
     Stage.initBackground(route, this.scene);
     Stage.initPanels(route, this.scene);
     Stage.initInteractObjects(route, this.scene, this.size);
+    Stage.initSubObjects(route, this.scene);
   }
 
   setSize() {
@@ -112,7 +113,9 @@ class Common {
     }
 
     // 通り過ぎたパネルを非表示にする処理
-    this.hideObjectOutOfCamera(Stage.topPanel.mesh);
+    if (Stage.topPanel) {
+      this.hideObjectOutOfCamera(Stage.topPanel.mesh);
+    }
     for (let i = 0; i < Stage.descriptionPanels.length; i++) {
       this.hideObjectOutOfCamera(Stage.descriptionPanels[i].mesh);
     }
@@ -185,6 +188,8 @@ class Common {
     Stage.initBackground(route, this.scene);
     Stage.deleteInteractObjects(this.scene);
     Stage.initInteractObjects(route, this.scene, this.size);
+    Stage.deleteSubObjects(this.scene);
+    Stage.initSubObjects(route, this.scene);
     Stage.deletePanels(this.scene);
     Stage.initPanels(route, this.scene);
 
