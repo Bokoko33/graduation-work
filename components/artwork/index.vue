@@ -25,6 +25,13 @@ export default {
       $canvas: this.$refs.canvas,
       $route: this.$route.name,
     });
+
+    // mql
+    this.$nextTick(() => {
+      const mql = window.matchMedia('(max-width:960px)');
+      this.changeDevice(mql);
+      mql.addEventListener('change', this.changeDevice);
+    });
   },
 
   destroyed() {
@@ -32,6 +39,14 @@ export default {
   },
   methods: {
     // この中にthree.jsの処理をばりばり書かない。
+    changeDevice(mql) {
+      if (mql.matches) {
+        this.$store.commit('changeDevice', true);
+      } else {
+        this.$store.commit('changeDevice', false);
+      }
+      console.log(this.$store.state.isMobile);
+    },
   },
 };
 </script>
