@@ -27,9 +27,12 @@ export default {
   right: 10px;
   width: 35vw;
   height: 35vh;
-  background-color: skyblue;
+  background-color: white;
   opacity: 0.5;
   border-radius: 10px;
+
+  -webkit-touch-callout: none; // リンク長押しのポップアップを無効化
+  -webkit-user-select: none; // テキスト長押しの選択ボックスを無効化
   @include device-pc {
     display: none;
   }
