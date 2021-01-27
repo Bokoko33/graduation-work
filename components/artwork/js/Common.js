@@ -95,15 +95,11 @@ class Common {
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.size.w, this.size.h);
 
-    // グローバルナビの位置修正
-    this.globalNavMargin.side = this.size.w * 0.08;
-    // グローバルナビをthis.linksに最初に登録しているので、
-    // ループ回数はグローバルナビ+ロゴ分で良い
-    const length = this.globalNavNames.length;
-    for (let i = 0; i < length + 1; i++) {
-      // 位置調整のためにインデックスと最大数も渡す
-      this.links[i].resize(this.size, this.globalNavMargin, i, length);
-    }
+    this.shiftGlobalNav();
+  }
+
+  changeDevice(isMobile) {
+    this.replaceGlobalNav(isMobile);
   }
 
   update() {
@@ -134,19 +130,13 @@ class Common {
   }
 
   createGlobalNav() {
-    const marginSide = this.globalNavMargin.side;
-    const marginBetween = this.globalNavMargin.between;
-    const marginTop = this.globalNavMargin.top;
     for (let i = 0; i < this.globalNavNames.length; i++) {
-      const menu = new Link(
-        new THREE.Vector3(
-          this.size.w / 2 - marginSide - marginBetween * i,
-          this.size.h / 2 - marginTop,
-          -this.dist
-        ),
-        this.globalNavNames[i],
-        'global'
-      );
+      const menu = new Link(null, this.globalNavNames[i], 'global');
+      // 位置を設定
+      menu.setPosition(this.size, this.globalNavMargin, -this.dist, i);
+      menu.shiftMyWidth();
+      // console.log(menu.mesh.position.y);
+
       menu.mesh.renderOrder = 999; // 一番手前にレンダリングしたい
       this.scene.add(menu.mesh);
       this.links.push(menu);
@@ -155,20 +145,35 @@ class Common {
     }
 
     // ロゴを作成
-    const logo = new Link(
-      new THREE.Vector3(
-        -this.size.w / 2 + marginSide,
-        this.size.h / 2 - marginTop,
-        -this.dist
-      ),
-      '/',
-      'global'
-    );
+    const logo = new Link(null, '/', 'global');
+    // 位置を設定
+    logo.setPosition(this.size, this.globalNavMargin, -this.dist, -1);
+    logo.shiftMyWidth();
+
     logo.mesh.renderOrder = 999;
     this.scene.add(logo.mesh);
     this.links.push(logo);
     // カメラの回転に追従させるためグループへ追加
     this.cameraGroup.add(logo.mesh);
+  }
+
+  shiftGlobalNav() {
+    // グローバルナビの位置修正（同一デバイス内でのリサイズ時）
+    this.globalNavMargin.side = this.size.w * 0.08;
+    // グローバルナビをthis.linksに最初に登録しているので、
+    // ループ回数はグローバルナビ+ロゴ分で良い
+    for (let i = 0; i < this.globalNavNames.length + 1; i++) {
+      // 位置調整のためにインデックスも渡す
+      this.links[i].shiftNavResize(this.size, this.globalNavMargin, i);
+    }
+  }
+
+  replaceGlobalNav() {
+    // グローバルナビの位置修正（デバイスの切り替え時）
+    for (let i = 0; i < this.globalNavNames.length + 1; i++) {
+      // 位置調整のためにインデックスと最大数も渡す
+      this.links[i].setPosition(this.size, this.globalNavMargin, -this.dist, i);
+    }
   }
 
   cameraFollow(cursorPosition) {

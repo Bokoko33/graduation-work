@@ -20,32 +20,23 @@ export default {
     },
   },
   mounted() {
+    // 先にデバイスをチェックしてstateに格納
+    const mql = window.matchMedia('(max-width:960px)');
+    this.changeDevice(mql);
+    mql.addEventListener('change', this.changeDevice);
+
     // canvas要素を渡す。
     this.artworkGL = new ArtworkGL({
       $canvas: this.$refs.canvas,
-      $route: this.$route.name,
+      route: this.$route.name,
+      isMobile: this.$store.state.isMobile,
     });
-
-    // mql
-    this.$nextTick(() => {
-      const mql = window.matchMedia('(max-width:960px)');
-      this.changeDevice(mql);
-      mql.addEventListener('change', this.changeDevice);
-    });
-  },
-
-  destroyed() {
-    // canvasを作ったり壊したりする前提の場合はここに処理停止する処理を書く（今回省略）。
   },
   methods: {
     // この中にthree.jsの処理をばりばり書かない。
     changeDevice(mql) {
-      if (mql.matches) {
-        this.$store.commit('changeDevice', true);
-      } else {
-        this.$store.commit('changeDevice', false);
-      }
-      console.log(this.$store.state.isMobile);
+      this.$store.commit('changeDevice', mql.matches);
+      if (this.artworkGL) this.artworkGL.changeDevice(mql.matches);
     },
   },
 };

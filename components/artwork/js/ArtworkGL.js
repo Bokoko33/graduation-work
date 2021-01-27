@@ -1,6 +1,7 @@
 import Cursor from '../../interface/js/Cursor';
 import Common from './Common';
 import { initTexture } from './textures';
+import { setDevice } from './state';
 
 export default class ArtworkGL {
   constructor(props) {
@@ -12,11 +13,14 @@ export default class ArtworkGL {
     // 画像読み込み
     initTexture();
 
+    // 先にデバイス情報を渡しておく
+    setDevice(this.props.isMobile);
+
     // commonにキャンバスdomを渡してシーン作成
-    Common.init(this.props.$canvas, this.props.$route);
+    Common.init(this.props.$canvas, this.props.route);
 
     // シーンができている必要があるのでここでinit
-    Cursor.init(this.props.$route);
+    Cursor.init(this.props.route);
 
     // リサイズイベントを登録
     window.addEventListener('resize', this.resize.bind(this));
@@ -27,6 +31,12 @@ export default class ArtworkGL {
 
   resize() {
     Common.resize();
+  }
+
+  // デバイス切り替え時のみ
+  changeDevice(isMobile) {
+    setDevice(isMobile);
+    Common.changeDevice(isMobile);
   }
 
   loop() {

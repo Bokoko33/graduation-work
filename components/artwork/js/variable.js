@@ -1,5 +1,6 @@
 export const colors = {
   white: 0xffffff,
+  lightGray: 0xebeef3,
   beige: 0xefe4dc,
   orange: 0xe59aa1,
   lightPurple: 0xbc95d7,
@@ -9,3 +10,5 @@ export const colors = {
   blue: 0x275dad,
   green: 0x508ca4,
 };
+
+export const imageShrinkRate = 0.3;
