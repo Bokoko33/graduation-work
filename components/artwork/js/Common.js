@@ -31,6 +31,8 @@ class Common {
     this.cameraFollowLevel = 0.00002; // カメラの回転のカーソルへの追従度
 
     this.clickableDistance = 1000; // 対象をクリックできるようになる距離
+
+    this.outOfCameraDist = 600;
   }
 
   init($canvas, route) {
@@ -85,7 +87,7 @@ class Common {
 
     Stage.initGoal(this.scene, this.links, this.currentRoute);
     Stage.initBackground(route, this.scene);
-    Stage.initPanels(route, this.scene);
+    Stage.initPanels(route, this.scene, this.size);
     Stage.initInteractObjects(route, this.scene, this.size);
     Stage.initSubObjects(route, this.scene, this.size);
   }
@@ -116,11 +118,11 @@ class Common {
   }
 
   resetImageSize(isMobile) {
-    const prevRate = state.imageShrinkRate;
+    const prevRate = state.variableImageRate;
     // 縮小率を更新
     setImageShrinkRate(isMobile);
     // 変更前のレートで割り、それをかけることで調整
-    const rate = state.imageShrinkRate / prevRate;
+    const rate = state.variableImageRate / prevRate;
     // リンク（グローバル、ゴール）の大きさを更新
     for (let i = 0; i < this.links.length; i++) {
       const obj = this.links[i];
@@ -140,6 +142,9 @@ class Common {
     if (Stage.topPanel) {
       this.hideObjectOutOfCamera(Stage.topPanel.mesh);
     }
+    if (Stage.topText) {
+      this.hideObjectOutOfCamera(Stage.topText.mesh);
+    }
     for (let i = 0; i < Stage.descriptionPanels.length; i++) {
       this.hideObjectOutOfCamera(Stage.descriptionPanels[i].mesh);
     }
@@ -152,7 +157,10 @@ class Common {
 
   hideObjectOutOfCamera(mesh) {
     // ある程度手前に来たオブジェクトは非表示に
-    if (Math.abs(this.cameraGroup.position.z - mesh.position.z) < 600) {
+    if (
+      Math.abs(this.cameraGroup.position.z - mesh.position.z) <
+      this.outOfCameraDist
+    ) {
       mesh.visible = false;
     }
   }
@@ -228,7 +236,7 @@ class Common {
     Stage.deleteSubObjects(this.scene);
     Stage.initSubObjects(route, this.scene, this.size);
     Stage.deletePanels(this.scene);
-    Stage.initPanels(route, this.scene);
+    Stage.initPanels(route, this.scene, this.size);
 
     this.currentRoute = route;
   }

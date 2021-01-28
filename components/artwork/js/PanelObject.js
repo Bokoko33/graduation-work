@@ -25,35 +25,66 @@ export default class PanelObject {
   init(key) {
     let texture = null;
     if (this.type === 'top') {
-      // テクスチャわけ
-      switch (key) {
-        case 'index':
-          texture = getTexture('mv_title_pc');
-          this.width = 3648 * state.imageShrinkRate;
-          this.height = 1817 * state.imageShrinkRate;
-          break;
-        case 'stage1':
-          texture = getTexture('panel_water_pc');
-          this.width = 3648 * state.imageShrinkRate;
-          this.height = 1817 * state.imageShrinkRate;
-          break;
-        case 'stage2':
-          texture = getTexture('panel_storm_pc');
-          this.width = 3648 * state.imageShrinkRate;
-          this.height = 1817 * state.imageShrinkRate;
-          break;
-        case 'stage3':
-          texture = getTexture('panel_space_pc');
-          this.width = 3648 * state.imageShrinkRate;
-          this.height = 1817 * state.imageShrinkRate;
-          break;
+      // デバイスごとにテクスチャわけ
+      if (state.isMobile) {
+        // sp
+        switch (key) {
+          case 'index':
+            texture = getTexture('mv_title_sp');
+            this.width = 1321;
+            this.height = 777;
+            break;
+          case 'stage1':
+            texture = getTexture('panel_water_sp');
+            this.width = 1324;
+            this.height = 780;
+            break;
+          case 'stage2':
+            texture = getTexture('panel_storm_sp');
+            this.width = 1324;
+            this.height = 780;
+            break;
+          case 'stage3':
+            texture = getTexture('panel_space_sp');
+            this.width = 1324;
+            this.height = 780;
+            break;
+        }
+      } else {
+        switch (key) {
+          // pc
+          case 'index':
+            texture = getTexture('mv_title_pc');
+            break;
+          case 'stage1':
+            texture = getTexture('panel_water_pc');
+            break;
+          case 'stage2':
+            texture = getTexture('panel_storm_pc');
+            break;
+          case 'stage3':
+            texture = getTexture('panel_space_pc');
+            break;
+        }
+        this.width = 3648;
+        this.height = 1818;
       }
     } else if (this.type === 'desc') {
-      this.width = 2882 * state.imageShrinkRate;
-      this.height = 1628 * state.imageShrinkRate;
-
-      texture = getTexture(`panel_top_${key}_pc`);
+      if (state.isMobile) {
+        // sp
+        this.width = 1329;
+        this.height = 751;
+        texture = getTexture(`panel_top_${key}_sp`);
+      } else {
+        // pc
+        this.width = 2882;
+        this.height = 1628;
+        texture = getTexture(`panel_top_${key}_pc`);
+      }
     }
+    // サイズを縮小
+    this.width *= state.fixedImageRate;
+    this.height *= state.fixedImageRate;
 
     this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height, 2);
     this.material = new THREE.MeshBasicMaterial({

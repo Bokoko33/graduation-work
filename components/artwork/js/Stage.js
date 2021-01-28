@@ -135,14 +135,14 @@ class Stage {
     // ゴールの周りに表示するテキスト
     const goalTextEn = new TextObject(
       new THREE.Vector3(0, 300, goalPositionZ),
-      1880 * state.imageShrinkRate,
-      189 * state.imageShrinkRate,
+      1880 * state.variableImageRate,
+      189 * state.variableImageRate,
       getTexture('goal_text_en')
     );
     const goalTextJa = new TextObject(
       new THREE.Vector3(0, -300, goalPositionZ),
-      768 * state.imageShrinkRate,
-      121 * state.imageShrinkRate,
+      768 * state.variableImageRate,
+      121 * state.variableImageRate,
       getTexture('goal_text_ja')
     );
 
@@ -203,32 +203,45 @@ class Stage {
     this.backgroundPlane.delete();
   }
 
-  initPanels(route, scene) {
+  initPanels(route, scene, windowSize) {
     if (route === 'about') return;
     // topパネル
-    const topPanelPosition = new THREE.Vector3(0, 60, -200);
+    const topPanelPosition = state.isMobile
+      ? new THREE.Vector3(0, windowSize.h * 0.3, -200)
+      : new THREE.Vector3(0, 60, -200);
     this.topPanel = new PanelObject(topPanelPosition, 'top', route);
     this.fadeInObjects.push(this.topPanel);
     scene.add(this.topPanel.mesh);
 
     // topパネル下のテキスト
-    const topTextPosition = new THREE.Vector3(0, -320, -200);
-    this.topText = new TextObject(
-      topTextPosition,
-      1776 * state.imageShrinkRate,
-      447 * state.imageShrinkRate,
-      getTexture('mv_text_pc')
-    );
+    const topTextPosition = state.isMobile
+      ? new THREE.Vector3(0, 0, -200)
+      : new THREE.Vector3(0, -320, -200);
+
+    this.topText = state.isMobile
+      ? new TextObject(
+          topTextPosition,
+          1180 * state.fixedImageRate,
+          316 * state.fixedImageRate,
+          getTexture('mv_text_sp')
+        )
+      : new TextObject(
+          topTextPosition,
+          1776 * state.fixedImageRate,
+          447 * state.fixedImageRate,
+          getTexture('mv_text_pc')
+        );
     this.fadeInObjects.push(this.topText);
     scene.add(this.topText.mesh);
 
     // indexページではさらに説明パネルを生成
     if (route === 'index') {
-      // いずれテクスチャリストの長さ分
+      // デバイス差による位置調整
+      const posY = state.isMobile ? 50 : 0;
       for (let i = 0; i < this.descPanelNum; i++) {
         const descPanelPosition = new THREE.Vector3(
           0,
-          0,
+          posY,
           topPanelPosition.z +
             (i + 1) * ((this.goalZ * 0.85) / this.descPanelNum)
         );
