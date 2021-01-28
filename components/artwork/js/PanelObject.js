@@ -2,8 +2,7 @@ import * as THREE from 'three';
 // import frostedVertex from '../glsl/frostedPanel.vert';
 // import frostedFragment from '../glsl/frostedPanel.frag';
 import { getTexture } from './textures';
-
-const sizeRate = 0.3;
+import { state } from './state';
 
 export default class PanelObject {
   constructor(pos, type, key) {
@@ -29,31 +28,31 @@ export default class PanelObject {
       // テクスチャわけ
       switch (key) {
         case 'index':
-          texture = getTexture('panel_top_mv_pc');
-          this.width = 3648 * sizeRate;
-          this.height = 1817 * sizeRate;
+          texture = getTexture('mv_title_pc');
+          this.width = 3648 * state.imageShrinkRate;
+          this.height = 1817 * state.imageShrinkRate;
           break;
         case 'stage1':
-          texture = getTexture('panel_water');
-          this.width = 3648 * sizeRate;
-          this.height = 1817 * sizeRate;
+          texture = getTexture('panel_water_pc');
+          this.width = 3648 * state.imageShrinkRate;
+          this.height = 1817 * state.imageShrinkRate;
           break;
         case 'stage2':
-          texture = getTexture('panel_storm');
-          this.width = 3648 * sizeRate;
-          this.height = 1817 * sizeRate;
+          texture = getTexture('panel_storm_pc');
+          this.width = 3648 * state.imageShrinkRate;
+          this.height = 1817 * state.imageShrinkRate;
           break;
         case 'stage3':
-          texture = getTexture('panel_space');
-          this.width = 3648 * sizeRate;
-          this.height = 1817 * sizeRate;
+          texture = getTexture('panel_space_pc');
+          this.width = 3648 * state.imageShrinkRate;
+          this.height = 1817 * state.imageShrinkRate;
           break;
       }
     } else if (this.type === 'desc') {
-      this.width = 2882 * sizeRate;
-      this.height = 1628 * sizeRate;
+      this.width = 2882 * state.imageShrinkRate;
+      this.height = 1628 * state.imageShrinkRate;
 
-      texture = getTexture(`panel_top_desc_${key}`);
+      texture = getTexture(`panel_top_${key}_pc`);
     }
 
     this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height, 2);

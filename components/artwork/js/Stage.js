@@ -137,13 +137,13 @@ class Stage {
       new THREE.Vector3(0, 300, goalPositionZ),
       1880 * state.imageShrinkRate,
       189 * state.imageShrinkRate,
-      getTexture('text_goal_en')
+      getTexture('goal_text_en')
     );
     const goalTextJa = new TextObject(
       new THREE.Vector3(0, -300, goalPositionZ),
       768 * state.imageShrinkRate,
       121 * state.imageShrinkRate,
-      getTexture('text_goal_ja')
+      getTexture('goal_text_ja')
     );
 
     // ゴールテキストのリストに追加
@@ -217,7 +217,7 @@ class Stage {
       topTextPosition,
       1776 * state.imageShrinkRate,
       447 * state.imageShrinkRate,
-      getTexture('text_top')
+      getTexture('mv_text_pc')
     );
     this.fadeInObjects.push(this.topText);
     scene.add(this.topText.mesh);

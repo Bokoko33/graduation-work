@@ -5,113 +5,173 @@ const loader = new THREE.TextureLoader();
 
 export const initTexture = () => {
   textures = [
-    {
-      name: 'bg_main_pc',
-      value: loader.load(require('@/assets/images/background_main_pc.jpg')),
-    },
-    {
-      name: 'bg_water_pc',
-      value: loader.load(require('@/assets/images/background_water_pc.jpg')),
-    },
-    {
-      name: 'bg_storm_pc',
-      value: loader.load(require('@/assets/images/background_storm_pc.jpg')),
-    },
-    {
-      name: 'bg_space_pc',
-      value: loader.load(require('@/assets/images/background_space_pc.jpg')),
-    },
+    // 共通
     {
       name: 'cursor',
-      value: loader.load(require('@/assets/images/cursor.png')),
+      value: loader.load(require('@/assets/images/common/cursor.png')),
     },
     {
       name: 'logo',
-      value: loader.load(require('@/assets/images/logo.png')),
+      value: loader.load(require('@/assets/images/common/logo.png')),
     },
     {
       name: 'menu_water',
-      value: loader.load(require('@/assets/images/menu_water.png')),
+      value: loader.load(require('@/assets/images/common/menu_water.png')),
     },
     {
       name: 'menu_storm',
-      value: loader.load(require('@/assets/images/menu_storm.png')),
+      value: loader.load(require('@/assets/images/common/menu_storm.png')),
     },
     {
       name: 'menu_space',
-      value: loader.load(require('@/assets/images/menu_space.png')),
+      value: loader.load(require('@/assets/images/common/menu_space.png')),
     },
     {
       name: 'menu_about',
-      value: loader.load(require('@/assets/images/menu_about.png')),
+      value: loader.load(require('@/assets/images/common/menu_about.png')),
     },
     {
       name: 'goal_top',
-      value: loader.load(require('@/assets/images/panel_goal_water.png')),
+      value: loader.load(require('@/assets/images/common/goal_top.png')),
     },
     {
       name: 'goal_water',
-      value: loader.load(require('@/assets/images/panel_goal_water.png')),
+      value: loader.load(require('@/assets/images/common/goal_water.png')),
     },
     {
       name: 'goal_storm',
-      value: loader.load(require('@/assets/images/panel_goal_storm.png')),
+      value: loader.load(require('@/assets/images/common/goal_storm.png')),
     },
     {
       name: 'goal_space',
-      value: loader.load(require('@/assets/images/panel_goal_space.png')),
+      value: loader.load(require('@/assets/images/common/goal_space.png')),
     },
     {
       name: 'goal_back',
-      value: loader.load(require('@/assets/images/panel_goal_back.png')),
+      value: loader.load(require('@/assets/images/common/goal_back.png')),
     },
     {
-      name: 'panel_top_mv_pc',
-      value: loader.load(require('@/assets/images/panel_top_mv_pc.png')),
+      name: 'goal_text_en',
+      value: loader.load(require('@/assets/images/common/goal_text_en.png')),
     },
     {
-      name: 'panel_top_desc_1',
-      value: loader.load(require('@/assets/images/panel_top_desc_1.png')),
+      name: 'goal_text_ja',
+      value: loader.load(require('@/assets/images/common/goal_text_ja.png')),
+    },
+    // --- PC ---
+    {
+      name: 'bg_main_pc',
+      value: loader.load(require('@/assets/images/pc/background_main_pc.jpg')),
     },
     {
-      name: 'panel_top_desc_2',
-      value: loader.load(require('@/assets/images/panel_top_desc_2.png')),
+      name: 'bg_water_pc',
+      value: loader.load(require('@/assets/images/pc/background_water_pc.jpg')),
     },
     {
-      name: 'panel_top_desc_3',
-      value: loader.load(require('@/assets/images/panel_top_desc_3.png')),
+      name: 'bg_storm_pc',
+      value: loader.load(require('@/assets/images/pc/background_storm_pc.jpg')),
     },
     {
-      name: 'panel_top_desc_4',
-      value: loader.load(require('@/assets/images/panel_top_desc_4.png')),
+      name: 'bg_space_pc',
+      value: loader.load(require('@/assets/images/pc/background_space_pc.jpg')),
     },
     {
-      name: 'panel_top_desc_5',
-      value: loader.load(require('@/assets/images/panel_top_desc_5.png')),
+      name: 'mv_title_pc',
+      value: loader.load(require('@/assets/images/pc/mv_title.png')),
     },
     {
-      name: 'panel_water',
-      value: loader.load(require('@/assets/images/panel_water.png')),
+      name: 'mv_text_pc',
+      value: loader.load(require('@/assets/images/pc/mv_text.png')),
     },
     {
-      name: 'panel_storm',
-      value: loader.load(require('@/assets/images/panel_storm.png')),
+      name: 'panel_top_1_pc',
+      value: loader.load(require('@/assets/images/pc/panel_top_1.png')),
     },
     {
-      name: 'panel_space',
-      value: loader.load(require('@/assets/images/panel_space.png')),
+      name: 'panel_top_2_pc',
+      value: loader.load(require('@/assets/images/pc/panel_top_2.png')),
     },
     {
-      name: 'text_top',
-      value: loader.load(require('@/assets/images/text_top.png')),
+      name: 'panel_top_3_pc',
+      value: loader.load(require('@/assets/images/pc/panel_top_3.png')),
     },
     {
-      name: 'text_goal_en',
-      value: loader.load(require('@/assets/images/text_goal_en.png')),
+      name: 'panel_top_4_pc',
+      value: loader.load(require('@/assets/images/pc/panel_top_4.png')),
     },
     {
-      name: 'text_goal_ja',
-      value: loader.load(require('@/assets/images/text_goal_ja.png')),
+      name: 'panel_top_5_pc',
+      value: loader.load(require('@/assets/images/pc/panel_top_5.png')),
+    },
+    {
+      name: 'panel_water_pc',
+      value: loader.load(require('@/assets/images/pc/panel_water.png')),
+    },
+    {
+      name: 'panel_storm_pc',
+      value: loader.load(require('@/assets/images/pc/panel_storm.png')),
+    },
+    {
+      name: 'panel_space_pc',
+      value: loader.load(require('@/assets/images/pc/panel_space.png')),
+    },
+    // --- ---
+    // --- SP ---
+    // {
+    //   name: 'bg_main_sp',
+    //   value: loader.load(require('@/assets/images/sp/background_main_pc.jpg')),
+    // },
+    // {
+    //   name: 'bg_water_sp',
+    //   value: loader.load(require('@/assets/images/sp/background_water_pc.jpg')),
+    // },
+    // {
+    //   name: 'bg_storm_sp',
+    //   value: loader.load(require('@/assets/images/sp/background_storm_pc.jpg')),
+    // },
+    // {
+    //   name: 'bg_space_sp',
+    //   value: loader.load(require('@/assets/images/sp/background_space_pc.jpg')),
+    // },
+    {
+      name: 'mv_title_sp',
+      value: loader.load(require('@/assets/images/sp/mv_title.png')),
+    },
+    {
+      name: 'mv_text_sp',
+      value: loader.load(require('@/assets/images/sp/mv_text.png')),
+    },
+    {
+      name: 'panel_top_1_sp',
+      value: loader.load(require('@/assets/images/sp/panel_top_1.png')),
+    },
+    {
+      name: 'panel_top_2_sp',
+      value: loader.load(require('@/assets/images/sp/panel_top_2.png')),
+    },
+    {
+      name: 'panel_top_3_sp',
+      value: loader.load(require('@/assets/images/sp/panel_top_3.png')),
+    },
+    {
+      name: 'panel_top_4_sp',
+      value: loader.load(require('@/assets/images/sp/panel_top_4.png')),
+    },
+    {
+      name: 'panel_top_5_sp',
+      value: loader.load(require('@/assets/images/sp/panel_top_5.png')),
+    },
+    {
+      name: 'panel_water_sp',
+      value: loader.load(require('@/assets/images/sp/panel_water.png')),
+    },
+    {
+      name: 'panel_storm_sp',
+      value: loader.load(require('@/assets/images/sp/panel_storm.png')),
+    },
+    {
+      name: 'panel_space_sp',
+      value: loader.load(require('@/assets/images/sp/panel_space.png')),
     },
   ];
 };
