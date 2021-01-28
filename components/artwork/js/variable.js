@@ -10,5 +10,3 @@ export const colors = {
   blue: 0x275dad,
   green: 0x508ca4,
 };
-
-export const imageShrinkRate = 0.3;

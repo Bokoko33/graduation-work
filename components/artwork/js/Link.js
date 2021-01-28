@@ -119,33 +119,37 @@ export default class Link {
 
   // グローバルメニューのみ ----
 
-  // 最初とデバイス切り替え時の位置の再調整
+  // 初回、およびデバイス切り替え時の位置の再調整
   setPosition(windowSize, margin, z, index) {
     if (this.nextPathName === '/') {
       const pos = state.isMobile
         ? new THREE.Vector3(
-            -windowSize.w / 2 + margin.side,
-            windowSize.h / 2 - margin.top,
+            -windowSize.w / 2 + margin.sp.side,
+            windowSize.h / 2 - margin.sp.top - this.height * 0.2, // sp時はロゴを少し下にずらして調整
             z
           )
         : new THREE.Vector3(
-            -windowSize.w / 2 + margin.side,
-            windowSize.h / 2 - margin.top,
+            -windowSize.w / 2 + margin.pc.side,
+            windowSize.h / 2 - margin.pc.top,
             z
           );
       this.mesh.position.set(pos.x, pos.y, pos.z);
     } else {
+      const offsetSP = 20;
       const pos = state.isMobile
         ? new THREE.Vector3(
-            windowSize.w / 2 - margin.side - margin.between * (index % 2),
-            windowSize.h / 2 - margin.top - (1 - Math.floor(index / 2)) * 30,
+            windowSize.w / 2 - margin.sp.side - margin.sp.between * (index % 2),
+            windowSize.h / 2 -
+              margin.sp.top -
+              (1 - Math.floor(index / 2)) * offsetSP,
             z
           )
         : new THREE.Vector3(
-            windowSize.w / 2 - margin.side - margin.between * index,
-            windowSize.h / 2 - margin.top,
+            windowSize.w / 2 - margin.pc.side - margin.pc.between * index,
+            windowSize.h / 2 - margin.pc.top,
             z
           );
+
       this.mesh.position.set(pos.x, pos.y, pos.z);
     }
   }

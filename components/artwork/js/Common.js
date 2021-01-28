@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import Stage from './Stage';
 import Link from './Link';
+import { state, setImageShrinkRate } from './state';
 
 class Common {
   constructor() {
@@ -64,9 +65,16 @@ class Common {
 
     // グローバルナビゲーションを作成
     this.globalNavMargin = {
-      side: this.size.w * 0.08,
-      top: 40,
-      between: 160,
+      pc: {
+        side: this.size.w * 0.08,
+        top: 40,
+        between: 160,
+      },
+      sp: {
+        side: this.size.w * 0.05,
+        top: 30,
+        between: 100,
+      },
     };
     this.createGlobalNav();
 
@@ -99,7 +107,24 @@ class Common {
   }
 
   changeDevice(isMobile) {
+    // デバイス切り替え時に呼ばれる
+    this.resetImageSize(isMobile);
     this.replaceGlobalNav(isMobile);
+  }
+
+  resetImageSize(isMobile) {
+    const prevRate = state.imageShrinkRate;
+    // 縮小率を更新
+    setImageShrinkRate(isMobile);
+    // 変更前のレートで割り、それをかけることで調整
+    const rate = state.imageShrinkRate / prevRate;
+    // リンクの大きさを更新
+    for (let i = 0; i < this.links.length; i++) {
+      const obj = this.links[i];
+      obj.scale.x *= rate;
+      obj.scale.y *= rate;
+      obj.scale.z *= rate;
+    }
   }
 
   update() {

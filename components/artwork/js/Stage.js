@@ -5,7 +5,8 @@ import MainObject from './MainObject';
 import SubObject from './SubObject';
 import PanelObject from './PanelObject';
 import TextObject from './TextObject';
-import { colors, imageShrinkRate } from './variable';
+import { state } from './state';
+import { colors } from './variable';
 import { getTexture } from './textures';
 
 class Stage {
@@ -134,14 +135,14 @@ class Stage {
     // ゴールの周りに表示するテキスト
     const goalTextEn = new TextObject(
       new THREE.Vector3(0, 300, goalPositionZ),
-      1880 * imageShrinkRate,
-      189 * imageShrinkRate,
+      1880 * state.imageShrinkRate,
+      189 * state.imageShrinkRate,
       getTexture('text_goal_en')
     );
     const goalTextJa = new TextObject(
       new THREE.Vector3(0, -300, goalPositionZ),
-      768 * imageShrinkRate,
-      121 * imageShrinkRate,
+      768 * state.imageShrinkRate,
+      121 * state.imageShrinkRate,
       getTexture('text_goal_ja')
     );
 
@@ -214,8 +215,8 @@ class Stage {
     const topTextPosition = new THREE.Vector3(0, -320, -200);
     this.topText = new TextObject(
       topTextPosition,
-      1776 * imageShrinkRate,
-      447 * imageShrinkRate,
+      1776 * state.imageShrinkRate,
+      447 * state.imageShrinkRate,
       getTexture('text_top')
     );
     this.fadeInObjects.push(this.topText);
