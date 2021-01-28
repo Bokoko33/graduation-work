@@ -1,7 +1,11 @@
-const rate = { pc: 0.3, sp: 0.2 };
+// デバイスごとに用意する画像の固定の縮小率
+const imageRate = 0.32;
+// pc/sp共通で使う画像のそれぞれでの縮小率
+const commonImageRate = { pc: 0.32, sp: 0.2 };
 
 export const state = {
-  imageShrinkRate: rate.pc,
+  fixedImageRate: imageRate,
+  variableImageRate: imageRate, // 初期値
   isMobile: false,
 };
 
@@ -10,6 +14,6 @@ export const setDevice = (isMobile) => {
 };
 
 export const setImageShrinkRate = (isMobile) => {
-  if (isMobile) state.imageShrinkRate = rate.sp;
-  else state.imageShrinkRate = rate.pc;
+  if (isMobile) state.variableImageRate = commonImageRate.sp;
+  else state.variableImageRate = commonImageRate.pc;
 };
