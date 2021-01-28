@@ -171,12 +171,14 @@ export default class Link {
     let newPosX = 0;
     if (this.nextPathName === '/') {
       // ロゴ
-      newPosX = -windowSize.w / 2 + margin.side;
+      newPosX = state.isMobile
+        ? -windowSize.w / 2 + margin.sp.side
+        : -windowSize.w / 2 + margin.pc.side;
     } else {
       // メニュー
       newPosX = state.isMobile
-        ? windowSize.w / 2 - margin.side - margin.between * (index % 2)
-        : windowSize.w / 2 - margin.side - margin.between * index;
+        ? windowSize.w / 2 - margin.sp.side - margin.sp.between * (index % 2)
+        : windowSize.w / 2 - margin.pc.side - margin.pc.between * index;
     }
     this.mesh.position.x = newPosX;
 

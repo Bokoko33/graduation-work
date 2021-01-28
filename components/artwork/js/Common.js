@@ -108,7 +108,10 @@ class Common {
 
   changeDevice(isMobile) {
     // デバイス切り替え時に呼ばれる
+
+    // 使い回し画像のサイズを更新
     this.resetImageSize(isMobile);
+    // this.resetObjectSize(isMobile);
     this.replaceGlobalNav(isMobile);
   }
 
@@ -118,12 +121,12 @@ class Common {
     setImageShrinkRate(isMobile);
     // 変更前のレートで割り、それをかけることで調整
     const rate = state.imageShrinkRate / prevRate;
-    // リンクの大きさを更新
+    // リンク（グローバル、ゴール）の大きさを更新
     for (let i = 0; i < this.links.length; i++) {
       const obj = this.links[i];
-      obj.scale.x *= rate;
-      obj.scale.y *= rate;
-      obj.scale.z *= rate;
+      obj.mesh.scale.x *= rate;
+      obj.mesh.scale.y *= rate;
+      obj.mesh.scale.z *= rate;
     }
   }
 
@@ -184,7 +187,11 @@ class Common {
 
   shiftGlobalNav() {
     // グローバルナビの位置修正（同一デバイス内でのリサイズ時）
-    this.globalNavMargin.side = this.size.w * 0.08;
+
+    // vwを使うマージンを更新
+    this.globalNavMargin.pc.side = this.size.w * 0.08;
+    this.globalNavMargin.sp.side = this.size.w * 0.05;
+
     // グローバルナビをthis.linksに最初に登録しているので、
     // ループ回数はグローバルナビ+ロゴ分で良い
     for (let i = 0; i < this.globalNavNames.length + 1; i++) {
