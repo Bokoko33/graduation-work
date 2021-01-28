@@ -21,6 +21,16 @@ class Cursor {
     // 交差検知するリンクのメッシュを格納する配列（これをintersectObjectsに渡す）
     this.rayCastMeshes = [];
 
+    // カーソルの大きさ（画像を参照）
+    this.size = {
+      w: 108 * 0.12,
+      h: 151 * 0.12,
+    };
+    this.hoverSize = {
+      w: 40,
+      h: 42,
+    };
+
     // カーソルにかける抗力
     this.forceList = {
       default: 0.3,
@@ -72,14 +82,19 @@ class Cursor {
     // 使用するジオメトリ
     this.geometry = new THREE.BufferGeometry();
     // リングのジオメトリ
-    const ringGeo = new THREE.RingBufferGeometry(40, 42, 64, 64);
+    const ringGeo = new THREE.RingBufferGeometry(
+      this.hoverSize.w,
+      this.hoverSize.h,
+      64,
+      64
+    );
     // リングジオメトリのポジション
     const ringGeoPosition = ringGeo.attributes.position.array;
 
     // 平面ジオメトリ
     const planeGeo = new THREE.PlaneBufferGeometry(
-      108 * 0.2,
-      151 * 0.2,
+      this.size.w,
+      this.size.h,
       64,
       64
     );
@@ -194,8 +209,10 @@ class Cursor {
     // カーソルの座標を適用
     this.setCursorPosition();
 
-    // 慣性を効かせたカーソルの前進
-    this.goStraight();
+    // 慣性を効かせたカーソルの前進（aboutでは進まない）
+    if (Common.currentRoute !== 'about') {
+      this.goStraight();
+    }
 
     // カメラ、背景をカーソルに追従
     Common.cameraFollow(this.cursorPosition);
