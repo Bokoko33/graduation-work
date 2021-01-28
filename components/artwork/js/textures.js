@@ -55,11 +55,11 @@ export const initTexture = () => {
     },
     {
       name: 'goal_storm',
-      value: loader.load(require('@/assets/images/panel_goal_water.png')),
+      value: loader.load(require('@/assets/images/panel_goal_storm.png')),
     },
     {
       name: 'goal_space',
-      value: loader.load(require('@/assets/images/panel_goal_water.png')),
+      value: loader.load(require('@/assets/images/panel_goal_space.png')),
     },
     {
       name: 'goal_back',

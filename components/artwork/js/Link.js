@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import vertexShader from '../glsl/globalMenu.vert';
 import fragmentShader from '../glsl/globalMenu.frag';
 import { state } from './state';
-import { colors, imageShrinkRate } from './variable';
+import { colors } from './variable';
 import { getTexture } from './textures';
 
 export default class Link {
@@ -40,29 +40,29 @@ export default class Link {
       switch (this.nextPathName) {
         case '/':
           this.texture = getTexture('logo');
-          this.width = 244 * imageShrinkRate;
-          this.height = 171 * imageShrinkRate;
+          this.width = 244 * state.imageShrinkRate;
+          this.height = 171 * state.imageShrinkRate;
           // this.position.x -= this.width / 2; // 幅の半分だけ位置をずらす
           break;
         case 'stage1':
           this.texture = getTexture('menu_water');
-          this.width = 373 * imageShrinkRate;
-          this.height = 85 * imageShrinkRate;
+          this.width = 373 * state.imageShrinkRate;
+          this.height = 85 * state.imageShrinkRate;
           break;
         case 'stage2':
           this.texture = getTexture('menu_storm');
-          this.width = 372 * imageShrinkRate;
-          this.height = 85 * imageShrinkRate;
+          this.width = 372 * state.imageShrinkRate;
+          this.height = 85 * state.imageShrinkRate;
           break;
         case 'stage3':
           this.texture = getTexture('menu_space');
-          this.width = 367 * imageShrinkRate;
-          this.height = 85 * imageShrinkRate;
+          this.width = 367 * state.imageShrinkRate;
+          this.height = 85 * state.imageShrinkRate;
           break;
         case 'about':
           this.texture = getTexture('menu_about');
-          this.width = 178 * imageShrinkRate;
-          this.height = 85 * imageShrinkRate;
+          this.width = 178 * state.imageShrinkRate;
+          this.height = 85 * state.imageShrinkRate;
       }
 
       this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height, 2);
@@ -78,8 +78,8 @@ export default class Link {
       });
     } else if (this.type === 'goal') {
       // サイズは統一
-      this.width = 917 * imageShrinkRate;
-      this.height = 1197 * imageShrinkRate;
+      this.width = 917 * state.imageShrinkRate;
+      this.height = 1197 * state.imageShrinkRate;
       // テクスチャわけ
       switch (this.nextPathName) {
         case '/':
@@ -89,10 +89,10 @@ export default class Link {
           this.texture = getTexture('goal_water');
           break;
         case 'stage2':
-          this.texture = getTexture('goal_water');
+          this.texture = getTexture('goal_storm');
           break;
         case 'stage3':
-          this.texture = getTexture('goal_water');
+          this.texture = getTexture('goal_space');
           break;
       }
       this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height, 2);
