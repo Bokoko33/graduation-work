@@ -36,7 +36,7 @@ class Cursor {
       default: 0.3,
       waterNormal: 0.03,
       heavyWater: 0.01,
-      stormNormal: 0.05,
+      stormNormal: 0.08,
       spaceNormal: 0.2,
       spaceAttractMove: 0.05,
       spaceAttractStop: 0.05,
@@ -52,7 +52,11 @@ class Cursor {
     // 前後座標の入力値
     this.inputZ = this.cursorPosition.z;
     // 前進するときの慣性（1で無し、小さいほど重い）
-    this.straightInertia = 0.03;
+    this.straightInertiaList = {
+      default: 0.03,
+      waterHeavy: 0.01,
+    };
+    this.currentStraightInertia = this.straightInertiaList.default;
 
     // 「押しながらホバーして、離してクリック」を防ぐためのフラグ（これを基準にクリック判定）
     this.clickable = false;
@@ -264,6 +268,7 @@ class Cursor {
       vx *= this.currentForce;
       vy *= this.currentForce;
       this.velocity.set(vx, vy, 0);
+      this.currentStraightInertia = this.straightInertiaList.default;
     } else {
       // インタラクション時
       switch (Common.currentRoute) {
@@ -273,6 +278,7 @@ class Cursor {
           vx *= this.forceList.heavyWater;
           vy *= this.forceList.heavyWater;
           this.velocity.set(vx, vy, 0);
+          this.currentStraightInertia = this.straightInertiaList.waterHeavy;
           break;
         }
         // 竜巻
@@ -408,7 +414,8 @@ class Cursor {
   }
 
   goStraight() {
-    const z = (this.inputZ - this.cursorPosition.z) * this.straightInertia;
+    const z =
+      (this.inputZ - this.cursorPosition.z) * this.currentStraightInertia;
     this.cursorPosition.z += z;
   }
 
