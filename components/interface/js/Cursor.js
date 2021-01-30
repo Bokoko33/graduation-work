@@ -54,7 +54,9 @@ class Cursor {
     // 前進するときの慣性（1で無し、小さいほど重い）
     this.straightInertiaList = {
       default: 0.03,
-      waterHeavy: 0.01,
+      waterHeavy: 0.007,
+      stormHeavy: 0.01,
+      spaceHeavy: 0.01,
     };
     this.currentStraightInertia = this.straightInertiaList.default;
 
@@ -278,6 +280,8 @@ class Cursor {
           vx *= this.forceList.heavyWater;
           vy *= this.forceList.heavyWater;
           this.velocity.set(vx, vy, 0);
+
+          // 前進の慣性を重く
           this.currentStraightInertia = this.straightInertiaList.waterHeavy;
           break;
         }
@@ -300,6 +304,9 @@ class Cursor {
           // 加速度を設定してさらに速度に加算
           this.acceleration.set(attractX, attractY, 0);
           this.velocity.add(this.acceleration);
+
+          // 前進の慣性を重く
+          this.currentStraightInertia = this.straightInertiaList.stormHeavy;
           break;
         }
         // 吸い込み
@@ -333,6 +340,9 @@ class Cursor {
 
             this.velocity.set(attractX, attractY, 0);
           }
+
+          // 前進の慣性を重く
+          this.currentStraightInertia = this.straightInertiaList.waterHeavy;
           break;
         }
       }
