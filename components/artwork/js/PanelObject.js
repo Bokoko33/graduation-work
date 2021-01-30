@@ -29,22 +29,22 @@ export default class PanelObject {
       if (state.isMobile) {
         // sp
         switch (key) {
-          case 'index':
+          case '/':
             texture = getTexture('mv_title_sp');
             this.width = 1321;
             this.height = 777;
             break;
-          case 'stage1':
+          case '/stage1':
             texture = getTexture('panel_water_sp');
             this.width = 1324;
             this.height = 780;
             break;
-          case 'stage2':
+          case '/stage2':
             texture = getTexture('panel_storm_sp');
             this.width = 1324;
             this.height = 780;
             break;
-          case 'stage3':
+          case '/stage3':
             texture = getTexture('panel_space_sp');
             this.width = 1324;
             this.height = 780;
@@ -53,16 +53,16 @@ export default class PanelObject {
       } else {
         switch (key) {
           // pc
-          case 'index':
+          case '/':
             texture = getTexture('mv_title_pc');
             break;
-          case 'stage1':
+          case '/stage1':
             texture = getTexture('panel_water_pc');
             break;
-          case 'stage2':
+          case '/stage2':
             texture = getTexture('panel_storm_pc');
             break;
-          case 'stage3':
+          case '/stage3':
             texture = getTexture('panel_space_pc');
             break;
         }

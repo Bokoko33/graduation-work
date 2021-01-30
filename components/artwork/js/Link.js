@@ -40,30 +40,32 @@ export default class Link {
       switch (this.nextPathName) {
         case '/':
           this.texture = getTexture('logo');
-          this.width = 244 * state.imageShrinkRate;
-          this.height = 171 * state.imageShrinkRate;
+          this.width = 244;
+          this.height = 171;
           // this.position.x -= this.width / 2; // 幅の半分だけ位置をずらす
           break;
-        case 'stage1':
+        case '/stage1':
           this.texture = getTexture('menu_water');
-          this.width = 373 * state.imageShrinkRate;
-          this.height = 85 * state.imageShrinkRate;
+          this.width = 373;
+          this.height = 85;
           break;
-        case 'stage2':
+        case '/stage2':
           this.texture = getTexture('menu_storm');
-          this.width = 372 * state.imageShrinkRate;
-          this.height = 85 * state.imageShrinkRate;
+          this.width = 372;
+          this.height = 85;
           break;
-        case 'stage3':
+        case '/stage3':
           this.texture = getTexture('menu_space');
-          this.width = 367 * state.imageShrinkRate;
-          this.height = 85 * state.imageShrinkRate;
+          this.width = 367;
+          this.height = 85;
           break;
-        case 'about':
+        case '/about':
           this.texture = getTexture('menu_about');
-          this.width = 178 * state.imageShrinkRate;
-          this.height = 85 * state.imageShrinkRate;
+          this.width = 178;
+          this.height = 85;
       }
+      this.width *= state.variableImageRate;
+      this.height *= state.variableImageRate;
 
       this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height, 2);
       this.material = new THREE.RawShaderMaterial({
@@ -78,20 +80,20 @@ export default class Link {
       });
     } else if (this.type === 'goal') {
       // サイズは統一
-      this.width = 917 * state.imageShrinkRate;
-      this.height = 1197 * state.imageShrinkRate;
+      this.width = 917 * state.variableImageRate;
+      this.height = 1197 * state.variableImageRate;
       // テクスチャわけ
       switch (this.nextPathName) {
         case '/':
           this.texture = getTexture('goal_top');
           break;
-        case 'stage1':
+        case '/stage1':
           this.texture = getTexture('goal_water');
           break;
-        case 'stage2':
+        case '/stage2':
           this.texture = getTexture('goal_storm');
           break;
-        case 'stage3':
+        case '/stage3':
           this.texture = getTexture('goal_space');
           break;
       }
@@ -121,6 +123,7 @@ export default class Link {
 
   // 初回、およびデバイス切り替え時の位置の再調整
   setPosition(windowSize, margin, z, index) {
+    // ロゴ
     if (this.nextPathName === '/') {
       const pos = state.isMobile
         ? new THREE.Vector3(
@@ -135,6 +138,7 @@ export default class Link {
           );
       this.mesh.position.set(pos.x, pos.y, pos.z);
     } else {
+      // メニュー
       const offsetSP = 20;
       const pos = state.isMobile
         ? new THREE.Vector3(

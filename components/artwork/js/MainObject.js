@@ -5,7 +5,7 @@ import spaceVertexShader from '../glsl/objectSpace.vert';
 import { colors } from './variable';
 
 export default class SubObject {
-  constructor(route, pos) {
+  constructor(path, pos) {
     this.position = pos;
 
     this.rotateValue = {
@@ -25,24 +25,21 @@ export default class SubObject {
       uTime: { value: 0 },
     };
 
-    this.init(route);
+    this.init(path);
   }
 
-  init(route) {
-    switch (route) {
-      case 'stage1':
+  init(path) {
+    switch (path) {
+      case '/stage1':
         this.interactRadius = 150;
-        this.defaultColor = colors.red;
-        this.createWaterObject(this.interactRadius, this.defaultColor);
+        this.createWaterObject(this.interactRadius);
         break;
-      case 'stage2':
+      case '/stage2':
         this.interactRadius = 300;
-        this.defaultColor = colors.blue;
         this.createStormObject(this.interactRadius);
         break;
-      case 'stage3':
+      case '/stage3':
         this.interactRadius = 300;
-        this.defaultColor = colors.white;
         this.createSpaceObject(this.interactRadius);
         break;
       default:
@@ -58,39 +55,25 @@ export default class SubObject {
 
   createWaterObject(radius) {
     const vertexNum = 128;
-    const offsets = [];
+    // const offsets = [];
     this.geometry = new THREE.SphereBufferGeometry(
       radius,
       vertexNum,
       vertexNum
     );
 
-    for (let i = 0; i < vertexNum; i++) {
-      offsets.push(Math.random());
-    }
-    this.geometry.setAttribute(
-      'offset',
-      new THREE.InstancedBufferAttribute(new Float32Array(offsets), 1)
-    );
-    // this.material = new THREE.MeshLambertMaterial({
-    //   color: colorCode,
-    // });
-    // this.material.onBeforeCompile = (shader) => {
-    //   shader.uniforms.time = { value: this.uniforms.uTime.value };
-    //   shader.vertexShader = 'uniform float time;\n' + shader.vertexShader;
-    //   const token = '#include <begin_vertex>';
-    //   const customTransform = `
-    //       vec3 transformed = position;
-    //       transformed.x = position.x
-    //            + sin(position.y*0.5 + time*5.0)*2.0;
-    //   `;
-    //   shader.vertexShader = shader.vertexShader.replace(token, customTransform);
-    // };
+    // for (let i = 0; i < vertexNum; i++) {
+    //   offsets.push(Math.random());
+    // }
+    // this.geometry.setAttribute(
+    //   'offset',
+    //   new THREE.InstancedBufferAttribute(new Float32Array(offsets), 1)
+    // );
 
     // uniformを追加
     this.uniforms.diffuse = { value: new THREE.Vector3(1.0, 1.0, 1.0) };
     this.uniforms.roughness = { value: 0.1 };
-    this.uniforms.color = { value: new THREE.Color(colors.mint) };
+    this.uniforms.color = { value: new THREE.Color(colors.green) };
     this.uniforms = THREE.UniformsUtils.merge([
       this.uniforms,
       THREE.ShaderLib.standard.uniforms,

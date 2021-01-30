@@ -83,7 +83,7 @@ class Cursor {
     this.frameCount = 0;
   }
 
-  init(route) {
+  init(path) {
     const texture = getTexture('cursor');
     // 使用するジオメトリ
     this.geometry = new THREE.BufferGeometry();
@@ -191,7 +191,7 @@ class Cursor {
     this.rayCastMeshes = Common.links.map((link) => link.mesh);
 
     // 抵抗値を初期化
-    this.resetForce(route);
+    this.resetForce(path);
   }
 
   update() {
@@ -216,7 +216,7 @@ class Cursor {
     this.setCursorPosition();
 
     // 慣性を効かせたカーソルの前進（aboutでは進まない）
-    if (Common.currentRoute !== 'about') {
+    if (Common.currentPath !== '/about') {
       this.goStraight();
     }
 
@@ -273,9 +273,9 @@ class Cursor {
       this.currentStraightInertia = this.straightInertiaList.default;
     } else {
       // インタラクション時
-      switch (Common.currentRoute) {
+      switch (Common.currentPath) {
         // 水中
-        case 'stage1': {
+        case '/stage1': {
           // より重い抵抗をかける
           vx *= this.forceList.heavyWater;
           vy *= this.forceList.heavyWater;
@@ -286,7 +286,7 @@ class Cursor {
           break;
         }
         // 竜巻
-        case 'stage2': {
+        case '/stage2': {
           // 抵抗をかけて"add"する
           vx *= this.forceList.stormNormal;
           vy *= this.forceList.stormNormal;
@@ -310,7 +310,7 @@ class Cursor {
           break;
         }
         // 吸い込み
-        case 'stage3': {
+        case '/stage3': {
           // 動いているかどうか
           if (vm.$interFace.isMouseMoving) {
             // 動いている時は抜け出せるよう吸い込みを弱く
@@ -439,19 +439,24 @@ class Cursor {
     if (!this.clickable) return;
     // InterFace.vueの遷移メソッド
     // 現在交差中のオブジェクト(Linkクラス)のパス名を渡す
-    this.pageTransition(this.intersected.nextPathName);
+    const newPath = this.intersected.nextPathName;
+    // パス名をルート名に変更
+    this.pageTransition(newPath);
+    Common.transition(newPath);
+    this.resetForce(newPath);
+    this.resetPosition();
   }
 
-  resetForce(route) {
+  resetForce(path) {
     let force = 0;
-    switch (route) {
-      case 'stage1':
+    switch (path) {
+      case '/stage1':
         force = this.forceList.waterNormal;
         break;
-      case 'stage2':
+      case '/stage2':
         force = this.forceList.stormNormal;
         break;
-      case 'stage3':
+      case '/stage3':
         force = this.forceList.spaceNormal;
         break;
       default:

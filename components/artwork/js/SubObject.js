@@ -5,7 +5,7 @@ import spaceVertexShader from '../glsl/objectSpace.vert';
 import { colors } from './variable';
 
 export default class SubObject {
-  constructor(route, pos, windowSize) {
+  constructor(path, pos, windowSize) {
     this.position = pos;
 
     this.geometry = null;
@@ -17,21 +17,21 @@ export default class SubObject {
       uTime: { value: 0 },
     };
 
-    this.init(route, windowSize);
+    this.init(path, windowSize);
   }
 
-  init(route, windowSize) {
-    switch (route) {
-      case 'index':
+  init(path, windowSize) {
+    switch (path) {
+      case '/':
         this.createMainObject(windowSize);
         break;
-      case 'stage1':
+      case '/stage1':
         this.createWaterObject();
         break;
-      case 'stage2':
+      case '/stage2':
         this.createStormObject();
         break;
-      case 'stage3':
+      case '/stage3':
         this.createSpaceObject();
         break;
       default:

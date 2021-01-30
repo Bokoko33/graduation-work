@@ -10,17 +10,17 @@ export default class Background {
     this.mesh = null;
   }
 
-  init(route) {
+  init(path) {
     this.geometry = new THREE.PlaneBufferGeometry(2, 2);
     let texture = null; // デフォルト色はピンク
-    switch (route) {
-      case 'stage1':
+    switch (path) {
+      case '/stage1':
         texture = getTexture('bg_water_pc');
         break;
-      case 'stage2':
+      case '/stage2':
         texture = getTexture('bg_storm_pc');
         break;
-      case 'stage3':
+      case '/stage3':
         texture = getTexture('bg_space_pc');
         break;
       default:

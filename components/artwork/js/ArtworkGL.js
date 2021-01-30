@@ -18,10 +18,10 @@ export default class ArtworkGL {
     setImageShrinkRate(this.props.isMobile);
 
     // commonにキャンバスdomを渡してシーン作成
-    Common.init(this.props.$canvas, this.props.route);
+    Common.init(this.props.$canvas, this.props.path);
 
     // シーンができている必要があるのでここでinit
-    Cursor.init(this.props.route);
+    Cursor.init(this.props.path);
 
     // リサイズイベントを登録
     window.addEventListener('resize', this.resize.bind(this));
@@ -46,9 +46,9 @@ export default class ArtworkGL {
     requestAnimationFrame(this.loop.bind(this));
   }
 
-  transition(route) {
-    Common.transition(route);
-    Cursor.resetForce(route);
-    Cursor.resetPosition();
-  }
+  // transition(route) {
+  //   Common.transition(route);
+  //   Cursor.resetForce(route);
+  //   Cursor.resetPosition();
+  // }
 }

@@ -64,7 +64,7 @@ class Stage {
     // ゴール地点のテキスト（削除せずopacityを変える）
     this.goalTextList = [];
     // ゴールメニューになるパス名
-    this.goalLinkNames = ['/', 'stage1', 'stage2', 'stage3'];
+    this.goalLinkNames = ['/', '/stage1', '/stage2', '/stage3'];
     // ゴールよりも奥にリンクを設置
     this.goalLinkOffset = 300;
 
@@ -95,15 +95,15 @@ class Stage {
     scene.add(this.light);
   }
 
-  setFog(route, scene) {
-    switch (route) {
-      case 'stage1':
+  setFog(path, scene) {
+    switch (path) {
+      case '/stage1':
         scene.fog = this.fogList.water;
         break;
-      case 'stage2':
+      case '/stage2':
         scene.fog = this.fogList.storm;
         break;
-      case 'stage3':
+      case '/stage3':
         scene.fog = this.fogList.space;
         break;
       default:
@@ -112,7 +112,7 @@ class Stage {
     }
   }
 
-  initGoal(scene, linkList, currentRoute) {
+  initGoal(scene, linkList, currentPath) {
     // ゴールリンクを初期化
     // パスとデフォルトのテクスチャを設定し、adjustGoal()でステージごとに位置とテクスチャを修正
     const goalPositionZ = this.goalZ - this.goalLinkOffset;
@@ -154,25 +154,37 @@ class Stage {
     scene.add(goalTextJa.mesh);
 
     // 初回の調整
-    this.adjustGoal(currentRoute);
+    this.adjustGoal(currentPath);
   }
 
-  adjustGoal(route) {
+  adjustGoal(path) {
     // ゴールは全ページ共通なので、削除せずテクスチャや並びを変える
 
-    // indexページならパス名に修正し、格納
-    const pathname = route === 'index' ? '/' : route;
     // ゴールリンクを置く座標
-    const positions = [-450, -150, 150, 450];
+    const positions = state.isMobile
+      ? [
+          { x: -102, y: 140 },
+          { x: 102, y: 140 },
+          { x: -102, y: -120 },
+          { x: 102, y: -120 },
+        ]
+      : [
+          { x: -480, y: 0 },
+          { x: -160, y: 0 },
+          { x: 160, y: 0 },
+          { x: 480, y: 0 },
+        ];
     let posIndex = 0; // backをのぞいて左から順に配置するためのindex
     for (const obj of this.goalLinkObjects) {
       // 自身と同ステージであれば、テクスチャをbackに変更し、位置を右端に
-      if (obj.nextPathName === pathname) {
+      if (obj.nextPathName === path) {
         obj.mesh.material.map = getTexture('goal_back');
-        obj.mesh.position.x = positions[3];
+        obj.mesh.position.x = positions[3].x;
+        obj.mesh.position.y = positions[3].y;
       } else {
         obj.mesh.material.map = obj.texture;
-        obj.mesh.position.x = positions[posIndex];
+        obj.mesh.position.x = positions[posIndex].x;
+        obj.mesh.position.y = positions[posIndex].y;
         posIndex++;
       }
 
@@ -190,10 +202,10 @@ class Stage {
     }
   }
 
-  initBackground(route, scene) {
+  initBackground(path, scene) {
     // 背景を設定
     this.backgroundPlane = new Background();
-    this.backgroundPlane.init(route, this.colors);
+    this.backgroundPlane.init(path, this.colors);
     scene.add(this.backgroundPlane.mesh);
   }
 
@@ -203,13 +215,13 @@ class Stage {
     this.backgroundPlane.delete();
   }
 
-  initPanels(route, scene, windowSize) {
-    if (route === 'about') return;
+  initPanels(path, scene, windowSize) {
+    if (path === '/about') return;
     // topパネル
     const topPanelPosition = state.isMobile
       ? new THREE.Vector3(0, windowSize.h * 0.3, -200)
       : new THREE.Vector3(0, 60, -200);
-    this.topPanel = new PanelObject(topPanelPosition, 'top', route);
+    this.topPanel = new PanelObject(topPanelPosition, 'top', path);
     this.fadeInObjects.push(this.topPanel);
     scene.add(this.topPanel.mesh);
 
@@ -234,8 +246,8 @@ class Stage {
     this.fadeInObjects.push(this.topText);
     scene.add(this.topText.mesh);
 
-    // indexページではさらに説明パネルを生成
-    if (route === 'index') {
+    // topページではさらに説明パネルを生成
+    if (path === '/') {
       // デバイス差による位置調整
       const posY = state.isMobile ? 50 : 0;
       for (let i = 0; i < this.descPanelNum; i++) {
@@ -272,8 +284,8 @@ class Stage {
     this.descriptionPanels.length = 0;
   }
 
-  initInteractObjects(route, scene, windowSize) {
-    if (route === 'index' || route === 'about') return;
+  initInteractObjects(path, scene, windowSize) {
+    if (path === '/' || path === '/about') return;
     // カーソルとインタラクションするメインオブジェクト生成
     for (let i = 0; i < this.interactObjectsLength; i++) {
       // const c1 = Math.random() * (0.8 - 0.3) + 0.3;
@@ -282,7 +294,7 @@ class Stage {
       const y = (windowSize.h / 2) * this.ixObjPosCoefficient[i].y;
       const z = (i + 1) * ((this.goalZ * 0.8) / this.interactObjectsLength);
       const pos = new THREE.Vector3(x, y, z);
-      const obj = new MainObject(route, pos);
+      const obj = new MainObject(path, pos);
       this.interactObjects.push(obj);
       scene.add(this.interactObjects[i].mesh);
     }
@@ -298,11 +310,11 @@ class Stage {
     this.interactObjects.length = 0;
   }
 
-  initSubObjects(route, scene, windowSize) {
-    if (route === 'about') return;
+  initSubObjects(path, scene, windowSize) {
+    if (path === '/about') return;
 
     const position = new THREE.Vector3(0, 0, this.goalZ / 2); // ステージ中央に設置
-    this.subObjects = new SubObject(route, position, windowSize);
+    this.subObjects = new SubObject(path, position, windowSize);
     scene.add(this.subObjects.mesh);
   }
 
