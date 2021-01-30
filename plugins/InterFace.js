@@ -23,6 +23,10 @@ class InterFace {
     // マウスムーブ中か
     this.isMouseMoving = false;
 
+    // ダブルタップしたか（タッチのみ）
+    this.tapCount = 0;
+    this.doubleTaped = false;
+
     // トラックパッド感度（1で完全に同距離）
     this.sensitivity = 3;
 
@@ -65,6 +69,7 @@ class InterFace {
       this.trackPos.x = e.touches[0].clientX;
       this.trackPos.y = e.touches[0].clientY;
       this.isMousePressed = true;
+      this.checkDoubleTap();
     });
     this.trackpad.addEventListener('touchmove', (e) => {
       e.preventDefault(); // スクロールを防止
@@ -72,6 +77,7 @@ class InterFace {
     });
     this.trackpad.addEventListener('touchend', (e) => {
       this.isMousePressed = false;
+      this.doubleTaped = false;
     });
     this.trackpad.addEventListener('click', (e) => {
       this.handleEventList();
@@ -93,6 +99,20 @@ class InterFace {
     // 現在のトラックパッド座標をセット
     this.trackPos.x = e.touches[0].clientX;
     this.trackPos.y = e.touches[0].clientY;
+  }
+
+  checkDoubleTap() {
+    // ダブルタップしたかどうかの判定、タッチデバイスのみ
+    if (this.tapCount) {
+      // すでにタップカウントがある場合はこのタップでダブルクリック判定
+      this.doubleTaped = true;
+      this.tapCount = 0;
+    } else {
+      this.tapCount = 1;
+      setTimeout(() => {
+        this.tapCount = 0;
+      }, 350);
+    }
   }
 
   update() {

@@ -4,6 +4,7 @@ import Common from '../../artwork/js/Common';
 import Stage from '../../artwork/js/Stage';
 import vertexShader from '../../artwork/glsl/cursor.vert';
 import fragmentShader from '../../artwork/glsl/cursor.frag';
+import { state } from '../../artwork/js/state';
 import { getTexture } from '../../artwork/js/textures';
 import { colors } from '../../artwork/js/variable';
 
@@ -179,6 +180,7 @@ class Cursor {
       fragmentShader,
       side: THREE.DoubleSide,
       transparent: true,
+      alphaTest: 0.8,
     });
 
     this.mesh = new THREE.Mesh(this.geometry, this.material);
@@ -198,8 +200,13 @@ class Cursor {
     // pluginsのループを代わりに回してあげる
     vm.$interFace.update();
 
-    // マウス押しっぱなしで進む
-    if (vm.$interFace.isMousePressed) {
+    // 前進
+    // pcの場合はただの押しっぱなし、モバイルの場合はダブルタップ判定がありかつ押しっぱなしで進む
+    const isGoing = state.isMobile
+      ? vm.$interFace.isMousePressed && vm.$interFace.doubleTaped
+      : vm.$interFace.isMousePressed;
+
+    if (isGoing) {
       if (this.cursorPosition.z > Stage.goalZ) {
         this.inputZ -= this.moveSpeed;
       }
