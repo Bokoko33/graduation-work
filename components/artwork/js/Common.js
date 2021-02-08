@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Stage from './Stage';
 import Link from './Link';
-import { state, setImageShrinkRate } from './state';
+import { state, setWindowSize, setImageShrinkRate } from './state';
 
 class Common {
   constructor() {
@@ -49,7 +49,7 @@ class Common {
       this.fov,
       this.size.w / this.size.h,
       1,
-      5000
+      10000
     );
     // カメラとグローバルメニューをまとめるグループ（カメラの回転に追従させるため）
     this.cameraGroup = new THREE.Group();
@@ -97,6 +97,7 @@ class Common {
       w: window.innerWidth,
       h: window.innerHeight,
     };
+    setWindowSize(this.size);
   }
 
   resize() {
