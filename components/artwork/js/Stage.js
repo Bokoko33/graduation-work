@@ -66,7 +66,7 @@ class Stage {
     // ゴールメニューになるパス名
     this.goalLinkNames = ['/', '/stage1', '/stage2', '/stage3'];
     // ゴールよりも奥にリンクを設置
-    this.goalLinkOffset = 300;
+    this.goalLinkOffset = 500;
 
     // ページ最初のパネル
     this.topPanel = null;
@@ -227,7 +227,7 @@ class Stage {
 
     // topパネル下のテキスト
     const topTextPosition = state.isMobile
-      ? new THREE.Vector3(0, 0, -200)
+      ? new THREE.Vector3(0, -windowSize.h * 0.03, -200)
       : new THREE.Vector3(0, -320, -200);
 
     this.topText = state.isMobile
@@ -313,8 +313,11 @@ class Stage {
   initSubObjects(path, scene, windowSize) {
     if (path === '/about') return;
 
-    const position = new THREE.Vector3(0, 0, this.goalZ / 2); // ステージ中央に設置
-    this.subObjects = new SubObject(path, position, windowSize);
+    const zOffset = 2500; // z座標はゴール若干奥にする。ステージ中央だと本体を通りすぎると消える。
+    const position = state.isMobile
+      ? new THREE.Vector3(0, windowSize.h * 0.05, this.goalZ - zOffset) // スマホの場合は若干上
+      : new THREE.Vector3(0, 0, this.goalZ - zOffset);
+    this.subObjects = new SubObject(path, position);
     scene.add(this.subObjects.mesh);
   }
 
@@ -360,6 +363,9 @@ class Stage {
     for (let i = 0; i < this.interactObjects.length; i++) {
       this.interactObjects[i].update();
     }
+
+    // サブオブジェクトの更新
+    this.subObjects.update();
   }
 }
 
