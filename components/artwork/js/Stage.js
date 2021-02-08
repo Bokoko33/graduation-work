@@ -274,6 +274,10 @@ class Stage {
       scene.remove(this.topPanel.mesh);
       this.topPanel.delete();
     }
+    if (this.topText) {
+      scene.remove(this.topText.mesh);
+      this.topText.delete();
+    }
     for (let i = 0; i < this.descriptionPanels.length; i++) {
       // メッシュをシーンから削除
       scene.remove(this.descriptionPanels[i].mesh);
@@ -281,6 +285,7 @@ class Stage {
       this.descriptionPanels[i].delete();
     }
     this.topPanel = null;
+    this.topText = null;
     this.descriptionPanels.length = 0;
   }
 
@@ -365,7 +370,7 @@ class Stage {
     }
 
     // サブオブジェクトの更新
-    this.subObjects.update();
+    if (this.subObjects) this.subObjects.update();
   }
 }
 
