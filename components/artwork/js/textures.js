@@ -61,19 +61,19 @@ export const initTexture = () => {
     // --- PC ---
     {
       name: 'bg_main_pc',
-      value: loader.load(require('@/assets/images/pc/background_main_pc.jpg')),
+      value: loader.load(require('@/assets/images/pc/background_main.jpg')),
     },
     {
       name: 'bg_water_pc',
-      value: loader.load(require('@/assets/images/pc/background_water_pc.jpg')),
+      value: loader.load(require('@/assets/images/pc/background_water.jpg')),
     },
     {
       name: 'bg_storm_pc',
-      value: loader.load(require('@/assets/images/pc/background_storm_pc.jpg')),
+      value: loader.load(require('@/assets/images/pc/background_storm.jpg')),
     },
     {
       name: 'bg_space_pc',
-      value: loader.load(require('@/assets/images/pc/background_space_pc.jpg')),
+      value: loader.load(require('@/assets/images/pc/background_space.jpg')),
     },
     {
       name: 'mv_title_pc',
@@ -117,22 +117,22 @@ export const initTexture = () => {
     },
     // --- ---
     // --- SP ---
-    // {
-    //   name: 'bg_main_sp',
-    //   value: loader.load(require('@/assets/images/sp/background_main_pc.jpg')),
-    // },
-    // {
-    //   name: 'bg_water_sp',
-    //   value: loader.load(require('@/assets/images/sp/background_water_pc.jpg')),
-    // },
-    // {
-    //   name: 'bg_storm_sp',
-    //   value: loader.load(require('@/assets/images/sp/background_storm_pc.jpg')),
-    // },
-    // {
-    //   name: 'bg_space_sp',
-    //   value: loader.load(require('@/assets/images/sp/background_space_pc.jpg')),
-    // },
+    {
+      name: 'bg_main_sp',
+      value: loader.load(require('@/assets/images/sp/background_main.jpg')),
+    },
+    {
+      name: 'bg_water_sp',
+      value: loader.load(require('@/assets/images/sp/background_water.jpg')),
+    },
+    {
+      name: 'bg_storm_sp',
+      value: loader.load(require('@/assets/images/sp/background_storm.jpg')),
+    },
+    {
+      name: 'bg_space_sp',
+      value: loader.load(require('@/assets/images/sp/background_space.jpg')),
+    },
     {
       name: 'mv_title_sp',
       value: loader.load(require('@/assets/images/sp/mv_title.png')),

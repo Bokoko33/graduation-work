@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import vertexShader from '../glsl/background.vert';
 import fragmentShader from '../glsl/background.frag';
 import { getTexture } from './textures';
+import { state } from './state';
 
 export default class Background {
   constructor() {
@@ -13,18 +14,19 @@ export default class Background {
   init(path) {
     this.geometry = new THREE.PlaneBufferGeometry(2, 2);
     let texture = null; // デフォルト色はピンク
+    const device = state.isMobile ? 'sp' : 'pc';
     switch (path) {
       case '/stage1':
-        texture = getTexture('bg_water_pc');
+        texture = getTexture(`bg_water_${device}`);
         break;
       case '/stage2':
-        texture = getTexture('bg_storm_pc');
+        texture = getTexture(`bg_storm_${device}`);
         break;
       case '/stage3':
-        texture = getTexture('bg_space_pc');
+        texture = getTexture(`bg_space_${device}`);
         break;
       default:
-        texture = getTexture('bg_main_pc');
+        texture = getTexture(`bg_main_${device}`);
         break;
     }
     this.material = new THREE.ShaderMaterial({
