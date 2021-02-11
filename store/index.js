@@ -3,7 +3,7 @@ export const state = () => ({
 });
 
 export const mutations = {
-  changeDevice(state, bool) {
+  setDevice(state, bool) {
     state.isMobile = bool;
   },
 };

@@ -1,6 +1,7 @@
 <template>
   <div class="scene">
     <canvas ref="canvas" class="scene__canvas"></canvas>
+    <ModalDescFirst v-if="visibleDescSp" :close-func="closeDescSp" />
   </div>
 </template>
 
@@ -12,6 +13,7 @@ export default {
     // 基本的にはここにthree.jsのオブジェクトを追加しない。
     return {
       artworkGL: null,
+      visibleDescSp: false,
     };
   },
   // watch: {
@@ -25,6 +27,9 @@ export default {
     this.changeDevice(mql);
     mql.addEventListener('change', this.changeDevice);
 
+    // spなら説明モーダルを表示
+    this.visibleDescSp = this.$store.state.isMobile;
+
     // canvas要素を渡す。
     this.artworkGL = new ArtworkGL({
       $canvas: this.$refs.canvas,
@@ -35,8 +40,11 @@ export default {
   methods: {
     // この中にthree.jsの処理をばりばり書かない。
     changeDevice(mql) {
-      this.$store.commit('changeDevice', mql.matches);
+      this.$store.commit('setDevice', mql.matches);
       if (this.artworkGL) this.artworkGL.changeDevice(mql.matches);
+    },
+    closeDescSp() {
+      this.visibleDescSp = false;
     },
   },
 };
