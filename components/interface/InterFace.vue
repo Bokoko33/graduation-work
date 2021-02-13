@@ -1,11 +1,29 @@
 <template>
-  <div id="trackpad" class="trackpad"></div>
+  <div class="interface">
+    <div id="trackpad" class="trackpad" @touchend="updateCursorZ()">
+      <AnimationUpDown
+        v-if="$store.state.howToTouch === 'first'"
+        class="trackpad__animation"
+      />
+      <AnimationDoubleTap
+        v-else-if="$store.state.howToTouch === 'double' && cursorZ === 0"
+        class="trackpad__animation"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
 import Cursor from './js/Cursor';
 
+const initialCursorZ = Cursor.inputZ;
+
 export default {
+  data() {
+    return {
+      cursorZ: initialCursorZ,
+    };
+  },
   mounted() {
     // Cursor.jsに遷移イベントを追加
     Cursor.setClickEvent(this.pageTransition);
@@ -14,6 +32,10 @@ export default {
     // Cursor.jsから呼ばれる
     pageTransition(pathName) {
       this.$router.push(pathName);
+      this.cursorZ = initialCursorZ;
+    },
+    updateCursorZ() {
+      this.cursorZ = Cursor.inputZ;
     },
   },
 };
@@ -25,10 +47,9 @@ export default {
   position: fixed;
   bottom: 10px;
   right: 10px;
-  width: 35vw;
-  height: 35vh;
-  background-color: white;
-  opacity: 0.5;
+  width: 28vw;
+  height: 28vh;
+  background-color: rgba(255, 255, 255, 0.5);
   border-radius: 10px;
 
   -webkit-touch-callout: none; // リンク長押しのポップアップを無効化
@@ -36,5 +57,11 @@ export default {
   @include device-pc {
     display: none;
   }
+}
+
+.trackpad__animation {
+  position: absolute;
+  top: 5vh;
+  left: 40%;
 }
 </style>

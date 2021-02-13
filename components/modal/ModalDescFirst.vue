@@ -16,7 +16,6 @@
       :click-action="closeModal"
     />
     <div ref="cursor" class="modal__cursor"></div>
-    <AnimationUpDown class="modal__animation" />
   </div>
 </template>
 
@@ -50,6 +49,7 @@ export default {
     },
     closeModal() {
       cancelAnimationFrame(this.loopCallbackId);
+      this.$store.commit('setHowToTouch', 'double');
       this.closeFunc();
     },
   },
@@ -90,11 +90,5 @@ export default {
   background-image: url('~@/assets/images/common/cursor.png');
   background-size: contain;
   background-repeat: no-repeat;
-}
-
-.modal__animation {
-  position: absolute;
-  bottom: 15vh;
-  right: 5vw;
 }
 </style>

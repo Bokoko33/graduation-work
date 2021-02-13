@@ -28,7 +28,10 @@ export default {
     mql.addEventListener('change', this.changeDevice);
 
     // spなら説明モーダルを表示
-    this.visibleDescSp = this.$store.state.isMobile;
+    if (this.$store.state.isMobile) {
+      this.visibleDescSp = true;
+      this.$store.commit('setHowToTouch', 'first');
+    }
 
     // canvas要素を渡す。
     this.artworkGL = new ArtworkGL({

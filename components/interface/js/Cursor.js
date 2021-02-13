@@ -1,4 +1,5 @@
 import Vue from 'vue';
+
 import * as THREE from 'three';
 import Common from '../../artwork/js/Common';
 import Stage from '../../artwork/js/Stage';
@@ -477,6 +478,10 @@ class Cursor {
     // 位置をスタートに戻す
     this.inputZ = Stage.startZ;
     this.cursorPosition.z = Stage.startZ;
+  }
+
+  getInputZ() {
+    return this.inputZ;
   }
 }
 
