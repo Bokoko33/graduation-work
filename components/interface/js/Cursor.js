@@ -399,16 +399,18 @@ class Cursor {
       this.hover = true; // カーソル変化を起動
 
       // 交差検知したメッシュから、インスタンスを逆探知
-      this.intersected = Common.links.find(
-        (link) => link.mesh === intersects[0].object
-      );
-      // this.intersected.mouseOver();
+      if (!this.intersected) {
+        this.intersected = Common.links.find(
+          (link) => link.mesh === intersects[0].object
+        );
+      }
+      this.intersected.mouseOver(this.cursorPosition);
 
       if (!isPressed) this.clickable = true;
     } else {
-      // if (this.intersected) {
-      //   this.intersected.mouseOut();
-      // }
+      if (this.intersected) {
+        this.intersected.mouseOut();
+      }
       this.intersected = null;
       this.hover = false;
       this.clickable = false;

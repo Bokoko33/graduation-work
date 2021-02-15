@@ -171,7 +171,6 @@ class Common {
       const menu = new Link(null, this.globalNavPaths[i], 'global');
       // 位置を設定
       menu.setPosition(this.size, this.globalNavMargin, -this.dist, i);
-      menu.shiftMyWidth();
       // console.log(menu.mesh.position.y);
 
       menu.mesh.renderOrder = 999; // 一番手前にレンダリングしたい
@@ -185,7 +184,6 @@ class Common {
     const logo = new Link(null, '/', 'global');
     // 位置を設定
     logo.setPosition(this.size, this.globalNavMargin, -this.dist, -1);
-    logo.shiftMyWidth();
 
     logo.mesh.renderOrder = 999;
     this.scene.add(logo.mesh);
