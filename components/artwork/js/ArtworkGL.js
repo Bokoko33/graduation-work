@@ -1,7 +1,7 @@
 import Cursor from '../../interface/js/Cursor';
 import Common from './Common';
 import { initTexture } from './textures';
-import { setDevice, setImageShrinkRate } from './state';
+import { setDevice, setImageShrinkRate, setObjectSizeRate } from './state';
 
 export default class ArtworkGL {
   constructor(props) {
@@ -13,9 +13,10 @@ export default class ArtworkGL {
     // 画像読み込み
     initTexture();
 
-    // 先にデバイス情報を渡し、画像の縮小率をセット
+    // 先にデバイス情報を渡し、画像、オブジェクトの縮小率をセット
     setDevice(this.props.isMobile);
     setImageShrinkRate(this.props.isMobile);
+    setObjectSizeRate(this.props.isMobile);
 
     // commonにキャンバスdomを渡してシーン作成
     Common.init(this.props.$canvas, this.props.path);
