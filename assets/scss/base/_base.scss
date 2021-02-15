@@ -3,4 +3,10 @@ body {
   color: white;
   -webkit-touch-callout: none; // リンク長押しのポップアップを無効化
   -webkit-user-select: none; // テキスト長押しの選択ボックスを無効化
+
+  letter-spacing: 0.08em;
+  line-height: 2;
+
+  font-family: 'Avenir', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans',
+    Meiryo, sans-serif;
 }
