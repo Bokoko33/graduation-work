@@ -66,7 +66,7 @@ class Stage {
     // ゴールメニューになるパス名
     this.goalLinkNames = ['/', '/stage1', '/stage2', '/stage3'];
     // ゴールよりも奥にリンクを設置
-    this.goalLinkOffset = 500;
+    this.goalLinkOffset = 250;
 
     // ページ最初のパネル
     this.topPanel = null;
@@ -169,10 +169,10 @@ class Stage {
           { x: 102, y: -120 },
         ]
       : [
-          { x: -480, y: 0 },
-          { x: -160, y: 0 },
-          { x: 160, y: 0 },
-          { x: 480, y: 0 },
+          { x: -510, y: 0 },
+          { x: -170, y: 0 },
+          { x: 170, y: 0 },
+          { x: 510, y: 0 },
         ];
     let posIndex = 0; // backをのぞいて左から順に配置するためのindex
     for (const obj of this.goalLinkObjects) {
@@ -187,6 +187,9 @@ class Stage {
         obj.mesh.position.y = positions[posIndex].y;
         posIndex++;
       }
+
+      // 初期位置として再登録
+      obj.resetInitialPosition(obj.mesh.position);
 
       // opacityを再び0に
       obj.mesh.material.opacity = 0;
@@ -219,7 +222,7 @@ class Stage {
     if (path === '/about') return;
     // topパネル
     const topPanelPosition = state.isMobile
-      ? new THREE.Vector3(0, windowSize.h * 0.3, -200)
+      ? new THREE.Vector3(0, windowSize.h * 0.25, -200)
       : new THREE.Vector3(0, 60, -200);
     this.topPanel = new PanelObject(topPanelPosition, 'top', path);
     this.fadeInObjects.push(this.topPanel);
@@ -227,14 +230,14 @@ class Stage {
 
     // topパネル下のテキスト
     const topTextPosition = state.isMobile
-      ? new THREE.Vector3(0, -windowSize.h * 0.03, -200)
+      ? new THREE.Vector3(0, -windowSize.h * 0.1, -200)
       : new THREE.Vector3(0, -320, -200);
 
     this.topText = state.isMobile
       ? new TextObject(
           topTextPosition,
-          1180 * state.fixedImageRate,
-          316 * state.fixedImageRate,
+          1255 * state.fixedImageRate,
+          273 * state.fixedImageRate,
           getTexture('mv_text_sp')
         )
       : new TextObject(
