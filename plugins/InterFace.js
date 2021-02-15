@@ -6,7 +6,7 @@ class InterFace {
     this.trackpad = null;
 
     // カーソル座標
-    this.cursorPos = { x: innerWidth * 0.4, y: innerHeight * 0.2 }; // 0,0だと最初に大きく動いてしまう
+    this.cursorPos = { x: innerWidth * 0.4, y: innerHeight * 0.1 }; // 0,0だと最初に大きく動いてしまう、見辛い
     // 前フレームの座標
     this.prevPos = { x: this.cursorPos.x, y: this.cursorPos.y };
     // フレーム間の移動ベクトル
@@ -134,7 +134,7 @@ class InterFace {
     // 移動ベクトルを計算
     this.moveVec.x = this.cursorPos.x - this.prevPos.x;
     this.moveVec.y = this.cursorPos.y - this.prevPos.y;
-    // 絶対ちから移動量を取得
+    // 絶対値から移動量を取得
     if (Math.abs(this.moveVec.x) < 0.01 && Math.abs(this.moveVec.y)) {
       this.isMouseMoving = false;
     } else {
@@ -143,6 +143,19 @@ class InterFace {
 
     this.prevPos.x = this.cursorPos.x;
     this.prevPos.y = this.cursorPos.y;
+  }
+
+  detectCollision(x, y, width, height) {
+    if (
+      this.cursorPos.x > x &&
+      this.cursorPos.x < x + width &&
+      this.cursorPos.y > y &&
+      this.cursorPos.y < y + height
+    ) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   setClickEvent(callback) {
