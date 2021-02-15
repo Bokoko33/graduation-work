@@ -3,6 +3,7 @@ import waterVertexShader from '../glsl/objectWater.vert';
 import stormVertexShader from '../glsl/objectStorm.vert';
 import spaceVertexShader from '../glsl/objectSpace.vert';
 import { colors } from './variable';
+import { state } from './state';
 
 export default class SubObject {
   constructor(path, pos) {
@@ -31,15 +32,15 @@ export default class SubObject {
   init(path) {
     switch (path) {
       case '/stage1':
-        this.interactRadius = 150;
+        this.interactRadius = 150 * state.objectSizeRate;
         this.createWaterObject(this.interactRadius);
         break;
       case '/stage2':
-        this.interactRadius = 300;
+        this.interactRadius = 300 * state.objectSizeRate;
         this.createStormObject(this.interactRadius);
         break;
       case '/stage3':
-        this.interactRadius = 300;
+        this.interactRadius = 300 * state.objectSizeRate;
         this.createSpaceObject(this.interactRadius);
         break;
       default:
