@@ -134,13 +134,13 @@ class Stage {
 
     // ゴールの周りに表示するテキスト
     const goalTextEn = new TextObject(
-      new THREE.Vector3(0, 300, goalPositionZ),
-      1880 * state.variableImageRate,
-      189 * state.variableImageRate,
+      new THREE.Vector3(0, 280, goalPositionZ),
+      1448 * state.variableImageRate,
+      146 * state.variableImageRate,
       getTexture('goal_text_en')
     );
     const goalTextJa = new TextObject(
-      new THREE.Vector3(0, -300, goalPositionZ),
+      new THREE.Vector3(0, -280, goalPositionZ),
       768 * state.variableImageRate,
       121 * state.variableImageRate,
       getTexture('goal_text_ja')
@@ -163,16 +163,16 @@ class Stage {
     // ゴールリンクを置く座標
     const positions = state.isMobile
       ? [
-          { x: -102, y: 140 },
-          { x: 102, y: 140 },
-          { x: -102, y: -120 },
-          { x: 102, y: -120 },
+          { x: -90, y: 140 },
+          { x: 90, y: 140 },
+          { x: -90, y: -100 },
+          { x: 90, y: -100 },
         ]
       : [
-          { x: -510, y: 0 },
-          { x: -170, y: 0 },
-          { x: 170, y: 0 },
-          { x: 510, y: 0 },
+          { x: -480, y: 0 },
+          { x: -160, y: 0 },
+          { x: 160, y: 0 },
+          { x: 480, y: 0 },
         ];
     let posIndex = 0; // backをのぞいて左から順に配置するためのindex
     for (const obj of this.goalLinkObjects) {

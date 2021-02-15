@@ -4,6 +4,11 @@ import fragmentShader from '../glsl/globalMenu.frag';
 import { state } from './state';
 import { getTexture } from './textures';
 
+const hoverMoveOffsetByDevice = {
+  pc: 30,
+  sp: 10,
+};
+
 export default class Link {
   constructor(pos, path, type) {
     // 元ある場所
@@ -26,7 +31,9 @@ export default class Link {
     // ホバー中かどうか
     this.isHover = false;
     // ホバー時に動く範囲（半径）
-    this.hoverMoveOffset = 30;
+    this.hoverMoveOffset = state.isMobile
+      ? hoverMoveOffsetByDevice.sp
+      : hoverMoveOffsetByDevice.pc;
 
     // カーソルへのストーキング速度
     this.stokingSpeed = 0.1;
@@ -84,8 +91,8 @@ export default class Link {
       });
     } else if (this.type === 'goal') {
       // サイズは統一
-      this.width = 917 * state.variableImageRate;
-      this.height = 1197 * state.variableImageRate;
+      this.width = 825 * state.variableImageRate;
+      this.height = 1077 * state.variableImageRate;
       // テクスチャわけ
       switch (this.nextPathName) {
         case '/':
@@ -189,13 +196,13 @@ export default class Link {
           );
     } else {
       // メニュー
-      const offsetSP = 20;
+      const verticalOffsetSP = 24;
       pos = state.isMobile
         ? new THREE.Vector3(
             windowSize.w / 2 - margin.sp.side - margin.sp.between * (index % 2),
             windowSize.h / 2 -
               margin.sp.top -
-              (1 - Math.floor(index / 2)) * offsetSP,
+              (1 - Math.floor(index / 2)) * verticalOffsetSP,
             z
           )
         : new THREE.Vector3(
@@ -237,6 +244,11 @@ export default class Link {
 
     // 初期位置を再設定
     this.resetInitialPosition(this.mesh.position);
+
+    // ホバーオフセットをデバイスに合わせる
+    this.hoverMoveOffset = state.isMobile
+      ? hoverMoveOffsetByDevice.sp
+      : hoverMoveOffsetByDevice.pc;
   }
 
   // 等間隔配置するため、幅の半分だけ位置をずらす（左右によって異なるので場合分け）
