@@ -4,6 +4,7 @@ import style from '~/assets/scss/base/_variable.scss';
 class InterFace {
   constructor() {
     this.trackpad = null;
+    this.trackpadRect = null;
 
     // カーソル座標
     this.cursorPos = { x: innerWidth * 0.4, y: innerHeight * 0.1 }; // 0,0だと最初に大きく動いてしまう、見辛い
@@ -14,6 +15,9 @@ class InterFace {
 
     // トラックパッド内の座標
     this.trackPos = { x: 0, y: 0 };
+
+    // トラックパッド自身の画面端との余白
+    this.trackpadMargin = 10;
 
     // ドラッグ中か（トラックパッド）
     this.isDrag = false;
@@ -63,17 +67,38 @@ class InterFace {
 
   trackPadInit() {
     this.trackpad = document.getElementById('trackpad');
+    this.trackpadRect = this.trackpad.getBoundingClientRect();
+
+    // 位置を右下に設定
+    const initPos = {
+      x: window.innerWidth - this.trackpad.clientWidth,
+      y: window.innerHeight - this.trackpad.clientHeight,
+    };
+    const initialX = initPos.x - this.trackpadMargin;
+    const initialY = initPos.y - this.trackpadMargin;
+    this.trackpad.style.transform = `translate(${initialX}px,${initialY}px)`;
+
     // トラックパッド操作時のイベントを登録
     this.trackpad.addEventListener('touchstart', (e) => {
       // マウスダウンでドラッグ開始、現在の座標をprevに格納
       this.trackPos.x = e.touches[0].clientX;
       this.trackPos.y = e.touches[0].clientY;
       this.isMousePressed = true;
-      this.checkDoubleTap();
+
+      // 二本指のときダブルタップ判定にしない
+      if (e.touches.length === 1) {
+        this.checkDoubleTap();
+      }
     });
     this.trackpad.addEventListener('touchmove', (e) => {
       e.preventDefault(); // スクロールを防止
-      this.trackPadMoved(e);
+
+      // 一本指でカーソル移動、二本でトラックパッドそのもの移動
+      if (e.touches.length === 1) {
+        this.trackPadMoved(e);
+      } else if (e.touches.length === 2) {
+        this.moveTrackPadPosition(e);
+      }
     });
     this.trackpad.addEventListener('touchend', (e) => {
       this.isMousePressed = false;
@@ -99,6 +124,55 @@ class InterFace {
     // 現在のトラックパッド座標をセット
     this.trackPos.x = e.touches[0].clientX;
     this.trackPos.y = e.touches[0].clientY;
+  }
+
+  moveTrackPadPosition(e) {
+    const pos1 = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+    const pos2 = {
+      x: e.touches[1].clientX,
+      y: e.touches[1].clientY,
+    };
+    const centerOfTwoFinger = {
+      x: (pos1.x + pos2.x) / 2,
+      y: (pos1.y + pos2.y) / 2,
+    };
+
+    const movedX = centerOfTwoFinger.x - this.trackpadRect.width / 2;
+    const movedY = centerOfTwoFinger.y - this.trackpadRect.height / 2;
+
+    this.trackpad.style.transform = `translate(${movedX}px,${movedY}px)`;
+
+    // rectを更新
+    this.trackpadRect = this.trackpad.getBoundingClientRect();
+
+    // 画面外には出ないように調整
+    let fixedX, fixedY;
+    if (movedX < this.trackpadMargin) {
+      fixedX = this.trackpadMargin;
+    } else if (
+      movedX + this.trackpadRect.width >
+      window.innerWidth - this.trackpadMargin
+    ) {
+      fixedX =
+        window.innerWidth - this.trackpadMargin - this.trackpadRect.width;
+    }
+
+    if (movedY < this.trackpadMargin) {
+      fixedY = this.trackpadMargin;
+    } else if (
+      movedY + this.trackpadRect.height >
+      window.innerHeight - this.trackpadMargin
+    ) {
+      fixedY =
+        window.innerHeight - this.trackpadMargin - this.trackpadRect.height;
+    }
+
+    const newX = fixedX || movedX;
+    const newY = fixedY || movedY;
+    this.trackpad.style.transform = `translate(${newX}px,${newY}px)`;
   }
 
   checkDoubleTap() {

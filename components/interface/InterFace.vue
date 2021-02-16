@@ -50,12 +50,14 @@ export default {
 .trackpad {
   display: block;
   position: fixed;
-  bottom: 10px;
-  right: 10px;
   width: 28vw;
   height: 28vh;
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 10px;
+
+  // jsで位置を制御
+  top: 0;
+  left: 0;
 
   -webkit-touch-callout: none; // リンク長押しのポップアップを無効化
   -webkit-user-select: none; // テキスト長押しの選択ボックスを無効化

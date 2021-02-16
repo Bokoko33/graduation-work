@@ -7,7 +7,7 @@
       icon at the bottom left of the screen.
     </p>
     <p class="modal__text">
-      このサイトでは、<strong>スマートフォンでもカーソルを扱います</strong>。通常のタッチ操作をする代わりに、<strong>画面右下の仮想トラックパッド</strong>を指で操作して、カーソルを動かしてね。<br />仮想トラックパッドの位置は、画面左下のアイコンから変更できます。
+      このサイトでは、<strong>スマートフォンでもカーソルを扱います</strong>。通常のタッチ操作をする代わりに、<strong>画面右下の仮想トラックパッド</strong>を指で操作して、カーソルを動かしてね。<br />二本指操作で仮想トラックパッドの位置を自由に変えられます。
     </p>
     <ButtonClickable
       ref="okButton"
