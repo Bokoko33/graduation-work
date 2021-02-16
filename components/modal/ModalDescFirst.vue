@@ -63,8 +63,7 @@ export default {
   height: 100vh;
   top: 0;
   left: 0;
-  background-color: black;
-  opacity: 0.8;
+  background-color: rgba(#000000, 0.85);
   padding: 8vh 5vw;
 
   display: flex;

@@ -6,7 +6,7 @@
         class="trackpad__animation"
       />
       <AnimationDoubleTap
-        v-else-if="$store.state.howToTouch === 'double' && cursorZ === 0"
+        v-else-if="$store.state.howToTouch === 'double' && visibleDouble"
         class="trackpad__animation"
       />
     </div>
@@ -23,6 +23,11 @@ export default {
     return {
       cursorZ: initialCursorZ,
     };
+  },
+  computed: {
+    visibleDouble() {
+      return this.cursorZ === 0 && this.$route.name !== 'about';
+    },
   },
   mounted() {
     // Cursor.jsに遷移イベントを追加
@@ -49,7 +54,7 @@ export default {
   right: 10px;
   width: 28vw;
   height: 28vh;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.3);
   border-radius: 10px;
 
   -webkit-touch-callout: none; // リンク長押しのポップアップを無効化
