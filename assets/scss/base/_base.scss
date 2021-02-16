@@ -10,3 +10,10 @@ body {
   font-family: 'Avenir', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans',
     Meiryo, sans-serif;
 }
+
+.only-sp {
+  display: inline;
+  @include device-pc {
+    display: none;
+  }
+}

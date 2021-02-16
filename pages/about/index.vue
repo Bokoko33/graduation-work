@@ -2,20 +2,22 @@
   <!-- 翻訳が効くようHTMLで書く -->
   <div class="about">
     <div class="about__content">
-      <h1 class="about__heading">
-        IM Cursor is<br />an Immersive content on Multi-device with Cursor
-      </h1>
-      <p class="about__note">
-        IM = "Immersive content on Multi-devise" & "I' m a Cursor"
+      <h1 class="about__heading">About IM Cursor</h1>
+      <p class="about__copy">
+        Immersive content on Multi-device<br class="only-sp" />
+        with Cursor
       </p>
-      <p class="about__text">
-        IM
-        Cursorは、「カーソルの動きによってユーザーに擬似感覚を提示する」というテーマ、「手持ちのデバイスで手軽に体験できる没入型コンテンツ」がコンセプトの制作です。自分の手が水の中にあるかのような、あるいは何かに吸い込まれてしまうような感覚を体験していただけたらうれしいです。
-      </p>
-      <p class="about__text">
-        PC上で視覚情報により触覚フィードバックをもたらす研究は以前からありますが、このプロダクトではスマートフォンやタブレットでアクセスした場合、カーソルとVirtual
-        Padによる独自のタッチインターフェイスを体験することができます。私はこれを既存の研究をタッチデバイスに応用するための手法の一つとして提案します。
-      </p>
+      <p class="about__note">IM also means "I'm a Cursor"</p>
+      <div class="about__desc">
+        <p class="about__text">
+          IM
+          Cursorは、「カーソルの動きによってユーザーに擬似感覚を提示する」というテーマ、「手持ちのデバイスで手軽に体験できる没入型コンテンツ」がコンセプトの制作です。自分の手が水の中にあるかのような、あるいは何かに吸い込まれてしまうような感覚を体験していただけたら嬉しいです。
+        </p>
+        <p class="about__text">
+          PC上で視覚情報により触覚フィードバックをもたらす研究は以前からありますが、このプロダクトではスマートフォンやタブレットでアクセスした場合、カーソルとVirtual
+          Padによる独自のタッチインターフェイスを体験することができます。私はこれを既存の研究をタッチデバイスに応用するための手法の一つとして提案します。
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -28,31 +30,72 @@ export default {};
 .about {
   width: 100vw;
   height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 12vh 6vw;
   letter-spacing: 0.05em;
+  @include device-pc {
+    line-height: 2;
+    padding: 140px 12vw;
+  }
 }
 
 .about__content {
-  width: 70vw;
+  width: 100%;
   max-width: $width-max-pc;
-  height: 54vh;
 }
 
 .about__heading {
-  font-size: 26px;
+  display: inline-block;
+  position: relative;
+  font-size: 16px;
+  &::after {
+    display: inline-block;
+    content: '';
+    width: 20px;
+    height: 1px;
+    background-color: white;
+    position: absolute;
+    right: -30px;
+    top: 50%;
+  }
+  @include device-pc {
+    font-size: 26px;
+  }
+}
+
+.about__copy {
+  font-size: 4.9vw;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-top: 3.4vh;
+  @include device-pc {
+    font-size: 36px;
+    margin-top: 40px;
+  }
 }
 
 .about__note {
-  font-size: 18px;
-  margin-top: 2vh;
+  font-size: 12px;
   font-weight: 700;
+  text-align: center;
+  @include device-pc {
+    font-size: 18px;
+  }
+}
+
+.about__desc {
+  font-size: 12px;
+  line-height: 1.6;
+  margin-top: 3.4vh;
+  @include device-pc {
+    font-size: 16px;
+    margin-top: 40px;
+    line-height: 2;
+  }
 }
 
 .about__text {
-  font-size: 16px;
-  line-height: 2;
-  margin-top: 5vh;
+  margin-top: 12px;
 }
 </style>
