@@ -30,7 +30,7 @@ class Common {
     this.dist = 0; // ウィンドウぴったりのカメラ距離
     this.cameraFollowLevel = 0.00002; // カメラの回転のカーソルへの追従度
 
-    this.clickableDistance = 1100; // 対象をクリックできるようになる距離
+    this.clickableDistance = 1500; // 対象をクリックできるようになる距離
 
     this.outOfCameraDist = 600;
   }
