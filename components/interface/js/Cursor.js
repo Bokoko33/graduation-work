@@ -389,12 +389,12 @@ class Cursor {
 
       // ある程度近付かないと反応しないように
       // 親オブジェクトを持つ場合（グローバルメニュー）はそちらの座標を参照する
-      const targetPos =
-        intersects[0].object.parent.type !== 'Scene'
-          ? intersects[0].object.parent.position.z
-          : intersects[0].object.position.z;
-      const dist = Math.abs(targetPos - this.cursorPosition.z);
-      if (dist > Common.clickableDistance) return;
+      // const targetPos =
+      //   intersects[0].object.parent.type !== 'Scene'
+      //     ? intersects[0].object.parent.position.z
+      //     : intersects[0].object.position.z;
+      // const dist = Math.abs(targetPos - this.cursorPosition.z);
+      // if (dist > Common.clickableDistance) return;
 
       this.hover = true; // カーソル変化を起動
 
