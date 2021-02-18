@@ -4,6 +4,8 @@
     <img
       class="animation__finger"
       src="@/assets/images/svg/finger.svg"
+      width="44"
+      height="44"
       alt=""
     />
   </div>
