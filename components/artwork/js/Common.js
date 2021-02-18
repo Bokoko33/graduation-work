@@ -69,7 +69,7 @@ class Common {
     this.globalNavMargin = {
       pc: {
         side: this.size.w * 0.08,
-        top: 40,
+        top: this.size.h * 0.06,
         between: 160,
       },
       sp: {

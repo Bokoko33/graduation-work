@@ -133,14 +133,17 @@ class Stage {
     }
 
     // ゴールの周りに表示するテキスト
+    const enPosY = state.isMobile ? 250 : 280;
     const goalTextEn = new TextObject(
-      new THREE.Vector3(0, 280, goalPositionZ),
+      new THREE.Vector3(0, enPosY, goalPositionZ),
       1448 * state.variableImageRate,
       146 * state.variableImageRate,
       getTexture('goal_text_en')
     );
+
+    const jaPosY = state.isMobile ? -250 : -280;
     const goalTextJa = new TextObject(
-      new THREE.Vector3(0, -280, goalPositionZ),
+      new THREE.Vector3(0, jaPosY, goalPositionZ),
       768 * state.variableImageRate,
       121 * state.variableImageRate,
       getTexture('goal_text_ja')
@@ -163,10 +166,10 @@ class Stage {
     // ゴールリンクを置く座標
     const positions = state.isMobile
       ? [
-          { x: -90, y: 140 },
-          { x: 90, y: 140 },
-          { x: -90, y: -100 },
-          { x: 90, y: -100 },
+          { x: -90, y: 110 },
+          { x: 90, y: 110 },
+          { x: -90, y: -120 },
+          { x: 90, y: -120 },
         ]
       : [
           { x: -480, y: 0 },
