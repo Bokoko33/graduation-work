@@ -22,16 +22,16 @@
   </div>
 </template>
 
-<script>
-export default {};
-</script>
-
 <style lang="scss" scoped>
 .about {
   width: 100vw;
   height: 100vh;
-  padding: 12vh 6vw;
+  // padding: 12vh 6vw;
   letter-spacing: 0.05em;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
   @include device-pc {
     line-height: 2;
     padding: 140px 12vw;
@@ -39,7 +39,8 @@ export default {};
 }
 
 .about__content {
-  width: 100%;
+  width: 78vw;
+  height: 64vh;
   max-width: $width-max-pc;
 }
 
@@ -71,7 +72,7 @@ export default {};
   margin-top: 3.4vh;
   @include device-pc {
     font-size: 36px;
-    margin-top: 40px;
+    margin-top: 8vh;
   }
 }
 
@@ -90,7 +91,7 @@ export default {};
   margin-top: 3.4vh;
   @include device-pc {
     font-size: 16px;
-    margin-top: 40px;
+    margin-top: 8vh;
     line-height: 2;
   }
 }
