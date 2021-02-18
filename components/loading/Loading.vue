@@ -1,7 +1,8 @@
 <template>
   <transition name="loading">
     <div v-if="loading" :style="bgColor" class="loading">
-      <p class="loading__text">Loading...</p>
+      <p class="loading__text-before">{{ textBefore }}</p>
+      <p class="loading__text-after">{{ textAfter }}</p>
     </div>
   </transition>
 </template>
@@ -15,10 +16,13 @@ export default {
       loading: false,
       bgColorAfter: '',
       bgColorBefore: '',
+      textBefore: 'Next is ...',
+      textAfter: '',
     };
   },
   computed: {
     bgColor() {
+      // cssで参照するためのcomputed
       return {
         '--bg-color-next': this.bgColorAfter,
         '--bg-color-before': this.bgColorBefore,
@@ -27,12 +31,17 @@ export default {
   },
   watch: {
     '$route.name'(to, from) {
-      this.bgColorAfter = this.getColor(to);
-      this.bgColorBefore = this.getColor(from);
+      // url変更を検知して背景色や文字を設定
+      const bgAfter = this.getContent(to);
+      const bgBefore = this.getContent(from);
+      this.bgColorAfter = bgAfter.color;
+      this.bgColorBefore = bgBefore.color;
+
+      this.textAfter = bgAfter.text;
     },
   },
   mounted() {
-    this.bgColorBefore = this.getColor(this.$route.name);
+    this.bgColorBefore = this.getContent(this.$route.name).color;
   },
   methods: {
     start() {
@@ -44,22 +53,36 @@ export default {
         this.bgPreColor = this.bgColor.beforeColor;
       }, 2000);
     },
-    getColor(route) {
-      let beforeColor;
+    getContent(route) {
+      // ローディング画面の情報
+      const bgObject = { color: '', text: '' };
       switch (route) {
+        case 'index':
+          bgObject.color = colors.lightPurple;
+          bgObject.text = 'Site Top';
+          break;
         case 'stage1':
-          beforeColor = colors.blue;
+          bgObject.color = colors.blue;
+          bgObject.text = 'Water World';
           break;
         case 'stage2':
-          beforeColor = colors.green;
+          bgObject.color = colors.green;
+          bgObject.text = 'Storm World';
           break;
         case 'stage3':
-          beforeColor = colors.darkPurple;
+          bgObject.color = colors.darkPurple;
+          bgObject.text = 'Space World';
+          break;
+        case 'about':
+          bgObject.color = colors.purple;
+          bgObject.text = 'About this product';
           break;
         default:
-          beforeColor = colors.lightPurple;
+          bgObject.color = colors.lightPurple;
+          bgObject.text = '???';
       }
-      return '#' + beforeColor.toString(16);
+      bgObject.color = '#' + bgObject.color.toString(16);
+      return bgObject;
     },
   },
 };
@@ -73,21 +96,51 @@ export default {
   top: 0;
   left: 0;
   background-color: var(--bg-color-before);
+  padding: 0 25vw;
 
   display: flex;
   justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
 
   z-index: 99999;
 
   animation-name: color-change;
   animation-duration: 2s;
   animation-fill-mode: both;
+  @include device-pc {
+    flex-direction: row;
+    align-items: center;
+    padding: 0;
+  }
 }
 
-.loading__text {
+.loading__text-before {
+  color: white;
+  font-size: 16px;
+
+  animation-name: text-flash;
+  animation-duration: 2s;
+  animation-fill-mode: both;
+  animation-iteration-count: infinite;
+
+  @include device-pc {
+    font-size: 24px;
+  }
+}
+.loading__text-after {
   color: white;
   font-size: 24px;
+  font-weight: 700;
+
+  animation-name: text-flash;
+  animation-duration: 2s;
+  animation-fill-mode: both;
+  animation-iteration-count: infinite;
+  @include device-pc {
+    margin-left: 30px;
+    font-size: 32px;
+  }
 }
 
 @keyframes color-change {
@@ -102,6 +155,34 @@ export default {
   }
   100% {
     background-color: var(--bg-color-next);
+  }
+}
+
+@keyframes text-flash {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  30%,
+  34%,
+  38% {
+    opacity: 1;
+  }
+  32%,
+  36%,
+  40% {
+    opacity: 0;
+  }
+  70%,
+  74%,
+  78%,
+  80% {
+    opacity: 1;
+  }
+  72%,
+  76%,
+  80% {
+    opacity: 0;
   }
 }
 
