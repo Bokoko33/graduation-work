@@ -19,10 +19,10 @@ export default class ArtworkGL {
     setObjectSizeRate(this.props.isMobile);
 
     // commonにキャンバスdomを渡してシーン作成
-    Common.init(this.props.$canvas, this.props.path);
+    Common.init(this.props.$canvas, this.props.routeName);
 
     // シーンができている必要があるのでここでinit
-    Cursor.init(this.props.path);
+    Cursor.init(this.props.routeName);
 
     // リサイズイベントを登録
     window.addEventListener('resize', this.resize.bind(this));

@@ -10,7 +10,7 @@ const hoverMoveOffsetByDevice = {
 };
 
 export default class Link {
-  constructor(pos, path, type) {
+  constructor(pos, route, type) {
     // 元ある場所
     this.initialPosition = pos || new THREE.Vector3(0, 0, 0);
 
@@ -19,7 +19,7 @@ export default class Link {
 
     // このリンクをクリックしたときの遷移先
     // Cursor.jsから参照される
-    this.nextPathName = path;
+    this.nextRouteName = route;
 
     // 画像ごとに決める幅と高さ
     this.width = 0;
@@ -49,28 +49,28 @@ export default class Link {
     // widthはテクスチャ画像を参照
     if (this.type === 'global') {
       // テクスチャわけ
-      switch (this.nextPathName) {
-        case '/':
+      switch (this.nextRouteName) {
+        case 'index':
           this.texture = getTexture('logo');
           this.width = 244;
           this.height = 171;
           break;
-        case '/stage1':
+        case 'stage1':
           this.texture = getTexture('menu_water');
           this.width = 373;
           this.height = 85;
           break;
-        case '/stage2':
+        case 'stage2':
           this.texture = getTexture('menu_storm');
           this.width = 372;
           this.height = 85;
           break;
-        case '/stage3':
+        case 'stage3':
           this.texture = getTexture('menu_space');
           this.width = 367;
           this.height = 85;
           break;
-        case '/about':
+        case 'about':
           this.texture = getTexture('menu_about');
           this.width = 178;
           this.height = 85;
@@ -94,17 +94,17 @@ export default class Link {
       this.width = 825 * state.variableImageRate;
       this.height = 1077 * state.variableImageRate;
       // テクスチャわけ
-      switch (this.nextPathName) {
-        case '/':
+      switch (this.nextRouteName) {
+        case 'index':
           this.texture = getTexture('goal_top');
           break;
-        case '/stage1':
+        case 'stage1':
           this.texture = getTexture('goal_water');
           break;
-        case '/stage2':
+        case 'stage2':
           this.texture = getTexture('goal_storm');
           break;
-        case '/stage3':
+        case 'stage3':
           this.texture = getTexture('goal_space');
           break;
       }
@@ -182,7 +182,7 @@ export default class Link {
   setPosition(windowSize, margin, z, index) {
     // ロゴ
     let pos;
-    if (this.nextPathName === '/') {
+    if (this.nextRouteName === 'index') {
       pos = state.isMobile
         ? new THREE.Vector3(
             -windowSize.w / 2 + margin.sp.side,
@@ -226,7 +226,7 @@ export default class Link {
     if (this.type !== 'global') return;
 
     let newPosX = 0;
-    if (this.nextPathName === '/') {
+    if (this.nextRouteName === 'index') {
       // ロゴ
       newPosX = state.isMobile
         ? -windowSize.w / 2 + margin.sp.side
@@ -253,7 +253,7 @@ export default class Link {
 
   // 等間隔配置するため、幅の半分だけ位置をずらす（左右によって異なるので場合分け）
   shiftMyWidth() {
-    if (this.nextPathName === '/') {
+    if (this.nextRouteName === 'index') {
       this.mesh.position.x += state.isMobile ? this.width / 2 : -this.width / 2;
     } else {
       this.mesh.position.x += state.isMobile ? -this.width / 2 : this.width / 2;

@@ -59,4 +59,15 @@ export default {
   server: {
     host: '0.0.0.0', // デフォルト: localhost
   },
+
+  // loading: '~/components/loading/Loading.vue',
+
+  sitemap: {
+    trailingSlash: true,
+  },
+
+  router: {
+    trailingSlash: true,
+    middleware: ['redirect'],
+  },
 };

@@ -38,9 +38,6 @@ class InterFace {
 
     // クリックイベントを配列で持っておく
     this.clickEventList = [];
-
-    this.cursorInit();
-    this.trackPadInit();
   }
 
   cursorInit() {
@@ -65,8 +62,8 @@ class InterFace {
     this.cursorPos.y = e.clientY;
   }
 
-  trackPadInit() {
-    this.trackpad = document.getElementById('trackpad');
+  trackPadInit(padEl) {
+    this.trackpad = padEl;
     this.trackpadRect = this.trackpad.getBoundingClientRect();
 
     // 位置を右下に設定

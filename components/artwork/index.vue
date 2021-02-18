@@ -14,11 +14,6 @@ export default {
       artworkGL: null,
     };
   },
-  // watch: {
-  //   '$route.name'(_new, _old) {
-  //     // this.artworkGL.transition(_new);
-  //   },
-  // },
   mounted() {
     // 先にデバイスをチェックしてstateに格納
     const mql = window.matchMedia('(max-width:960px)');
@@ -28,7 +23,7 @@ export default {
     // canvas要素を渡す。
     this.artworkGL = new ArtworkGL({
       $canvas: this.$refs.canvas,
-      path: this.$route.path,
+      routeName: this.$route.name,
       isMobile: this.$store.state.isMobile,
     });
   },

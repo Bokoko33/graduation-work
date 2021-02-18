@@ -6,7 +6,7 @@ import { colors } from './variable';
 import { state } from './state';
 
 export default class SubObject {
-  constructor(path, pos) {
+  constructor(route, pos) {
     this.position = pos;
 
     this.geometry = null;
@@ -18,21 +18,21 @@ export default class SubObject {
       uTime: { value: 0 },
     };
 
-    this.init(path);
+    this.init(route);
   }
 
-  init(path) {
-    switch (path) {
-      case '/':
+  init(route) {
+    switch (route) {
+      case 'index':
         this.createMainObject();
         break;
-      case '/stage1':
+      case 'stage1':
         this.createWaterObject();
         break;
-      case '/stage2':
+      case 'stage2':
         this.createStormObject();
         break;
-      case '/stage3':
+      case 'stage3':
         this.createSpaceObject();
         break;
       default:

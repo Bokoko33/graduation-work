@@ -11,18 +11,18 @@ export default class Background {
     this.mesh = null;
   }
 
-  init(path) {
+  init(route) {
     this.geometry = new THREE.PlaneBufferGeometry(2, 2);
     let texture = null; // デフォルト色はピンク
     const device = state.isMobile ? 'sp' : 'pc';
-    switch (path) {
-      case '/stage1':
+    switch (route) {
+      case 'stage1':
         texture = getTexture(`bg_water_${device}`);
         break;
-      case '/stage2':
+      case 'stage2':
         texture = getTexture(`bg_storm_${device}`);
         break;
-      case '/stage3':
+      case 'stage3':
         texture = getTexture(`bg_space_${device}`);
         break;
       default:

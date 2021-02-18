@@ -6,7 +6,7 @@ import { colors } from './variable';
 import { state } from './state';
 
 export default class SubObject {
-  constructor(path, pos) {
+  constructor(route, pos) {
     this.position = pos;
 
     this.rotateValue = {
@@ -26,20 +26,20 @@ export default class SubObject {
       uTime: { value: 0 },
     };
 
-    this.init(path);
+    this.init(route);
   }
 
-  init(path) {
-    switch (path) {
-      case '/stage1':
+  init(route) {
+    switch (route) {
+      case 'stage1':
         this.interactRadius = 150 * state.objectSizeRate;
         this.createWaterObject(this.interactRadius);
         break;
-      case '/stage2':
+      case 'stage2':
         this.interactRadius = 300 * state.objectSizeRate;
         this.createStormObject(this.interactRadius);
         break;
-      case '/stage3':
+      case 'stage3':
         this.interactRadius = 300 * state.objectSizeRate;
         this.createSpaceObject(this.interactRadius);
         break;

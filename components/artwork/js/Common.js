@@ -15,11 +15,11 @@ class Common {
     this.cameraGroup = null;
 
     // グローバルメニューのパス名（画面右端から順に）
-    this.globalNavPaths = ['/about', '/stage3', '/stage2', '/stage1'];
+    this.globalNavRoutes = ['about', 'stage3', 'stage2', 'stage1'];
     // グローバルメニューのマージン（size確定後代入）
     this.globalNavMargin = {};
 
-    this.currentPath = null; // 現在のページのパス名
+    this.currentRoute = null; // 現在のページのパス名
 
     // レイキャスターでホバー検知するリンク（グローバルもステージ内リンクも含む）
     this.links = [];
@@ -35,8 +35,8 @@ class Common {
     this.outOfCameraDist = 600;
   }
 
-  init($canvas, path) {
-    this.currentPath = path;
+  init($canvas, route) {
+    this.currentRoute = route;
     this.setSize();
     // シーン作成
     this.scene = new THREE.Scene();
@@ -83,13 +83,13 @@ class Common {
     // ステージ関連の初期化
     Stage.init();
     Stage.setLight(this.scene);
-    Stage.setFog(path, this.scene);
+    Stage.setFog(route, this.scene);
 
-    Stage.initGoal(this.scene, this.links, this.currentPath);
-    Stage.initBackground(path, this.scene);
-    Stage.initPanels(path, this.scene, this.size);
-    Stage.initInteractObjects(path, this.scene, this.size);
-    Stage.initSubObjects(path, this.scene, this.size);
+    Stage.initGoal(this.scene, this.links, this.currentRoute);
+    Stage.initBackground(route, this.scene);
+    Stage.initPanels(route, this.scene, this.size);
+    Stage.initInteractObjects(route, this.scene, this.size);
+    Stage.initSubObjects(route, this.scene, this.size);
   }
 
   setSize() {
@@ -167,8 +167,8 @@ class Common {
   }
 
   createGlobalNav() {
-    for (let i = 0; i < this.globalNavPaths.length; i++) {
-      const menu = new Link(null, this.globalNavPaths[i], 'global');
+    for (let i = 0; i < this.globalNavRoutes.length; i++) {
+      const menu = new Link(null, this.globalNavRoutes[i], 'global');
       // 位置を設定
       menu.setPosition(this.size, this.globalNavMargin, -this.dist, i);
       // console.log(menu.mesh.position.y);
@@ -181,7 +181,7 @@ class Common {
     }
 
     // ロゴを作成
-    const logo = new Link(null, '/', 'global');
+    const logo = new Link(null, 'index', 'global');
     // 位置を設定
     logo.setPosition(this.size, this.globalNavMargin, -this.dist, -1);
 
@@ -201,7 +201,7 @@ class Common {
 
     // グローバルナビをthis.linksに最初に登録しているので、
     // ループ回数はグローバルナビ+ロゴ分で良い
-    for (let i = 0; i < this.globalNavPaths.length + 1; i++) {
+    for (let i = 0; i < this.globalNavRoutes.length + 1; i++) {
       // 位置調整のためにインデックスも渡す
       this.links[i].shiftNavResize(this.size, this.globalNavMargin, i);
     }
@@ -209,7 +209,7 @@ class Common {
 
   replaceGlobalNav() {
     // グローバルナビの位置修正（デバイスの切り替え時）
-    for (let i = 0; i < this.globalNavPaths.length + 1; i++) {
+    for (let i = 0; i < this.globalNavRoutes.length + 1; i++) {
       // 位置調整のためにインデックスと最大数も渡す
       this.links[i].setPosition(this.size, this.globalNavMargin, -this.dist, i);
     }
@@ -223,22 +223,22 @@ class Common {
   }
 
   // ページ繊維
-  transition(path) {
+  transition(route) {
     // ステージの更新
-    Stage.setFog(path, this.scene);
+    Stage.setFog(route, this.scene);
     Stage.resetFadeInObjects();
-    Stage.adjustGoal(path);
+    Stage.adjustGoal(route);
 
     Stage.deleteBackground(this.scene);
-    Stage.initBackground(path, this.scene);
+    Stage.initBackground(route, this.scene);
     Stage.deleteInteractObjects(this.scene);
-    Stage.initInteractObjects(path, this.scene, this.size);
+    Stage.initInteractObjects(route, this.scene, this.size);
     Stage.deleteSubObjects(this.scene);
-    Stage.initSubObjects(path, this.scene, this.size);
+    Stage.initSubObjects(route, this.scene, this.size);
     Stage.deletePanels(this.scene);
-    Stage.initPanels(path, this.scene, this.size);
+    Stage.initPanels(route, this.scene, this.size);
 
-    this.currentPath = path;
+    this.currentRoute = route;
   }
 }
 

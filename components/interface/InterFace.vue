@@ -1,6 +1,6 @@
 <template>
   <div class="interface">
-    <div id="trackpad" class="trackpad" @touchend="updateCursorZ()">
+    <div ref="trackpad" class="trackpad" @touchend="updateCursorZ()">
       <AnimationUpDown
         v-if="$store.state.howToTouch === 'first'"
         class="trackpad__animation"
@@ -30,13 +30,16 @@ export default {
     },
   },
   mounted() {
+    // pluginsを初期化
+    this.$interFace.cursorInit();
+    this.$interFace.trackPadInit(this.$refs.trackpad);
     // Cursor.jsに遷移イベントを追加
     Cursor.setClickEvent(this.pageTransition);
   },
   methods: {
     // Cursor.jsから呼ばれる
-    pageTransition(pathName) {
-      this.$router.push(pathName);
+    pageTransition(routeName) {
+      this.$router.push({ name: routeName });
       this.cursorZ = initialCursorZ;
     },
     updateCursorZ() {
