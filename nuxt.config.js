@@ -60,7 +60,7 @@ export default {
     host: '0.0.0.0', // デフォルト: localhost
   },
 
-  // loading: '~/components/loading/Loading.vue',
+  loading: '~/components/loading/Loading.vue',
 
   sitemap: {
     trailingSlash: true,
