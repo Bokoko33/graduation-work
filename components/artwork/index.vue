@@ -18,7 +18,13 @@ export default {
     // 先にデバイスをチェックしてstateに格納
     const mql = window.matchMedia('(max-width:960px)');
     this.changeDevice(mql);
-    mql.addEventListener('change', this.changeDevice);
+
+    // safariだけmql.addEventListenerがない
+    if (mql.addEventListener === undefined) {
+      mql.addListener(this.changeDevice);
+    } else {
+      mql.addEventListener('change', this.changeDevice);
+    }
 
     // canvas要素を渡す。
     this.artworkGL = new ArtworkGL({
