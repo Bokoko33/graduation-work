@@ -4,6 +4,9 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
+    htmlAttrs: {
+      prefix: 'og: http://ogp.me/ns#',
+    },
     title: 'IM Cursor',
     meta: [
       { charset: 'utf-8' },
@@ -12,8 +15,24 @@ export default {
         hid: 'description',
         name: 'description',
         content:
-          'IM Cursor - Immersive content on Multi-device with Cursor - IM Cursorは、「カーソルの動きによってユーザーに擬似感覚を提示する」というテーマ、「手持ちのデバイスで手軽に体験できる没入型コンテンツ」というコンセプトのWebコンテンンツです。',
+          'IM Cursor - Immersive contents on Multi-device with Cursor - IM Cursorは、「カーソルの動きによってユーザーに擬似感覚を提示する」というテーマ、「手持ちのデバイスで手軽に体験できる没入型コンテンツ」というコンセプトのWebコンテンンツです。',
       },
+      { hid: 'og:site_name', property: 'og:site_name', content: 'IM Cursor' },
+      { hid: 'og:type', property: 'og:type', content: 'website' },
+      {
+        hid: 'og:url',
+        property: 'og:url',
+        content: 'https://im-cursor.netlify.app',
+      },
+      { hid: 'og:title', property: 'og:title', content: 'IM Cursor' },
+      {
+        hid: 'og:description',
+        property: 'og:description',
+        content:
+          'IM Cursor - Immersive contents on Multi-device with Cursor - IM Cursorは、「カーソルの動きによってユーザーに擬似感覚を提示する」というテーマ、「手持ちのデバイスで手軽に体験できる没入型コンテンツ」というコンセプトのWebコンテンンツです。',
+      },
+      { hid: 'og:image', property: 'og:image', content: '/ogp_image.jpg' },
+      { name: 'twitter:card', content: 'summary_large_image' }, // twitterの画像サイズ
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
