@@ -31,15 +31,15 @@ export default class SubObject {
 
   init(route) {
     switch (route) {
-      case 'stage1':
+      case 'water-world':
         this.interactRadius = 150 * state.objectSizeRate;
         this.createWaterObject(this.interactRadius);
         break;
-      case 'stage2':
+      case 'storm-world':
         this.interactRadius = 300 * state.objectSizeRate;
         this.createStormObject(this.interactRadius);
         break;
-      case 'stage3':
+      case 'space-world':
         this.interactRadius = 300 * state.objectSizeRate;
         this.createSpaceObject(this.interactRadius);
         break;

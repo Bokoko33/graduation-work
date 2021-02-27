@@ -34,17 +34,17 @@ export default class PanelObject {
             this.width = 1321;
             this.height = 777;
             break;
-          case 'stage1':
+          case 'water-world':
             texture = getTexture('panel_water_sp');
             this.width = 1324;
             this.height = 780;
             break;
-          case 'stage2':
+          case 'storm-world':
             texture = getTexture('panel_storm_sp');
             this.width = 1324;
             this.height = 780;
             break;
-          case 'stage3':
+          case 'space-world':
             texture = getTexture('panel_space_sp');
             this.width = 1324;
             this.height = 780;
@@ -56,13 +56,13 @@ export default class PanelObject {
           case 'index':
             texture = getTexture('mv_title_pc');
             break;
-          case 'stage1':
+          case 'water-world':
             texture = getTexture('panel_water_pc');
             break;
-          case 'stage2':
+          case 'storm-world':
             texture = getTexture('panel_storm_pc');
             break;
-          case 'stage3':
+          case 'space-world':
             texture = getTexture('panel_space_pc');
             break;
         }

@@ -15,7 +15,12 @@ class Common {
     this.cameraGroup = null;
 
     // グローバルメニューのパス名（画面右端から順に）
-    this.globalNavRoutes = ['about', 'stage3', 'stage2', 'stage1'];
+    this.globalNavRoutes = [
+      'about',
+      'space-world',
+      'storm-world',
+      'water-world',
+    ];
     // グローバルメニューのマージン（size確定後代入）
     this.globalNavMargin = {};
 

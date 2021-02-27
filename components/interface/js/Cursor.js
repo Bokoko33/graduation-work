@@ -283,7 +283,7 @@ class Cursor {
       // インタラクション時
       switch (Common.currentRoute) {
         // 水中
-        case 'stage1': {
+        case 'water-world': {
           // より重い抵抗をかける
           vx *= this.forceList.heavyWater;
           vy *= this.forceList.heavyWater;
@@ -294,7 +294,7 @@ class Cursor {
           break;
         }
         // 竜巻
-        case 'stage2': {
+        case 'storm-world': {
           // 抵抗をかけて"add"する
           vx *= this.forceList.stormNormal;
           vy *= this.forceList.stormNormal;
@@ -318,7 +318,7 @@ class Cursor {
           break;
         }
         // 吸い込み
-        case 'stage3': {
+        case 'space-world': {
           // 動いているかどうか
           if (vm.$interFace.isMouseMoving) {
             // 動いている時は抜け出せるよう吸い込みを弱く
@@ -460,13 +460,13 @@ class Cursor {
   resetForce(route) {
     let force = 0;
     switch (route) {
-      case 'stage1':
+      case 'water-world':
         force = this.forceList.waterNormal;
         break;
-      case 'stage2':
+      case 'storm-world':
         force = this.forceList.stormNormal;
         break;
-      case 'stage3':
+      case 'space-world':
         force = this.forceList.spaceNormal;
         break;
       default:

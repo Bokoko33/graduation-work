@@ -64,7 +64,7 @@ class Stage {
     // ゴール地点のテキスト（削除せずopacityを変える）
     this.goalTextList = [];
     // ゴールメニューになるルート名
-    this.goalLinkNames = ['index', 'stage1', 'stage2', 'stage3'];
+    this.goalLinkNames = ['index', 'water-world', 'storm-world', 'space-world'];
     // ゴールよりも奥にリンクを設置
     this.goalLinkOffset = 250;
 
@@ -97,13 +97,13 @@ class Stage {
 
   setFog(route, scene) {
     switch (route) {
-      case 'stage1':
+      case 'water-world':
         scene.fog = this.fogList.water;
         break;
-      case 'stage2':
+      case 'storm-world':
         scene.fog = this.fogList.storm;
         break;
-      case 'stage3':
+      case 'space-world':
         scene.fog = this.fogList.space;
         break;
       default:

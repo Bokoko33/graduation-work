@@ -55,17 +55,17 @@ export default class Link {
           this.width = 244;
           this.height = 171;
           break;
-        case 'stage1':
+        case 'water-world':
           this.texture = getTexture('menu_water');
           this.width = 373;
           this.height = 85;
           break;
-        case 'stage2':
+        case 'storm-world':
           this.texture = getTexture('menu_storm');
           this.width = 372;
           this.height = 85;
           break;
-        case 'stage3':
+        case 'space-world':
           this.texture = getTexture('menu_space');
           this.width = 367;
           this.height = 85;
@@ -98,13 +98,13 @@ export default class Link {
         case 'index':
           this.texture = getTexture('goal_top');
           break;
-        case 'stage1':
+        case 'water-world':
           this.texture = getTexture('goal_water');
           break;
-        case 'stage2':
+        case 'storm-world':
           this.texture = getTexture('goal_storm');
           break;
-        case 'stage3':
+        case 'space-world':
           this.texture = getTexture('goal_space');
           break;
       }

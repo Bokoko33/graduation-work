@@ -26,13 +26,13 @@ export default class SubObject {
       case 'index':
         this.createMainObject();
         break;
-      case 'stage1':
+      case 'water-world':
         this.createWaterObject();
         break;
-      case 'stage2':
+      case 'storm-world':
         this.createStormObject();
         break;
-      case 'stage3':
+      case 'space-world':
         this.createSpaceObject();
         break;
       default:

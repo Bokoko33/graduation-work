@@ -61,15 +61,15 @@ export default {
           bgObject.color = colors.lightPurple;
           bgObject.text = 'Site Top';
           break;
-        case 'stage1':
+        case 'water-world':
           bgObject.color = colors.blue;
           bgObject.text = 'Water World';
           break;
-        case 'stage2':
+        case 'storm-world':
           bgObject.color = colors.green;
           bgObject.text = 'Storm World';
           break;
-        case 'stage3':
+        case 'space-world':
           bgObject.color = colors.darkPurple;
           bgObject.text = 'Space World';
           break;

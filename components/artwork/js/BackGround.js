@@ -16,13 +16,13 @@ export default class Background {
     let texture = null; // デフォルト色はピンク
     const device = state.isMobile ? 'sp' : 'pc';
     switch (route) {
-      case 'stage1':
+      case 'water-world':
         texture = getTexture(`bg_water_${device}`);
         break;
-      case 'stage2':
+      case 'storm-world':
         texture = getTexture(`bg_storm_${device}`);
         break;
-      case 'stage3':
+      case 'space-world':
         texture = getTexture(`bg_space_${device}`);
         break;
       default:
