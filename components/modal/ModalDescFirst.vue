@@ -1,13 +1,13 @@
 <template>
   <div class="modal">
     <p class="modal__text">
-      In this web site, you can handle cursor if you access here using a smart
+      In this web site, you operate cursor if you access here using a smart
       phone. Please touch “Virtual Pad” at the bottom right of the screen to
-      move cursor. <br />You can change the position of “Virtual Pad” by the
-      icon at the bottom left of the screen.
+      move cursor. <br />You can change the position of “Virtual Pad” by swiping
+      it two fingers.
     </p>
     <p class="modal__text">
-      このサイトでは、<strong>スマートフォンでもカーソルを扱います</strong>。通常のタッチ操作をする代わりに、<strong>画面右下の仮想トラックパッド</strong>を指で操作して、カーソルを動かしてね。<br />二本指操作で仮想トラックパッドの位置を自由に変えられます。
+      このサイトでは、<strong>スマートフォンでもカーソルを扱います</strong>。通常のタッチ操作やスクロールをする代わりに、<strong>画面右下の仮想トラックパッド</strong>を指で操作して、カーソルを動かしてね。<br />二本指操作で仮想トラックパッドの位置を自由に変えられます。
     </p>
     <ButtonClickable
       ref="okButton"
