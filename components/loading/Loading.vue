@@ -13,11 +13,11 @@ import { colors } from '../artwork/js/variable';
 export default {
   data() {
     return {
-      loading: false,
+      loading: true,
       bgColorAfter: '',
       bgColorBefore: '',
-      textBefore: 'Next is ...',
-      textAfter: '',
+      textBefore: '',
+      textAfter: 'Loading...',
     };
   },
   computed: {
@@ -42,6 +42,11 @@ export default {
   },
   mounted() {
     this.bgColorBefore = this.getContent(this.$route.name).color;
+    this.bgColorAfter = this.getContent(this.$route.name).color;
+    setTimeout(() => {
+      this.loading = false;
+      this.textBefore = 'Next is...';
+    }, 2000);
   },
   methods: {
     start() {
