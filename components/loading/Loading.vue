@@ -80,7 +80,7 @@ export default {
           break;
         case 'about':
           bgObject.color = colors.purple;
-          bgObject.text = 'About this product';
+          bgObject.text = 'About this site';
           break;
         default:
           bgObject.color = colors.lightPurple;
@@ -101,7 +101,7 @@ export default {
   top: 0;
   left: 0;
   background-color: var(--bg-color-before);
-  padding: 0 25vw;
+  padding: 0 20vw;
 
   display: flex;
   justify-content: center;
@@ -137,6 +137,7 @@ export default {
   color: white;
   font-size: 24px;
   font-weight: 700;
+  line-height: 1.2;
 
   animation-name: text-flash;
   animation-duration: 2s;
