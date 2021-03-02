@@ -17,7 +17,11 @@ export default {
   mounted() {
     // 先にデバイスをチェックしてstateに格納
     const mql = window.matchMedia('(max-width:960px)');
-    this.changeDevice(mql);
+
+    // 現状デバイス切り替えに対応していないので初回は関数で実行しない
+    // this.changeDevice(mql);
+    this.$store.commit('setDevice', mql.matches);
+    if (this.artworkGL) this.artworkGL.changeDevice(mql.matches);
 
     // safariだけmql.addEventListenerがない
     if (mql.addEventListener === undefined) {
@@ -36,6 +40,9 @@ export default {
   methods: {
     // この中にthree.jsの処理をばりばり書かない。
     changeDevice(mql) {
+      alert(
+        '申し訳ありませんが、再生中のデバイス切り替えには対応しておりません。続ける場合はブラウザをリロードしてください。'
+      );
       this.$store.commit('setDevice', mql.matches);
       if (this.artworkGL) this.artworkGL.changeDevice(mql.matches);
     },
