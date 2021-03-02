@@ -10,13 +10,13 @@ export default class ArtworkGL {
   }
 
   init() {
-    // 画像読み込み
-    initTexture();
-
     // 先にデバイス情報を渡し、画像、オブジェクトの縮小率をセット
     setDevice(this.props.isMobile);
     setImageShrinkRate(this.props.isMobile);
     setObjectSizeRate(this.props.isMobile);
+
+    // 画像読み込み
+    initTexture();
 
     // commonにキャンバスdomを渡してシーン作成
     Common.init(this.props.$canvas, this.props.routeName);

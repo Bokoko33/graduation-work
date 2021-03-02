@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { state } from './state';
 
 let textures = [];
 const loader = new THREE.TextureLoader();
@@ -58,122 +59,131 @@ export const initTexture = () => {
       name: 'goal_text_ja',
       value: loader.load(require('@/assets/images/common/goal_text_ja.png')),
     },
-    // --- PC ---
-    {
-      name: 'bg_main_pc',
-      value: loader.load(require('@/assets/images/pc/background_main.jpg')),
-    },
-    {
-      name: 'bg_water_pc',
-      value: loader.load(require('@/assets/images/pc/background_water.jpg')),
-    },
-    {
-      name: 'bg_storm_pc',
-      value: loader.load(require('@/assets/images/pc/background_storm.jpg')),
-    },
-    {
-      name: 'bg_space_pc',
-      value: loader.load(require('@/assets/images/pc/background_space.jpg')),
-    },
-    {
-      name: 'mv_title_pc',
-      value: loader.load(require('@/assets/images/pc/mv_title.png')),
-    },
-    {
-      name: 'mv_text_pc',
-      value: loader.load(require('@/assets/images/pc/mv_text.png')),
-    },
-    {
-      name: 'panel_top_1_pc',
-      value: loader.load(require('@/assets/images/pc/panel_top_1.png')),
-    },
-    {
-      name: 'panel_top_2_pc',
-      value: loader.load(require('@/assets/images/pc/panel_top_2.png')),
-    },
-    {
-      name: 'panel_top_3_pc',
-      value: loader.load(require('@/assets/images/pc/panel_top_3.png')),
-    },
-    {
-      name: 'panel_top_4_pc',
-      value: loader.load(require('@/assets/images/pc/panel_top_4.png')),
-    },
-    {
-      name: 'panel_top_5_pc',
-      value: loader.load(require('@/assets/images/pc/panel_top_5.png')),
-    },
-    {
-      name: 'panel_water_pc',
-      value: loader.load(require('@/assets/images/pc/panel_water.png')),
-    },
-    {
-      name: 'panel_storm_pc',
-      value: loader.load(require('@/assets/images/pc/panel_storm.png')),
-    },
-    {
-      name: 'panel_space_pc',
-      value: loader.load(require('@/assets/images/pc/panel_space.png')),
-    },
-    // --- ---
-    // --- SP ---
-    {
-      name: 'bg_main_sp',
-      value: loader.load(require('@/assets/images/sp/background_main.jpg')),
-    },
-    {
-      name: 'bg_water_sp',
-      value: loader.load(require('@/assets/images/sp/background_water.jpg')),
-    },
-    {
-      name: 'bg_storm_sp',
-      value: loader.load(require('@/assets/images/sp/background_storm.jpg')),
-    },
-    {
-      name: 'bg_space_sp',
-      value: loader.load(require('@/assets/images/sp/background_space.jpg')),
-    },
-    {
-      name: 'mv_title_sp',
-      value: loader.load(require('@/assets/images/sp/mv_title.png')),
-    },
-    {
-      name: 'mv_text_sp',
-      value: loader.load(require('@/assets/images/sp/mv_text.png')),
-    },
-    {
-      name: 'panel_top_1_sp',
-      value: loader.load(require('@/assets/images/sp/panel_top_1.png')),
-    },
-    {
-      name: 'panel_top_2_sp',
-      value: loader.load(require('@/assets/images/sp/panel_top_2.png')),
-    },
-    {
-      name: 'panel_top_3_sp',
-      value: loader.load(require('@/assets/images/sp/panel_top_3.png')),
-    },
-    {
-      name: 'panel_top_4_sp',
-      value: loader.load(require('@/assets/images/sp/panel_top_4.png')),
-    },
-    {
-      name: 'panel_top_5_sp',
-      value: loader.load(require('@/assets/images/sp/panel_top_5.png')),
-    },
-    {
-      name: 'panel_water_sp',
-      value: loader.load(require('@/assets/images/sp/panel_water.png')),
-    },
-    {
-      name: 'panel_storm_sp',
-      value: loader.load(require('@/assets/images/sp/panel_storm.png')),
-    },
-    {
-      name: 'panel_space_sp',
-      value: loader.load(require('@/assets/images/sp/panel_space.png')),
-    },
   ];
+
+  // デバイスごとに必要な画像を読み込む
+  let extraTextures = [];
+  if (state.isMobile) {
+    extraTextures = [
+      {
+        name: 'bg_main_sp',
+        value: loader.load(require('@/assets/images/sp/background_main.jpg')),
+      },
+      {
+        name: 'bg_water_sp',
+        value: loader.load(require('@/assets/images/sp/background_water.jpg')),
+      },
+      {
+        name: 'bg_storm_sp',
+        value: loader.load(require('@/assets/images/sp/background_storm.jpg')),
+      },
+      {
+        name: 'bg_space_sp',
+        value: loader.load(require('@/assets/images/sp/background_space.jpg')),
+      },
+      {
+        name: 'mv_title_sp',
+        value: loader.load(require('@/assets/images/sp/mv_title.png')),
+      },
+      {
+        name: 'mv_text_sp',
+        value: loader.load(require('@/assets/images/sp/mv_text.png')),
+      },
+      {
+        name: 'panel_top_1_sp',
+        value: loader.load(require('@/assets/images/sp/panel_top_1.png')),
+      },
+      {
+        name: 'panel_top_2_sp',
+        value: loader.load(require('@/assets/images/sp/panel_top_2.png')),
+      },
+      {
+        name: 'panel_top_3_sp',
+        value: loader.load(require('@/assets/images/sp/panel_top_3.png')),
+      },
+      {
+        name: 'panel_top_4_sp',
+        value: loader.load(require('@/assets/images/sp/panel_top_4.png')),
+      },
+      {
+        name: 'panel_top_5_sp',
+        value: loader.load(require('@/assets/images/sp/panel_top_5.png')),
+      },
+      {
+        name: 'panel_water_sp',
+        value: loader.load(require('@/assets/images/sp/panel_water.png')),
+      },
+      {
+        name: 'panel_storm_sp',
+        value: loader.load(require('@/assets/images/sp/panel_storm.png')),
+      },
+      {
+        name: 'panel_space_sp',
+        value: loader.load(require('@/assets/images/sp/panel_space.png')),
+      },
+    ];
+  } else {
+    extraTextures = [
+      {
+        name: 'bg_main_pc',
+        value: loader.load(require('@/assets/images/pc/background_main.jpg')),
+      },
+      {
+        name: 'bg_water_pc',
+        value: loader.load(require('@/assets/images/pc/background_water.jpg')),
+      },
+      {
+        name: 'bg_storm_pc',
+        value: loader.load(require('@/assets/images/pc/background_storm.jpg')),
+      },
+      {
+        name: 'bg_space_pc',
+        value: loader.load(require('@/assets/images/pc/background_space.jpg')),
+      },
+      {
+        name: 'mv_title_pc',
+        value: loader.load(require('@/assets/images/pc/mv_title.png')),
+      },
+      {
+        name: 'mv_text_pc',
+        value: loader.load(require('@/assets/images/pc/mv_text.png')),
+      },
+      {
+        name: 'panel_top_1_pc',
+        value: loader.load(require('@/assets/images/pc/panel_top_1.png')),
+      },
+      {
+        name: 'panel_top_2_pc',
+        value: loader.load(require('@/assets/images/pc/panel_top_2.png')),
+      },
+      {
+        name: 'panel_top_3_pc',
+        value: loader.load(require('@/assets/images/pc/panel_top_3.png')),
+      },
+      {
+        name: 'panel_top_4_pc',
+        value: loader.load(require('@/assets/images/pc/panel_top_4.png')),
+      },
+      {
+        name: 'panel_top_5_pc',
+        value: loader.load(require('@/assets/images/pc/panel_top_5.png')),
+      },
+      {
+        name: 'panel_water_pc',
+        value: loader.load(require('@/assets/images/pc/panel_water.png')),
+      },
+      {
+        name: 'panel_storm_pc',
+        value: loader.load(require('@/assets/images/pc/panel_storm.png')),
+      },
+      {
+        name: 'panel_space_pc',
+        value: loader.load(require('@/assets/images/pc/panel_space.png')),
+      },
+    ];
+  }
+
+  textures = textures.concat(extraTextures);
 };
 
 export const getTexture = (name) => {
