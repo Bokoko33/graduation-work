@@ -46,6 +46,7 @@ export default {
     setTimeout(() => {
       this.loading = false;
       this.textBefore = 'Next is...';
+      this.textAfter = '';
     }, 5000);
   },
   methods: {
