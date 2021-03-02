@@ -241,7 +241,7 @@ export default class SubObject {
   }
 
   createSpaceObject() {
-    const instanceNum = 5000;
+    const instanceNum = 2000;
     const offsets = []; // ポジションからのオフセット（実質これがパーティクルの座標）
     const initialRotate = []; // 回転の初期値
 
