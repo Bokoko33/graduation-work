@@ -3,10 +3,7 @@
   <div class="about">
     <div class="about__content">
       <h1 class="about__heading">About IM Cursor</h1>
-      <p class="about__copy">
-        Immersive content on Multi-device<br class="only-sp" />
-        with Cursor
-      </p>
+      <p class="about__copy">Immersive content on Multi-device with Cursor</p>
       <p class="about__note">IM also means "I'm a Cursor"</p>
       <div class="about__desc">
         <p class="about__text">
@@ -19,11 +16,13 @@
         </p>
       </div>
     </div>
+    <p class="about__copyright">&copy; 2021 bokoko33</p>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .about {
+  position: fixed;
   width: 100vw;
   height: 100vh;
   // padding: 12vh 6vw;
@@ -31,17 +30,22 @@
 
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   @include device-pc {
     line-height: 2;
     padding: 140px 12vw;
+    align-items: center;
   }
 }
 
 .about__content {
   width: 78vw;
-  height: 64vh;
-  max-width: $width-max-pc;
+  margin-top: 12vh;
+  @include device-pc {
+    height: 64vh;
+    max-width: $width-max-pc;
+    margin-top: 0;
+  }
 }
 
 .about__heading {
@@ -98,5 +102,14 @@
 
 .about__text {
   margin-top: 12px;
+}
+
+.about__copyright {
+  font-size: 12px;
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 40px;
 }
 </style>
